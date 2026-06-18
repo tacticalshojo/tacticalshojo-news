@@ -108,7 +108,12 @@ const currentYear = new Date().getFullYear();
 									</div>
 									<div class="flex items-center justify-between text-[11px] text-slate-400 pt-3 border-t border-slate-100">
 										<span class="font-medium">✍️ {author.name}</span>
-										<time>{post.data.date.split(' ')[0]}</time>
+										<!-- 💡 關鍵安全修正：安全攔截 Date 物件，不再導致 .split 崩潰 -->
+										<time>
+											{post.data.date instanceof Date 
+												? post.data.date.toISOString().split('T')[0] 
+												: String(post.data.date).split(' ')[0]}
+										</time>
 									</div>
 								</div>
 							</article>
