@@ -7,6 +7,39 @@
     <title>戰術少女研究室 - 核心中央控制台</title>
   </head>
   <body>
+    <!-- 引入 Decap CMS 核心 -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+    <!-- 💡 前端戰術攔截腳本：處理 Vercel 上的 GitHub 登入憑證 -->
+    <script>
+      (function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        
+        if (code) {
+          // 使用社群維護的安全 GitHub OAuth CORS 代理，幫前端安全換取 Token
+          fetch(`https://github-oauth-cors-proxy.vercel.app/api/auth?code=${code}`)
+            .then(res => {
+              if (!res.ok) throw new Error('網路認證回應失敗');
+              return res.json();
+            })
+            .then(data => {
+              if (data.token) {
+                // 將憑證安全地傳送回 Decap CMS 主視窗
+                window.opener.postMessage(
+                  `authorizing:github:success:${JSON.stringify({ token: data.token, provider: 'github' })}`,
+                  window.location.origin
+                );
+                window.close();
+              } else {
+                console.error('未取得有效的憑證 Token', data);
+              }
+            })
+            .catch(err => {
+              console.error('OAuth 代理伺服器通訊失敗:', err);
+            });
+        }
+      })();
+    </script>
   </body>
 </html>
