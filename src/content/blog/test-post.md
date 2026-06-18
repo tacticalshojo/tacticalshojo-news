@@ -58,6 +58,12 @@ summary: 這是一篇用來開通後台系統的測試通報。
 
 \--
 
+上傳圖片
+
+![Cover](/images/uploads/2024-0216-vocus-cover.png "測試標題")
+
+\--
+
 Code
 
 Youtube
