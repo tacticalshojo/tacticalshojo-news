@@ -1,0 +1,139 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug }, 
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// 拉取對應作者的詳細資料
+const authorDataEntries = await Promise.all(
+  entry.data.authors.map(async (id) => {
+    try {
+      const res = await getEntry('authors', id);
+      return { id, data: res?.data || { name: id, avatar: '', bio: '特約記者' } };
+    } catch {
+      return { id, data: { name: id, avatar: '', bio: '特約記者' } };
+    }
+  })
+);
+
+const formattedDate = new Date(entry.data.date).toLocaleString('zh-TW', {
+  timeZone: 'Asia/Taipei',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false
+});
+
+// 🚀 GOOGLE 新聞官方結構化資料 (Schema JSON-LD)
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": entry.data.title,
+  "image": [ entry.data.heroImage || "https://tacticalshojo.com/default-share.jpg" ],
+  "datePublished": entry.data.date.toISOString(),
+  "dateModified": entry.data.date.toISOString(),
+  "author": authorDataEntries.map(a => ({
+    "@type": "Person",
+    "name": a.data.name,
+    "url": `https://tacticalshojo.com/authors/${a.id}`
+  }))
+};
+---
+
+<html lang="zh-Hant">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{entry.data.title} | 戰術少女研究室</title>
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+	</head>
+	<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+		
+		<div class="bg-[#0f172a] text-white py-3.5 px-4 border-b-2 border-pink-500">
+			<div class="max-w-4xl mx-auto flex justify-between items-center">
+				<a href="/" class="font-black text-pink-500 tracking-widest text-sm">⚔️ 戰術少女研究室</a>
+				<a href="/" class="text-xs text-slate-400 hover:text-white">← 返回首頁通報</a>
+			</div>
+		</div>
+
+		<main class="max-w-3xl mx-auto px-4 py-8">
+			<div class="mb-4">
+				<span class="bg-pink-100 text-pink-700 text-xs font-black px-2.5 py-1 rounded">{entry.data.category}</span>
+			</div>
+			<h1 class="text-2xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight mb-4">{entry.data.title}</h1>
+			
+			<div class="flex flex-wrap items-center gap-4 text-xs text-slate-400 border-b border-slate-200 pb-4 mb-6">
+				<span class="font-bold text-slate-700">✍️ 記者群：{authorDataEntries.map(a => a.data.name).join('、')}</span>
+				<span>🕒 發布時間：{formattedDate} (台灣時區 GMT+8)</span>
+			</div>
+
+			<div class="bg-slate-100 border text-slate-400 text-xs text-center py-3 my-4 rounded font-mono">
+				【廣告版面 ARTICLE-TOP-ADS】
+			</div>
+
+			<p class="text-slate-700 font-medium text-base bg-slate-100 border-l-4 border-slate-400 p-4 rounded-r mb-8 leading-relaxed italic">
+				【摘要特報】{entry.data.summary}
+			</p>
+
+			{entry.data.heroImage && (
+				<figure class="mb-8 border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
+					<img src={entry.data.heroImage} class="w-full h-auto object-cover max-h-[450px]" alt="Hero" />
+					{entry.data.heroImageCaption && (
+						<figcaption class="bg-slate-50 text-xs text-slate-500 p-3 border-t text-center font-medium">📷 {entry.data.heroImageCaption}</figcaption>
+					)}
+				</figure>
+			)}
+
+			<article class="text-slate-800 leading-relaxed space-y-6 text-[1.05rem]">
+				<Content />
+			</article>
+
+			{entry.data.gallery && entry.data.gallery.length > 0 && (
+				<section class="mt-12 pt-8 border-t border-slate-200">
+					<h3 class="text-sm font-black text-slate-900 mb-4">📋 相關戰術現場影像通報</h3>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+						{entry.data.gallery.map((item) => (
+							<figure class="border border-slate-200 rounded-lg bg-white overflow-hidden shadow-sm">
+								<img src={item.image} class="w-full h-40 object-cover" alt="Gallery" />
+								<figcaption class="p-2.5 text-xs text-slate-500 bg-slate-50 border-t">{item.caption}</figcaption>
+							</figure>
+						))}
+					</div>
+				</section>
+			)}
+
+			<div class="bg-slate-100 border text-slate-400 text-xs text-center py-3 my-8 rounded font-mono">
+				【廣告版面 ARTICLE-BOTTOM-ADS】
+			</div>
+
+			<section class="mt-12 pt-8 border-t border-slate-200 space-y-4">
+				<h3 class="text-sm font-black text-slate-900">✍️ 撰述編輯陣容</h3>
+				{authorDataEntries.map((author) => (
+					<div class="bg-white border border-slate-200 rounded-xl p-4 flex gap-4 items-center shadow-sm">
+						<img src={author.data.avatar || '/images/uploads/default-avatar.png'} class="w-14 h-14 rounded-full object-cover bg-slate-100 border" alt="Avatar" />
+						<div>
+							<h4 class="font-black text-sm text-slate-900">
+								<a href={`/authors/${author.id}`} class="text-pink-600 hover:underline">{author.data.name}</a>
+							</h4>
+							<p class="text-xs text-slate-500 mt-1">{author.data.bio}</p>
+						</div>
+					</div>
+				))}
+			</section>
+
+			<section class="mt-8 bg-white border border-slate-200 rounded-xl p-4 text-center text-xs text-slate-400">
+				💬 讀者評論互動區已準備完畢（驗收後可一鍵無縫掛載 Disqus 或 Giscus 外掛）。
+			</section>
+		</main>
+	</body>
+</html>
