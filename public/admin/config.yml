@@ -2,9 +2,9 @@ backend:
   name: git-gateway
   repo: tacticalshojo/tacticalshojo-news
   branch: main
-  # 💡 帳密模式專用秘密通道：網頁主要在 Vercel 跑沒關係，認證走 Netlify 託管的資料庫
-  identity_url: https://tacticalshojo-news.netlify.app/.netlify/identity
-  gateway_url: https://tacticalshojo-news.netlify.app/.netlify/git
+  # 💡 修正：已精準對齊你畫面上真正的 Netlify 子網域，確保帳密驗證能正確連線
+  identity_url: https://profound-cocada-d686ba.netlify.app/.netlify/identity
+  gateway_url: https://profound-cocada-d686ba.netlify.app/.netlify/git
 
 # 💡 本機開發一樣可用
 local_backend: true
