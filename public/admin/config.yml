@@ -1,11 +1,12 @@
 backend:
-  name: github
+  name: git-gateway
   repo: tacticalshojo/tacticalshojo-news
   branch: main
-  # 💡 關鍵修正：配合 index.html 內嵌的代理腳本，改回預設閘道，讓前端腳本直接在客戶端進行攔截
-  base_url: https://api.netlify.com
+  # 💡 帳密模式專用秘密通道：網頁主要在 Vercel 跑沒關係，認證走 Netlify 託管的資料庫
+  identity_url: https://tacticalshojo-news.netlify.app/.netlify/identity
+  gateway_url: https://tacticalshojo-news.netlify.app/.netlify/git
 
-# 💡 本機開發專用。當你在本機執行 npm run dev 時，連到 localhost:4321/admin/ 可以直接繞過登入進後台！
+# 💡 本機開發一樣可用
 local_backend: true
 
 media_folder: "public/images/uploads"
