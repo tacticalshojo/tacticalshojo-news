@@ -1,14 +1,14 @@
 ---
-// 💡 1. 引入全域樣式檔，彻底救回消失的 Tailwind CSS 排版與顏色！
+// 💡 1. 引入全域樣式檔
 import '../styles/global.css';
 
-// 💡 2. 採用 Astro 內建本地內容引擎，直接讀取儲存庫裡的 Markdown 與 JSON
+// 💡 2. 採用 Astro 內建本地內容引擎
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
 const allAuthors = await getCollection('authors');
 
-// 建立作者對照表 (把作者檔案 id 對應到詳細資料)
+// 建立作者對照表
 const authorMap = Object.fromEntries(allAuthors.map(a => [a.id, a.data]));
 
 // 根據日期排序文章（最新發布的在最前面）
@@ -46,11 +46,11 @@ const currentYear = new Date().getFullYear();
 				<nav class="flex flex-wrap items-center justify-between text-sm font-bold py-3 overflow-x-auto">
 					<div class="flex space-x-6 whitespace-nowrap">
 						<a href="/" class="text-pink-500">首頁通報</a>
-						<a href="#" class="hover:text-pink-400">軍事戰略</a>
-						<a href="#" class="hover:text-pink-400">全民防衛</a>
-						<a href="#" class="hover:text-pink-400">戰術自訓</a>
-						<a href="#" class="hover:text-pink-400">軍工產業</a>
-						<a href="#" class="hover:text-pink-400">軍風搜奇</a>
+						<a href="/category/軍事戰略" class="hover:text-pink-400">軍事戰略</a>
+						<a href="/category/全民防衛" class="hover:text-pink-400">全民防衛</a>
+						<a href="/category/戰術自訓" class="hover:text-pink-400">戰術自訓</a>
+						<a href="/category/軍工產業" class="hover:text-pink-400">軍工產業</a>
+						<a href="/category/軍風搜奇" class="hover:text-pink-400">軍風搜奇</a>
 					</div>
 					{hotTopicPosts.length > 0 && (
 						<div class="flex items-center gap-2 text-xs bg-pink-600 px-3 py-1 rounded-full text-white animate-pulse mt-2 lg:mt-0">
@@ -65,3 +65,61 @@ const currentYear = new Date().getFullYear();
 		<div class="max-w-7xl mx-auto px-4 my-4">
 			<div class="bg-slate-200 border border-slate-300 text-slate-400 text-xs text-center py-4 rounded tracking-widest font-mono">
 				【廣告版面 PRE-SLOT / SUPPORT GOOGLE ADSENSE】
+			</div>
+		</div>
+
+		<main class="max-w-7xl mx-auto px-4 my-8">
+			{heroPosts.length > 0 && (
+				<section class="mb-12">
+					<div class="relative bg-slate-900 rounded-lg overflow-hidden shadow-2xl min-h-[400px] flex items-end">
+						{heroPosts[0].data.heroImage && (
+							<img src={heroPosts[0].data.heroImage} alt={heroPosts[0].data.title} class="absolute inset-0 w-full h-full object-cover opacity-60" />
+						)}
+						<div class="relative p-6 md:p-12 text-white bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent w-full">
+							<span class="bg-pink-600 text-xs px-3 py-1 rounded font-bold tracking-wider mb-4 inline-block">{heroPosts[0].data.category}</span>
+							<h1 class="text-3xl md:text-5xl font-black mb-4 tracking-tight"><a href={`/blog/${heroPosts[0].slug}`} class="hover:text-pink-400">{heroPosts[0].data.title}</a></h1>
+							<p class="text-slate-300 text-sm md:text-base max-w-3xl line-clamp-2">{heroPosts[0].data.summary}</p>
+						</div>
+					</div>
+				</section>
+			)}
+
+			<section>
+				<h2 class="text-xl font-black border-l-4 border-pink-600 pl-3 mb-6 tracking-wider text-slate-900">
+					📡 最新戰術通報
+				</h2>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					{latestPosts.map(post => {
+						const author = authorMap[post.data.authors?.[0]] || { name: '編輯部' };
+						return (
+							<article class="bg-white rounded border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition">
+								{post.data.heroImage && (
+									<div class="h-48 overflow-hidden bg-slate-100">
+										<img src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+									</div>
+								)}
+								<div class="p-5 flex-1 flex flex-col justify-between">
+									<div>
+										<span class="text-xs font-bold text-pink-600 tracking-wider uppercase mb-2 block">{post.data.category}</span>
+										<h3 class="font-bold text-lg text-slate-900 mb-2 line-clamp-2 hover:text-pink-600">
+											<a href={`/blog/${post.slug}`}>{post.data.title}</a>
+										</h3>
+										<p class="text-slate-500 text-xs line-clamp-3 mb-4">{post.data.summary}</p>
+									</div>
+									<div class="flex items-center justify-between text-[11px] text-slate-400 pt-3 border-t border-slate-100">
+										<span class="font-medium">✍️ {author.name}</span>
+										<time>{post.data.date.split(' ')[0]}</time>
+									</div>
+								</div>
+							</article>
+						);
+					})}
+				</div>
+			</section>
+		</main>
+
+		<footer class="bg-slate-900 text-slate-400 text-center py-8 border-t border-slate-800 text-xs mt-20">
+			<p>© {currentYear} 戰術少女研究室 TACTICAL SHOJO NEWS. All Rights Reserved.</p>
+		</footer>
+	</body>
+</html>
