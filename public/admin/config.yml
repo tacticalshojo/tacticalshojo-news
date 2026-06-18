@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: 你的GitHub帳號/tacticalshojo-news
+  repo: tacticalshojo/tacticalshojo-news # ⚠️ 記得把「你的GitHub帳號」改成你實際的 GitHub 帳號！
   branch: main
 
 media_folder: "public/images/uploads"
@@ -12,9 +12,10 @@ collections:
     folder: "src/content/authors"
     create: true
     extension: "json"
+    format: "json" # 💡 修正：確保寫入的是標準 JSON 格式
     slug: "{{slug}}"
     fields:
-      - { label: "作者代號 (ID/Slug，不可重複)", name: "slug", widget: "string" }
+      - { label: "作者代號 (英文/不可重複，會作為檔案名稱)", name: "id", widget: "string" } # 💡 修正：搭配 Astro Content Collection，名稱用 id 最佳
       - { label: "作者完整暱稱", name: "name", widget: "string" }
       - { label: "作者大頭貼", name: "avatar", widget: "image", required: false }
       - { label: "作者簡介 (顯示於文末卡片)", name: "bio", widget: "text" }
@@ -28,7 +29,17 @@ collections:
       - { label: "新聞標題", name: "title", widget: "string" }
       - { label: "網址路徑 (Slug)", name: "slug", widget: "string" }
       - { label: "發布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD HH:mm:ss" }
-      - { label: "指定作者 (可多選，請填寫上方作者代號)", name: "authors", widget: "list", default: ["admin"] }
+      
+      # 💡 修正：改用 relation 組件，後台就會出現「下拉選單」讓你直接勾選上面建立的作者，才不會打錯字！
+      - label: "指定作者"
+        name: "authors"
+        widget: "relation"
+        collection: "authors"
+        search_fields: ["name"]
+        value_field: "id"
+        display_fields: ["name"]
+        multiple: true
+
       - { label: "新聞大分類", name: "category", widget: "select", options: ["軍事戰略", "全民防衛", "戰術自訓", "軍工產業", "軍風搜奇"] }
       - { label: "登上頭條大圖輪播區 (Hero Banner)", name: "isHeroBanner", widget: "boolean", default: false }
       - { label: "標記為焦點熱門文章", name: "isFeatured", widget: "boolean", default: false }
