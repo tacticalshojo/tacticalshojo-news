@@ -1,0 +1,70 @@
+---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const authorEntries = await getCollection('authors');
+  return authorEntries.map(entry => ({
+    params: { id: entry.id },
+    props: { author: entry.data },
+  }));
+}
+
+const { id } = Astro.params;
+const { author } = Astro.props;
+
+// 篩選出屬於該作者的新聞
+const allPosts = await getCollection('blog');
+const authorPosts = allPosts.filter(post => post.data.authors.includes(id))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+---
+
+<html lang="zh-Hant">
+	<head>
+		<meta charset="UTF-8" />
+		<title>{author.name} 的記者專頁 | 戰術少女研究室</title>
+	</head>
+	<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+		
+		<div class="bg-[#0f172a] text-white py-3 px-4 border-b border-pink-500">
+			<div class="max-w-5xl mx-auto flex justify-between items-center">
+				<a href="/" class="font-black text-pink-500 text-sm">⚔️ 戰術少女研究室</a>
+				<a href="/" class="text-xs text-slate-400 hover:text-white">← 返回最新特報</a>
+			</div>
+		</div>
+
+		<main class="max-w-5xl mx-auto px-4 py-10">
+			<div class="bg-white border rounded-xl p-6 shadow-sm flex flex-col md:flex-row items-center gap-6 mb-10 text-center md:text-left">
+				<img src={author.avatar || '/images/uploads/default-avatar.png'} class="w-24 h-24 rounded-full object-cover border-2 border-pink-500 shadow-sm" alt="Avatar" />
+				<div>
+					<span class="text-[10px] bg-slate-900 text-white font-bold px-2 py-0.5 rounded">特約特派記者</span>
+					<h1 class="text-2xl font-black text-slate-900 mt-1">{author.name}</h1>
+					<p class="text-sm text-slate-600 mt-2 leading-relaxed">{author.bio}</p>
+				</div>
+			</div>
+
+			<section>
+				<h2 class="text-base font-black border-l-4 border-pink-500 pl-2 mb-6">📰 {author.name} 負責編譯發布之新聞通報 ({authorPosts.length})</h2>
+				{authorPosts.length === 0 ? (
+					<p class="text-slate-400 text-sm italic">該作者目前暫無發布通報。</p>
+				) : (
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+						{authorPosts.map(post => (
+							<article class="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow transition flex flex-col justify-between">
+								<div class="p-4">
+									<span class="text-[10px] font-bold text-pink-600 tracking-wider uppercase">{post.data.category}</span>
+									<h3 class="font-bold text-base text-slate-900 hover:text-pink-600 transition mt-1 line-clamp-2">
+										<a href={`/blog/${post.slug}`}>{post.data.title}</a>
+									</h3>
+									<p class="text-slate-500 text-xs line-clamp-2 mt-2 leading-relaxed">{post.data.summary}</p>
+								</div>
+								<div class="px-4 pb-3 pt-2 border-t text-[10px] text-slate-400 text-right">
+									{new Date(post.data.date).toLocaleDateString('zh-TW')}
+								</div>
+							</article>
+						))}
+					</div>
+				)}
+			</section>
+		</main>
+	</body>
+</html>
