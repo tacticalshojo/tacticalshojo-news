@@ -1,7 +1,12 @@
 backend:
   name: github
-  repo: tacticalshojo/tacticalshojo-news # ⚠️ 記得把「你的GitHub帳號」改成你實際的 GitHub 帳號！
+  repo: tacticalshojo/tacticalshojo-news
   branch: main
+  # 💡 方案一：線上 Vercel 部署專用。指定交由社群免費的 OAuth 閘道處理，解決 Netlify 404 問題
+  base_url: https://decap-cms-oauth-provider.vercel.app
+
+# 💡 方案二：本機開發專用。當你在本機執行 npm run dev 時，連到 localhost:4321/admin/ 可以直接繞過登入進後台！
+local_backend: true
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
@@ -12,10 +17,10 @@ collections:
     folder: "src/content/authors"
     create: true
     extension: "json"
-    format: "json" # 💡 修正：確保寫入的是標準 JSON 格式
+    format: "json"
     slug: "{{slug}}"
     fields:
-      - { label: "作者代號 (英文/不可重複，會作為檔案名稱)", name: "id", widget: "string" } # 💡 修正：搭配 Astro Content Collection，名稱用 id 最佳
+      - { label: "作者代號 (英文/不可重複，會作為檔案名稱)", name: "id", widget: "string" }
       - { label: "作者完整暱稱", name: "name", widget: "string" }
       - { label: "作者大頭貼", name: "avatar", widget: "image", required: false }
       - { label: "作者簡介 (顯示於文末卡片)", name: "bio", widget: "text" }
@@ -30,7 +35,6 @@ collections:
       - { label: "網址路徑 (Slug)", name: "slug", widget: "string" }
       - { label: "發布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD HH:mm:ss" }
       
-      # 💡 修正：改用 relation 組件，後台就會出現「下拉選單」讓你直接勾選上面建立的作者，才不會打錯字！
       - label: "指定作者"
         name: "authors"
         widget: "relation"
