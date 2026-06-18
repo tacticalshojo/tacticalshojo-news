@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.0",
+    "@openlab/vercel-netlify-cms-github": "^1.1.1",
     "astro": "^4.15.0",
     "tailwindcss": "^3.4.0"
   }
