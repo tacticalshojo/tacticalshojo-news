@@ -5,31 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>戰術少女研究室 - 核心中央控制台</title>
+    <!-- 引入 Netlify Identity 帳密認證小工具 -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
     <!-- 引入 Decap CMS 核心 -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-
-    <!-- 前端戰術攔截腳本 -->
-    <script>
-      (function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        
-        if (code) {
-          fetch(`https://github-oauth-cors-proxy.vercel.app/api/auth?code=${code}`)
-            .then(res => res.json())
-            .then(data => {
-              if (data.token) {
-                window.opener.postMessage(
-                  `authorizing:github:success:${JSON.stringify({ token: data.token, provider: 'github' })}`,
-                  window.location.origin
-                );
-                window.close();
-              }
-            });
-        }
-      })();
-    </script>
   </body>
 </html>
