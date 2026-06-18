@@ -1,0 +1,129 @@
+---
+// 💡 引入全域樣式檔
+import '../../styles/global.css';
+
+// 💡 引入 Astro 內容引擎
+import { getCollection } from 'astro:content';
+
+// 1. 定義靜態路由：告訴 Astro 我們有哪些分類網頁要生成
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  
+  // 找出所有文章中使用過的分類，並去除重複
+  const categories = [...new Set(allPosts.map((post) => post.data.category).filter(Boolean))];
+  
+  // 回傳給 Astro 進行靜態頁面生成
+  return categories.map((category) => ({
+    params: { category: category },
+    props: { category: category },
+  }));
+}
+
+// 2. 獲取當前網址的分類參數
+const { category } = Astro.props;
+
+// 3. 撈取所有文章與作者資訊
+const allPosts = await getCollection('blog');
+const allAuthors = await getCollection('authors');
+const authorMap = Object.fromEntries(allAuthors.map(a => [a.id, a.data]));
+
+// 4. 過濾出屬於當前分類的文章，並按照日期排序
+const filteredPosts = allPosts
+  .filter((post) => post.data.category === category)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+const currentYear = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="zh-Hant">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{category} - 戰術少女研究室 | TACTICAL SHOJO NEWS</title>
+	</head>
+	<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+
+		<!-- 頂部導覽列 (與首頁保持100%同步) -->
+		<header class="bg-[#0f172a] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
+			<div class="max-w-7xl mx-auto px-4">
+				<div class="flex flex-col md:flex-row justify-between items-center py-4 gap-4 border-b border-slate-800">
+					<a href="/" class="text-2xl font-black tracking-widest text-pink-500 flex items-center gap-2">
+						⚔️ <span>戰術少女<span class="text-white">研究室</span></span>
+					</a>
+					<div class="relative w-full md:w-72">
+						<input type="text" placeholder="搜尋軍事戰略、戰術自訓..." class="w-full bg-slate-800 text-xs text-slate-200 pl-4 pr-10 py-2.5 rounded border border-slate-700 focus:outline-none focus:border-pink-500" />
+						<span class="absolute right-3 top-2.5 text-slate-400">🔍</span>
+					</div>
+				</div>
+				<nav class="flex flex-wrap items-center justify-between text-sm font-bold py-3 overflow-x-auto">
+					<div class="flex space-x-6 whitespace-nowrap">
+						<a href="/" class="hover:text-pink-400">首頁通報</a>
+						<a href="/category/軍事戰略" class={category === '軍事戰略' ? "text-pink-500" : "hover:text-pink-400"}>軍事戰略</a>
+						<a href="/category/全民防衛" class={category === '全民防衛' ? "text-pink-500" : "hover:text-pink-400"}>全民防衛</a>
+						<a href="/category/戰術自訓" class={category === '戰術自訓' ? "text-pink-500" : "hover:text-pink-400"}>戰術自訓</a>
+						<a href="/category/軍工產業" class={category === '軍工產業' ? "text-pink-500" : "hover:text-pink-400"}>軍工產業</a>
+						<a href="/category/軍風搜奇" class={category === '軍風搜奇' ? "text-pink-500" : "hover:text-pink-400"}>軍風搜奇</a>
+					</div>
+				</nav>
+			</div>
+		</header>
+
+		<!-- 分類標題區區塊 -->
+		<div class="bg-slate-900 text-white py-12 border-b border-slate-800 shadow-inner">
+			<div class="max-w-7xl mx-auto px-4">
+				<span class="text-xs font-bold uppercase tracking-widest text-pink-500 bg-pink-950/50 px-3 py-1 rounded border border-pink-900">CATEGORY ARCHIVE</span>
+				<h1 class="text-3xl md:text-4xl font-black mt-3 tracking-wider flex items-center gap-2">
+					📂 <span>專題分類：<span class="text-pink-500">{category}</span></span>
+				</h1>
+				<p class="text-slate-400 text-xs mt-2 font-mono">共聯絡到 {filteredPosts.length} 篇相關戰術通報紀錄</p>
+			</div>
+		</div>
+
+		<!-- 主要內容區 -->
+		<main class="max-w-7xl mx-auto px-4 my-12">
+			{filteredPosts.length === 0 ? (
+				<div class="bg-white rounded border border-slate-200 p-12 text-center text-slate-500 shadow-sm">
+					<p class="text-lg font-medium mb-2">📡 該分類目前尚無發布通報</p>
+					<p class="text-xs text-slate-400">請登入 Decap CMS 後台撰寫文章並歸類至此。</p>
+				</div>
+			) : (
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					{filteredPosts.map(post => {
+						const author = authorMap[post.data.authors?.[0]] || { name: '編輯部' };
+						return (
+							<article class="bg-white rounded border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition">
+								{post.data.heroImage && (
+									<div class="h-48 overflow-hidden bg-slate-100">
+										<img src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+									</div>
+								)}
+								<div class="p-5 flex-1 flex flex-col justify-between">
+									<div>
+										<span class="text-xs font-bold text-pink-600 tracking-wider uppercase mb-2 block">{post.data.category}</span>
+										<h3 class="font-bold text-lg text-slate-900 mb-2 line-clamp-2 hover:text-pink-600">
+											<a href={`/blog/${post.slug}`}>{post.data.title}</a>
+										</h3>
+										<p class="text-slate-500 text-xs line-clamp-3 mb-4">{post.data.summary}</p>
+									</div>
+									<div class="flex items-center justify-between text-[11px] text-slate-400 pt-3 border-t border-slate-100">
+										<span class="font-medium">✍️ {author.name}</span>
+										<time>
+											{post.data.date instanceof Date 
+												? post.data.date.toISOString().split('T')[0] 
+												: String(post.data.date).split(' ')[0]}
+										</time>
+									</div>
+								</div>
+							</article>
+						);
+					})}
+				</div>
+			)}
+		</main>
+
+		<footer class="bg-slate-900 text-slate-400 text-center py-8 border-t border-slate-800 text-xs mt-20">
+			<p>© {currentYear} 戰術少女研究室 TACTICAL SHOJO NEWS. All Rights Reserved.</p>
+		</footer>
+	</body>
+</html>
