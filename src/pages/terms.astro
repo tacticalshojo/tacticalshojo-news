@@ -1,0 +1,35 @@
+---
+import '../styles/global.css';
+const currentYear = new Date().getFullYear();
+---
+<!doctype html>
+<html lang="zh-Hant">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>服務條款 - 戰術少女研究室 | TACTICAL SHOJO NEWS</title>
+	</head>
+	<body class="bg-slate-50 text-slate-900 font-sans antialiased flex flex-col min-h-screen">
+		<header class="bg-[#0f172a] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
+			<div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+				<a href="/" class="text-2xl font-black tracking-widest text-pink-500 flex items-center gap-2">⚔️ <span>戰術少女<span class="text-white">研究室</span></span></a>
+				<a href="/" class="text-sm font-bold text-slate-300 hover:text-white">返回首頁通報 ↩️</a>
+			</div>
+		</header>
+
+		<main class="max-w-3xl mx-auto px-4 py-12 flex-1">
+			<h1 class="text-3xl font-black border-l-4 border-pink-600 pl-3 mb-8 text-slate-900">服務條款</h1>
+			<div class="bg-white p-8 rounded border border-slate-200 shadow-sm space-y-6 text-xs leading-relaxed text-slate-700">
+				<p>歡迎您使用戰術少女研究室（以下簡稱「本網站」）。當您開始瀏覽或使用本網站提供之各項情報資訊時，即代表您已閱讀、理解並同意接受本服務條款之所有內容。</p>
+				<h3 class="text-sm font-bold text-slate-900 pt-2">1. 內容智慧財產權</h3>
+				<p>本網站所刊載之所有原創文字、專題分析、圖表及衍生戰術報告，其著作權、專利權、商標權及其他智慧財產權皆屬於本網站或相關權利人所有。未經正式書面授權，任何人不得擅自以任何形式進行轉載、改作、散布或用於商業用途。</p>
+				<h3 class="text-sm font-bold text-slate-900 pt-2">2. 免責聲明</h3>
+				<p>本網站發布之內容（包含防災演練、民防救護技術、戰術裝備評測等）僅供知識普及與學術研究參考。讀者若進行任何實際自訓、戰術模擬或醫療救護行為，應確保在符合當地法規與專業教官指導下進行，本網站不對任何個人行為所造成的損害承擔任何法律責任。</p>
+			</div>
+		</main>
+
+		<footer class="bg-slate-900 text-slate-400 text-center py-6 text-xs">
+			<p>© {currentYear} 戰術少女研究室. All Rights Reserved.</p>
+		</footer>
+	</body>
+</html>
