@@ -1,10 +1,10 @@
 backend:
-  name: git-gateway
+  name: github
   repo: tacticalshojo/tacticalshojo-news
   branch: main
-  # 💡 修正：已精準對齊你畫面上真正的 Netlify 子網域，確保帳密驗證能正確連線
-  identity_url: https://profound-cocada-d686ba.netlify.app/.netlify/identity
-  gateway_url: https://profound-cocada-d686ba.netlify.app/.netlify/git
+  # 💡 切換為 Vercel 路由，讓 Vercel 的 API 幫你處理 Supabase 的純帳密驗證
+  base_url: /api
+  auth_endpoint: /auth
 
 # 💡 本機開發一樣可用
 local_backend: true
