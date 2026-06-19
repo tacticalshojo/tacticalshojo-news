@@ -1,0 +1,35 @@
+---
+import '../styles/global.css';
+const currentYear = new Date().getFullYear();
+---
+<!doctype html>
+<html lang="zh-Hant">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>聯繫我們 - 戰術少女研究室 | TACTICAL SHOJO NEWS</title>
+	</head>
+	<body class="bg-slate-50 text-slate-900 font-sans antialiased flex flex-col min-h-screen">
+		<header class="bg-[#0f172a] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
+			<div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+				<a href="/" class="text-2xl font-black tracking-widest text-pink-500 flex items-center gap-2">⚔️ <span>戰術少女<span class="text-white">研究室</span></span></a>
+				<a href="/" class="text-sm font-bold text-slate-300 hover:text-white">返回首頁通報 ↩️</a>
+			</div>
+		</header>
+
+		<main class="max-w-3xl mx-auto px-4 py-12 flex-1">
+			<h1 class="text-3xl font-black border-l-4 border-pink-600 pl-3 mb-8 text-slate-900">聯繫我們</h1>
+			<div class="bg-white p-8 rounded border border-slate-200 shadow-sm space-y-6 text-sm">
+				<p class="text-slate-600 mb-6">如果您有任何新聞線索通報、專題投稿、商務合作或網站版權疑問，歡迎透過以下管道與編輯部取得聯繫：</p>
+				<div class="space-y-4 border-t border-slate-100 pt-4">
+					<p class="flex items-center gap-2 text-base"><strong>📩 電子郵件：</strong> <span class="text-pink-600 font-mono">contact@yourdomain.com</span>（請自行更換為您的Email）</p>
+					<p class="text-xs text-slate-400">※ 戰術情報或機密投稿建議於郵件標題註明【情報通報】，我們將由專人以安全加密管道聯繫。</p>
+				</div>
+			</div>
+		</main>
+
+		<footer class="bg-slate-900 text-slate-400 text-center py-6 text-xs">
+			<p>© {currentYear} 戰術少女研究室. All Rights Reserved.</p>
+		</footer>
+	</body>
+</html>
