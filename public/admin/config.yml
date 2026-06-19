@@ -1,10 +1,6 @@
 backend:
-  name: github
-  repo: tacticalshojo/tacticalshojo-news
+  name: git-gateway
   branch: main
-  # 💡 切換為 Vercel 路由，讓 Vercel 的 API 幫你處理 Supabase 的純帳密驗證
-  base_url: /api
-  auth_endpoint: /auth
 
 # 💡 本機開發一樣可用
 local_backend: true
