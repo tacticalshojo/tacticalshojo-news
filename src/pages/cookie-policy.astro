@@ -1,0 +1,39 @@
+---
+import '../styles/global.css';
+const currentYear = new Date().getFullYear();
+---
+<!doctype html>
+<html lang="zh-Hant">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Cookie 政策 - 戰術少女研究室 | TACTICAL SHOJO NEWS</title>
+	</head>
+	<body class="bg-slate-50 text-slate-900 font-sans antialiased flex flex-col min-h-screen">
+		<header class="bg-[#0f172a] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
+			<div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+				<a href="/" class="text-2xl font-black tracking-widest text-pink-500 flex items-center gap-2">⚔️ <span>戰術少女<span class="text-white">研究室</span></span></a>
+				<a href="/" class="text-sm font-bold text-slate-300 hover:text-white">返回首頁通報 ↩️</a>
+			</div>
+		</header>
+
+		<main class="max-w-3xl mx-auto px-4 py-12 flex-1">
+			<h1 class="text-3xl font-black border-l-4 border-pink-600 pl-3 mb-8 text-slate-900">Cookie 政策</h1>
+			<div class="bg-white p-8 rounded border border-slate-200 shadow-sm space-y-6 text-xs leading-relaxed text-slate-700">
+				<p>為了優化您的用戶體驗並提供客製化的網站內容，戰術少女研究室會在您的電腦或行動裝置中設定並存取 Cookie。</p>
+				<h3 class="text-sm font-bold text-slate-900 pt-2">什麼是 Cookie？</h3>
+				<p>Cookie 是當您訪問網站時，儲存在您瀏覽器中的小型文字檔案。它能幫助網站記住您的瀏覽偏好、統計造訪人數，並提升網頁的加載速度。</p>
+				<h3 class="text-sm font-bold text-slate-900 pt-2">我們使用的 Cookie 類型</h3>
+				<ul class="list-disc pl-5 space-y-1">
+					<li><strong>必要性 Cookie</strong>：維持網站基本運作功能所不可或缺。</li>
+					<li><strong>分析與效能 Cookie</strong>：用於統計流量（如估算瀏覽人數與用戶行為模式），以便改善網站效能。</li>
+					<li><strong>第三方廣告 Cookie（計畫建置）</strong>：如 Google AdSense，用於在全網向您投放更符合您興趣的戰術與生活廣告。</li>
+				</ul>
+			</div>
+		</main>
+
+		<footer class="bg-slate-900 text-slate-400 text-center py-6 text-xs">
+			<p>© {currentYear} 戰術少女研究室. All Rights Reserved.</p>
+		</footer>
+	</body>
+</html>
