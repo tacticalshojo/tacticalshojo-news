@@ -5,88 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>戰術少女研究室 - 核心中央控制台</title>
+    
+    <style>
+      body { background-color: #f3f4f6; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+      .login-box { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; max-width: 360px; width: 100%; }
+      input { width: 100%; padding: 0.75rem; margin: 0.5rem 0; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box; }
+      button { width: 100%; padding: 0.75rem; background: #ec4899; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+      button:hover { background: #db2777; }
+    </style>
+  </head>
+  <body>
+
+    <div id="auth-gate" class="login-box">
+      <h3 style="color: #374151; margin-bottom: 1.5rem;">🔒 戰術核心中央控制台</h3>
+      <input type="email" id="email" placeholder="管理員電子郵件" required />
+      <input type="password" id="password" placeholder="管理員認證密碼" required />
+      <button onclick="login()">驗證登入</button>
+    </div>
 
     <script>
       const SUPABASE_URL = "https://empqrgbetwqtsmbbpzlo.supabase.co"; 
-      // 🔐 請記得填入你真正的 Publishable key (anon public)
-      const SUPABASE_ANON_KEY = "sb_publishable_1-GjWCdJmIEkNcX5DadxgQ_VUaGKOBg"; 
+      // 🔐 請在此填入你從 Supabase 複製的 Publishable key (anon public)
+      const SUPABASE_ANON_KEY = "你的_SUPABASE_ANON_KEY"; 
 
-      window.netlifyIdentity = {
-        on: (event, callback) => {
-          if (event === 'init') callback(null);
-        },
-        
-        currentUser: () => {
-          const userStr = localStorage.getItem("netlify-cms-user");
-          if (!userStr) return null;
-          try {
-            const user = JSON.parse(userStr);
-            return {
-              jwt: () => Promise.resolve(user.token),
-              logout: () => {
-                localStorage.removeItem("netlify-cms-user");
-                window.location.reload();
-              }
-            };
-          } catch (e) {
-            return null;
+      function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "apikey": SUPABASE_ANON_KEY },
+          body: JSON.stringify({ email, password })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.access_token) {
+            // 驗證成功：將權限注入快取
+            localStorage.setItem("netlify-cms-user", JSON.stringify({
+              backendName: "github",
+              token: data.access_token,
+              raw_user_meta_data: {}
+            }));
+            // 隱藏登入方塊，加載 CMS 核心
+            document.getElementById('auth-gate').style.display = 'none';
+            loadCMS();
+          } else {
+            alert("❌ 驗證失敗：帳號或密碼錯誤。");
           }
-        },
+        })
+        .catch(err => alert("⚠️ 連線安全金庫失敗：" + err));
+      }
 
-        close: () => {
-          console.log("Netlify Identity Mock Window Closed");
-        },
+      function loadCMS() {
+        const script = document.createElement('script');
+        script.src = "https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js";
+        document.body.appendChild(script);
+      }
 
-        // 💡 關鍵修正：當 Decap CMS 企圖尋找 Netlify 的後端 API 時，直接將它轉向到 Supabase 
-        // 這樣就能直接擊落 "Your Git Gateway backend is not returning valid settings" 的報錯
-        gotrue: {
-          api: {
-            apiURL: SUPABASE_URL + "/auth/v1",
-            headers: {
-              "apikey": SUPABASE_ANON_KEY
-            }
-          }
-        },
-
-        open: () => {
-          const email = prompt("🔒 請輸入管理員 Email：");
-          if (!email) return;
-          const password = prompt("🔑 請輸入管理員 密碼：");
-          if (!password) return;
-          
-          fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "apikey": SUPABASE_ANON_KEY
-            },
-            body: JSON.stringify({ email, password })
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data.access_token) {
-              // 登入成功：將權限令牌與後端名稱注入快取
-              localStorage.setItem("netlify-cms-user", JSON.stringify({
-                backendName: "git-gateway",
-                token: data.access_token,
-                raw_user_meta_data: {}
-              }));
-              window.location.reload(); 
-            } else {
-              alert("❌ 登入失敗：" + (data.msg || "帳號或密碼錯誤。"));
-            }
-          })
-          .catch(err => alert("⚠️ 連線安全金庫失敗：" + err));
-        },
-
-        logout: () => {
-          localStorage.removeItem("netlify-cms-user");
-          window.location.reload();
-        }
-      };
+      // 自動檢查：如果已經登入過，直接載入 CMS
+      if (localStorage.getItem("netlify-cms-user")) {
+        document.getElementById('auth-gate').style.display = 'none';
+        loadCMS();
+      }
     </script>
-  </head>
-  <body>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </body>
 </html>
