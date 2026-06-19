@@ -25,8 +25,7 @@
 
     <script>
       const SUPABASE_URL = "https://empqrgbetwqtsmbbpzlo.supabase.co"; 
-      // 🔐 請在此填入你從 Supabase 複製的 Publishable key (anon public)
-      const SUPABASE_ANON_KEY = "你的_SUPABASE_ANON_KEY"; 
+      const SUPABASE_ANON_KEY = "這裡填入你的_SUPABASE_ANON_KEY"; 
 
       function login() {
         const email = document.getElementById('email').value;
@@ -40,13 +39,12 @@
         .then(res => res.json())
         .then(data => {
           if (data.access_token) {
-            // 驗證成功：將權限注入快取
+            // 💡 修正：指定 backendName 為 proxy
             localStorage.setItem("netlify-cms-user", JSON.stringify({
-              backendName: "github",
+              backendName: "proxy",
               token: data.access_token,
               raw_user_meta_data: {}
             }));
-            // 隱藏登入方塊，加載 CMS 核心
             document.getElementById('auth-gate').style.display = 'none';
             loadCMS();
           } else {
@@ -62,7 +60,6 @@
         document.body.appendChild(script);
       }
 
-      // 自動檢查：如果已經登入過，直接載入 CMS
       if (localStorage.getItem("netlify-cms-user")) {
         document.getElementById('auth-gate').style.display = 'none';
         loadCMS();
