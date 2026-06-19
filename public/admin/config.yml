@@ -1,8 +1,11 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: tacticalshojo/tacticalshojo-news
   branch: main
+  base_url: https://api.github.com
+  auth_endpoint: oauth/authorize
 
-# 💡 本機開發一樣可用
+# 💡 確保本機開發與線上完全同步
 local_backend: true
 
 media_folder: "public/images/uploads"
