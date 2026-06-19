@@ -1,3 +1,5 @@
+export const prerender = false; // 💡 強制動態執行，確保與 auth.js 同步擊落檔案下載錯誤
+
 export async function GET({ request }) {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
