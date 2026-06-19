@@ -5,11 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>戰術少女研究室 - 核心中央控制台</title>
-    <!-- 引入 Netlify Identity 帳密認證小工具 -->
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+    <script>
+      // 📡 你的 Supabase 專案網址（末尾不要加斜線）
+      const SUPABASE_URL = "https://empqrgbetwqtsmbbpzlo.supabase.co"; 
+
+      // 🔐 請在這裡填入你的 Supabase "anon" "public" 金鑰 (開源前端公開防線，可安全置於程式碼中)
+      // 🚨 提示：如果你還沒抄下來，請至 Supabase 後台 -> Project Settings -> API -> 複製 anon public 那串
+      const SUPABASE_ANON_KEY = "請在此處填入你的_SUPABASE_ANON_KEY"; 
+
+      window.netlifyIdentity = {
+        on: (event, callback) => {
+          if (event === 'init') callback(null);
+        },
+        open: () => {
+          // 觸發 Decap CMS 的純帳密輸入程序
+          const email = prompt("🔒 請輸入管理員 Email：");
+          if (!email) return;
+          const password = prompt("🔑 請輸入管理員 密碼：");
+          if (!password) return;
+          
+          // 直接對接 Supabase 原生純帳密 API 進行驗證
+          fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": SUPABASE_ANON_KEY
+            },
+            body: JSON.stringify({ email, password })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.access_token) {
+              // 驗證成功：將權限令牌注入瀏覽器本地快取，Decap CMS 偵測到後會直接放行解鎖！
+              localStorage.setItem("netlify-cms-user", JSON.stringify({
+                backendName: "git-gateway",
+                token: data.access_token,
+                raw_user_meta_data: {}
+              }));
+              window.location.reload(); // 刷新頁面，直接進入發文控制台
+            } else {
+              alert("❌ 登入失敗：" + (data.msg || "帳號或密碼錯誤，請重新確認防線資訊。"));
+            }
+          })
+          .catch(err => alert("⚠️ 連線安全金庫失敗：" + err));
+        },
+        logout: () => {
+          localStorage.removeItem("netlify-cms-user");
+          window.location.reload();
+        }
+      };
+    </script>
   </head>
   <body>
-    <!-- 引入 Decap CMS 核心 -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </body>
 </html>
