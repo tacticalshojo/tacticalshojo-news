@@ -8,7 +8,7 @@
 
     <script>
       const SUPABASE_URL = "https://empqrgbetwqtsmbbpzlo.supabase.co"; 
-      // 🔐 請記得替換為你真正的 Publishable key (anon public)，確保裡面沒有中文字
+      // 🔐 請記得填入你真正的 Publishable key (anon public)
       const SUPABASE_ANON_KEY = "sb_publishable_1-GjWCdJmIEkNcX5DadxgQ_VUaGKOBg"; 
 
       window.netlifyIdentity = {
@@ -16,7 +16,6 @@
           if (event === 'init') callback(null);
         },
         
-        // 💡 修正 1：補上 Decap CMS 初始化與登入狀態檢查必備的 currentUser 函式
         currentUser: () => {
           const userStr = localStorage.getItem("netlify-cms-user");
           if (!userStr) return null;
@@ -34,10 +33,19 @@
           }
         },
 
-        // 💡 修正 2：關鍵！補上 Decap CMS 登入成功後嘗試關閉視窗的 close 函式
         close: () => {
-          // 讓 Decap CMS 呼叫時順利執行，不回傳錯誤即可
           console.log("Netlify Identity Mock Window Closed");
+        },
+
+        // 💡 關鍵修正：當 Decap CMS 企圖尋找 Netlify 的後端 API 時，直接將它轉向到 Supabase 
+        // 這樣就能直接擊落 "Your Git Gateway backend is not returning valid settings" 的報錯
+        gotrue: {
+          api: {
+            apiURL: SUPABASE_URL + "/auth/v1",
+            headers: {
+              "apikey": SUPABASE_ANON_KEY
+            }
+          }
         },
 
         open: () => {
@@ -57,7 +65,7 @@
           .then(res => res.json())
           .then(data => {
             if (data.access_token) {
-              // 登入成功：將權限令牌注入
+              // 登入成功：將權限令牌與後端名稱注入快取
               localStorage.setItem("netlify-cms-user", JSON.stringify({
                 backendName: "git-gateway",
                 token: data.access_token,
