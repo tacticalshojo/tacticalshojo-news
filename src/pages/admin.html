@@ -8,7 +8,7 @@
 
     <script>
       const SUPABASE_URL = "https://empqrgbetwqtsmbbpzlo.supabase.co"; 
-      // 🔐 請記得替換為你真正的 Publishable key (anon public)
+      // 🔐 請記得替換為你真正的 Publishable key (anon public)，確保裡面沒有中文字
       const SUPABASE_ANON_KEY = "sb_publishable_1-GjWCdJmIEkNcX5DadxgQ_VUaGKOBg"; 
 
       window.netlifyIdentity = {
@@ -16,13 +16,12 @@
           if (event === 'init') callback(null);
         },
         
-        // 💡 關鍵修正：補上 Decap CMS 初始化時必備的 currentUser 檢查函式
+        // 💡 修正 1：補上 Decap CMS 初始化與登入狀態檢查必備的 currentUser 函式
         currentUser: () => {
           const userStr = localStorage.getItem("netlify-cms-user");
           if (!userStr) return null;
           try {
             const user = JSON.parse(userStr);
-            // 模擬 Netlify CMS 需要的 token 結構
             return {
               jwt: () => Promise.resolve(user.token),
               logout: () => {
@@ -33,6 +32,12 @@
           } catch (e) {
             return null;
           }
+        },
+
+        // 💡 修正 2：關鍵！補上 Decap CMS 登入成功後嘗試關閉視窗的 close 函式
+        close: () => {
+          // 讓 Decap CMS 呼叫時順利執行，不回傳錯誤即可
+          console.log("Netlify Identity Mock Window Closed");
         },
 
         open: () => {
