@@ -1,12 +1,7 @@
+# 💡 改用 proxy 模式，徹底斷開與 GitHub 線上認證的糾纏
 backend:
-  name: github
-  repo: tacticalshojo/tacticalshojo-news
-  branch: main
-  base_url: https://api.github.com
-  auth_endpoint: oauth/authorize
-
-# 💡 確保本機開發與線上完全同步
-local_backend: true
+  name: proxy
+  proxy_url: http://localhost:8081/api
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
