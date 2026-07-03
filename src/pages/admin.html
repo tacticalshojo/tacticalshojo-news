@@ -8,15 +8,40 @@
     
     <style>
       body { background-color: #f3f4f6; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-      .login-box { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; max-width: 360px; width: 100%; }
+      .login-box { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; max-width: 360px; width: 100%; z-index: 9999; position: relative; }
       input { width: 100%; padding: 0.75rem; margin: 0.5rem 0; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box; }
       button { width: 100%; padding: 0.75rem; background: #ec4899; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
       button:hover { background: #db2777; }
+
+      /* ⚔️ 戰術隱形：強制將 Decap CMS 預設跑出來的 GitHub 登入按鈕與介面完全隱藏，只留我們自訂的方塊 */
+      #nc-root [class^="nc-app-"] { display: none !important; }
     </style>
+
+    <script>
+      // 🌐 安全金庫連線參數
+      const SUPABASE_URL = "https://empqrgbetwqtsmbbpzlo.supabase.co"; 
+      const SUPABASE_ANON_KEY = "sb_publishable_1-GjWCdJmIEkNcX5DadxgQ_VUaGKOBg"; 
+
+      // ⚔️ 降維打擊：全面攔截瀏覽器的彈出視窗動作，防止 Decap CMS 預設外跳 Netlify 機制
+      window.open = function (url, target, features) {
+        console.log("偵測到 CMS 嘗試外跳驗證視窗，已啟動安全防禦攔截。");
+        // 如果 LocalStorage 已經有金鑰，代表已經通過你的方塊登入，直接對 CMS 發射成功訊號
+        const storedUser = localStorage.getItem("netlify-cms-user");
+        if (storedUser) {
+          try {
+            const userObj = JSON.parse(storedUser);
+            const responseData = { provider: "github", status: "success", token: userObj.token };
+            setTimeout(() => {
+              window.postMessage(`authorization:github:success:${JSON.stringify(responseData)}`, window.location.origin);
+            }, 100);
+          } catch(e) {}
+        }
+        return { close: function() { console.log("Mock Window Closed"); } };
+      };
+    </script>
   </head>
   <body>
 
-    <!-- 🔑 前台純粹的帳號密碼登入表單：完全不見 GitHub 按鈕與跳轉 -->
     <div id="auth-gate" class="login-box">
       <h3 style="color: #374151; margin-bottom: 1.5rem;">🔒 戰術核心中央控制台</h3>
       <input type="email" id="email" placeholder="管理員電子郵件" required />
@@ -25,9 +50,6 @@
     </div>
 
     <script>
-      const SUPABASE_URL = "https://empqrgbetwqtsmbbpzlo.supabase.co"; 
-      const SUPABASE_ANON_KEY = "sb_publishable_1-GjWCdJmIEkNcX5DadxgQ_VUaGKOBg"; 
-
       function login() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
@@ -43,7 +65,6 @@
           if (data.access_token) {
             
             // 💡 戰術核心二部曲：登入成功後，直接拿 access_token 去撈取該使用者的 metadata
-            // 我們把重新申請的 GitHub 萬能鑰匙 (ghp_...) 藏在 Supabase 的 User Metadata 裡！
             const userToken = data.access_token;
             
             fetch(`${SUPABASE_URL}/auth/v1/user`, {
@@ -55,39 +76,42 @@
             })
             .then(userRes => userRes.json())
             .then(userData => {
-              // 從使用者的自訂欄位中讀取 github_token
+              // 從使用者的自訂欄位中讀取由 SQL 注入的 github_token
               const gitHubToken = userData.user_metadata?.github_token;
               
               if (gitHubToken) {
-                // 成功抓到隱密鑰匙：偽裝成 github backend 憑證注入 LocalStorage
+                // 成功抓到隱密鑰匙：偽裝成符合 Decap 規範的憑證格式寫入 LocalStorage
                 localStorage.setItem("netlify-cms-user", JSON.stringify({
                   backendName: "github",
                   token: gitHubToken,
                   raw_user_meta_data: {}
                 }));
                 
+                // 隱藏自訂登入表單，正式解鎖中央控制台
                 document.getElementById('auth-gate').style.display = 'none';
                 loadCMS();
               } else {
-                alert("❌ 驗證成功，但未在安全金庫中偵測到配置的 GitHub Token 防線。請確認使用者中設有 github_token 元數據。");
+                alert("❌ 驗證成功，但未在安全金庫中偵測到配置的 GitHub Token 防線。請確認 SQL 覆蓋令是否執行成功。");
               }
             })
             .catch(err => alert("⚠️ 提取安全凭证失敗：" + err));
 
           } else {
-            alert("❌ 驗證失敗：帳號或密碼錯誤。");
+            alert("❌ 驗證失敗：管理員帳號或密碼錯誤。");
           }
         })
         .catch(err => alert("⚠️ 連線安全金庫失敗：" + err));
       }
 
       function loadCMS() {
+        // 如果已經有核心，不要重複載入
+        if (window.CMS) return;
         const script = document.createElement('script');
         script.src = "https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js";
         document.body.appendChild(script);
       }
 
-      // 檢查狀態：若已存在解鎖憑證則直接放行
+      // 檢查狀態：若 LocalStorage 已存在解鎖憑證則直接放行並載入 CMS
       if (localStorage.getItem("netlify-cms-user")) {
         document.getElementById('auth-gate').style.display = 'none';
         loadCMS();
