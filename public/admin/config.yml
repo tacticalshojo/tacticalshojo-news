@@ -2,11 +2,8 @@ backend:
   name: github
   repo: tacticalshojo/tacticalshojo-news
   branch: main
-  # 💡 核心戰術：設定 base_url 與 auth_endpoint，誘導 Decap CMS 觸發視窗彈出，以便由我們的腳本進行攔截注入
-  base_url: https://api.github.com
-  auth_endpoint: oauth/authorize
 
-# 確保啟用本地覆蓋與線上覆蓋模式
+# 💡 啟用本地覆蓋模式，確保開發與線上環境能順利銜接
 local_backend: true
 
 media_folder: "public/images/uploads"
