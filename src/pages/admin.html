@@ -16,6 +16,7 @@
   </head>
   <body>
 
+    <!-- 🔑 前台純粹的帳號密碼登入表單：完全不見 GitHub 按鈕與跳轉 -->
     <div id="auth-gate" class="login-box">
       <h3 style="color: #374151; margin-bottom: 1.5rem;">🔒 戰術核心中央控制台</h3>
       <input type="email" id="email" placeholder="管理員電子郵件" required />
@@ -31,6 +32,7 @@
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
+        // 步驟 1：向 Supabase 交換使用者的 Session Token
         fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "apikey": SUPABASE_ANON_KEY },
@@ -39,14 +41,39 @@
         .then(res => res.json())
         .then(data => {
           if (data.access_token) {
-            // 💡 修正：指定 backendName 為 proxy
-            localStorage.setItem("netlify-cms-user", JSON.stringify({
-              backendName: "proxy",
-              token: data.access_token,
-              raw_user_meta_data: {}
-            }));
-            document.getElementById('auth-gate').style.display = 'none';
-            loadCMS();
+            
+            // 💡 戰術核心二部曲：登入成功後，直接拿 access_token 去撈取該使用者的 metadata
+            // 我們把重新申請的 GitHub 萬能鑰匙 (ghp_...) 藏在 Supabase 的 User Metadata 裡！
+            const userToken = data.access_token;
+            
+            fetch(`${SUPABASE_URL}/auth/v1/user`, {
+              method: "GET",
+              headers: { 
+                "Authorization": `Bearer ${userToken}`,
+                "apikey": SUPABASE_ANON_KEY 
+              }
+            })
+            .then(userRes => userRes.json())
+            .then(userData => {
+              // 從使用者的自訂欄位中讀取 github_token
+              const gitHubToken = userData.user_metadata?.github_token;
+              
+              if (gitHubToken) {
+                // 成功抓到隱密鑰匙：偽裝成 github backend 憑證注入 LocalStorage
+                localStorage.setItem("netlify-cms-user", JSON.stringify({
+                  backendName: "github",
+                  token: gitHubToken,
+                  raw_user_meta_data: {}
+                }));
+                
+                document.getElementById('auth-gate').style.display = 'none';
+                loadCMS();
+              } else {
+                alert("❌ 驗證成功，但未在安全金庫中偵測到配置的 GitHub Token 防線。請確認使用者中設有 github_token 元數據。");
+              }
+            })
+            .catch(err => alert("⚠️ 提取安全凭证失敗：" + err));
+
           } else {
             alert("❌ 驗證失敗：帳號或密碼錯誤。");
           }
@@ -60,6 +87,7 @@
         document.body.appendChild(script);
       }
 
+      // 檢查狀態：若已存在解鎖憑證則直接放行
       if (localStorage.getItem("netlify-cms-user")) {
         document.getElementById('auth-gate').style.display = 'none';
         loadCMS();
