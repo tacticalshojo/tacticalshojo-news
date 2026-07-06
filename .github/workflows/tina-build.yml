@@ -22,10 +22,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: 'npm'
 
       - name: 📦 步驟 3：安裝專案依賴套件
-        run: npm cid
+        run: npm install
 
       - name: 🔨 步驟 4：執行離線本地編譯，無中生有設定檔
         run: npx tinacms build --local
