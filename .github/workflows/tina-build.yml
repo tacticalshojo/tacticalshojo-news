@@ -21,7 +21,7 @@ jobs:
       - name: 📦 步驟 3：安裝專案依賴套件
         run: npm install
 
-      - name: 🔨 步驟 4：執行雲端編譯 (直接連線對齊 TinaCloud)
-        run: npx tinacms build
+      - name: 🔨 步驟 4：執行純離線編編譯 (徹底切斷外網驗證阻礙)
+        run: npx tinacms build --local
         env:
-          TINA_TOKEN: "905a08c7-f409-47d2-a265-4f3388c1ede1"
+          TINA_TOKEN: "local-placeholder"
