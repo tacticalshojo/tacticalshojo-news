@@ -1,0 +1,41 @@
+name: ⚔️ TinaCMS 雲端自動化編譯與物資推回
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'tina/__generated__/**'
+      - 'tina/tina-lock.json'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛰️ 步驟 1：檢出儲存庫代碼
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🟢 步驟 2：部署 Node 24 環境
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: 📦 步驟 3：安裝專案依賴套件
+        run: npm cid
+
+      - name: 🔨 步驟 4：執行離線本地編譯，無中生有設定檔
+        run: npx tinacms build --local
+        env:
+          TINA_TOKEN: "local-placeholder"
+
+      - name: 🚀 步驟 5：將生成的精密物資強行推回 GitHub
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action Bot"
+          git add tina/__generated__ tina/tina-lock.json public/admin/index.html || true
+          git commit -m "chore(auto): 雲端自動編譯並補齊 TinaCMS 缺少之精密索引物資 [skip ci]" || exit 0
+          git push origin main
