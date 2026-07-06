@@ -1,14 +1,14 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
-import vercel from '@astrojs/vercel/serverless'; // 💡 新增：引進 Vercel 專用適配器
+import vercel from '@astrojs/vercel'; // 💡 優化：通常新版 Astro 直接引進 @astrojs/vercel 即可
 
 export default defineConfig({
   site: 'https://tacticalshojo.com', // 預留未來驗收後的官方網址
   
-  // 💡 修正：改成混合模式。前台所有文章網頁依然保持 100% 純靜態，只有 /api 認證改為動態執行
+  // 💡 核心優勢：混合模式，前台新聞 100% 靜態快取，僅 API 後端動態處理
   output: 'hybrid', 
   
-  // 💡 新增：告訴 Astro 使用 Vercel 平台來處理動態 API
+  // 告訴 Astro 部署到 Vercel 平台
   adapter: vercel(), 
   
   integrations: [tailwind()],
