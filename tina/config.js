@@ -1,12 +1,12 @@
 import { defineConfig } from "tinacms";
 
 export default defineConfig({
-  branch: "main", // 你的 GitHub 主要分支名稱
-  clientId: "29d2fbb7-ee86-41ed-8b1e-36d2b0df9a8f", // 💡 直接幫你對接你的專屬 Client ID
-  token: process.env.TINA_TOKEN || null,           // 線上部署時會自動撈取 Vercel 的變數
+  branch: "main", 
+  clientId: "29d2fbb7-ee86-41ed-8b1e-36d2b0df9a8f", 
+  token: process.env.TINA_TOKEN || null,           
 
   build: {
-    outputFolder: "admin", // 後台管理頁面會生成在 /admin
+    outputFolder: "admin", 
     publicFolder: "public",
   },
   media: {
@@ -23,7 +23,8 @@ export default defineConfig({
         path: "src/content/authors",
         format: "json",
         fields: [
-          { type: "string", name: "id", label: "作者代號 (英文/不可重複)", required: true },
+          // ⚔️ 戰術修正：將原先的 name: "id" 改為 "authorId"，避開 TinaCMS 內建的隱藏系統 id 欄位
+          { type: "string", name: "authorId", label: "作者代號 (英文/不可重複)", required: true },
           { type: "string", name: "name", label: "作者完整暱稱", required: true },
           { type: "image", name: "avatar", label: "作者大頭貼" },
           { type: "string", name: "bio", label: "作者簡介", ui: { component: "textarea" } },
