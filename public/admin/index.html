@@ -4,9 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TinaCMS Admin</title>
+    <link rel="stylesheet" href="https://assets.tinajs.io/v1/admin/index.css" />
   </head>
   <body>
     <div id="tina-admin"></div>
+
+    <script>
+      window.TINA_PUBLIC_CLIENT_ID = "905a08c7-f409-47d2-a265-4f3388c1ede1";
+      window.TINA_PUBLIC_IS_LOCAL = "false"; // 強迫後台走雲端生產模式
+    </script>
+
     <script type="module" src="https://assets.tinajs.io/v1/admin/index.js"></script>
   </body>
 </html>
