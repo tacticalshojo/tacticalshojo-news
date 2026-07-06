@@ -3,7 +3,8 @@ import { defineConfig } from "tinacms";
 export default defineConfig({
   branch: "main", 
   clientId: "905a08c7-f409-47d2-a265-4f3388c1ede1", 
-  token: process.env.TINA_TOKEN || null,           
+  // ⚔️ 戰術修正：為離線本地編譯補上替代預設值，避免在外網環境未通時因空值阻斷編譯
+  token: process.env.TINA_TOKEN || "local-placeholder",            
 
   build: {
     outputFolder: "admin", 
