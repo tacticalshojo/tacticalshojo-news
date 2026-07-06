@@ -21,15 +21,12 @@
       <h3 style="color: #374151; margin-bottom: 1.5rem;">🔒 戰術核心中央控制台</h3>
       <input type="email" id="email" placeholder="管理員電子郵件" value="tacticalshojo@gmail.com" required />
       <input type="password" id="password" placeholder="管理員認證密碼" required />
-      <button id="login-btn" onclick="login()">驗證登入</button>
-      <div id="loading-text" class="loading">⏳ 正在連線安全金庫並構建防線...</div>
+      <button id="login-btn" onclick="secureLogin()">驗證登入</button>
+      <div id="loading-text" class="loading">⏳ 正在連線 Vercel 自建防線...</div>
     </div>
 
     <script>
-      const SUPABASE_URL = "https://empqrgbetwqtsmbbpzlo.supabase.co"; 
-      const SUPABASE_ANON_KEY = "sb_publishable_1-GjWCdJmIEkNcX5DadxgQ_VUaGKOBg"; 
-
-      function login() {
+      async function secureLogin() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const btn = document.getElementById('login-btn');
@@ -38,50 +35,34 @@
         btn.disabled = true;
         loading.style.display = "block";
 
-        // 步驟 1：向 Supabase 驗證帳密
-        fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "apikey": SUPABASE_ANON_KEY },
-          body: JSON.stringify({ email, password })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.access_token) {
-            // 步驟 2：登入成功，拿 session token 去讀取使用者的 metadata
-            fetch(`${SUPABASE_URL}/auth/v1/user`, {
-              method: "GET",
-              headers: { 
-                "Authorization": `Bearer ${data.access_token}`,
-                "apikey": SUPABASE_ANON_KEY 
-              }
-            })
-            .then(userRes => userRes.json())
-            .then(userData => {
-              const gitHubToken = userData.user_metadata?.github_token;
-              
-              if (gitHubToken) {
-                // 💡 核心魔法：將儲存在金庫的萬能鑰匙直接注入 LocalStorage
-                localStorage.setItem("netlify-cms-user", JSON.stringify({
-                  backendName: "github",
-                  token: gitHubToken,
-                  raw_user_meta_data: {}
-                }));
-                
-                // 驗證完美通關，關閉大門，召喚 CMS
-                document.getElementById('auth-gate').style.display = 'none';
-                loadCMS();
-              } else {
-                alert("❌ 驗證成功，但資料庫帳號內沒有 github_token！請確認 SQL 是否有執行成功。");
-                resetBtn();
-              }
-            })
-            .catch(err => { alert("⚠️ 提取安全憑證失敗：" + err); resetBtn(); });
+        try {
+          // 📡 直接呼叫同網域下的 Astro 本地後端 API，100% 自主控管
+          const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+
+          const data = await response.json();
+
+          if (data.success && data.token) {
+            // 後端核對成功，將發放的 GitHub Token 寫入 LocalStorage 快取，直接解鎖 CMS
+            localStorage.setItem("netlify-cms-user", JSON.stringify({
+              backendName: "github",
+              token: data.token,
+              raw_user_meta_data: {}
+            }));
+            
+            document.getElementById('auth-gate').style.display = 'none';
+            loadCMS();
           } else {
-            alert("❌ 驗證失敗：帳號或密碼錯誤。");
+            alert("❌ 驗證失敗：" + (data.message || "帳號或密碼錯誤。"));
             resetBtn();
           }
-        })
-        .catch(err => { alert("⚠️ 連線安全金庫失敗：" + err); resetBtn(); });
+        } catch (err) {
+          alert("⚠️ 連線自建伺服器失敗：" + err);
+          resetBtn();
+        }
       }
 
       function resetBtn() {
@@ -90,7 +71,7 @@
       }
 
       function loadCMS() {
-        // 只有在 LocalStorage 內有萬能鑰匙時才載入 CMS，確保它一出生就直接進後台
+        if (window.CMS) return;
         const script = document.createElement('script');
         script.src = "https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js";
         document.body.appendChild(script);
