@@ -27,6 +27,8 @@ collections:
     label: "📰 戰術新聞通報"
     folder: "src/content/blog"
     create: true
+    extension: "md" # 💡 明確指定副檔名為 md
+    format: "yaml-frontmatter" # 💡 確保存檔格式符合 Astro 內容集合標準
     slug: "{{slug}}"
     fields:
       - { label: "新聞標題", name: "title", widget: "string" }
