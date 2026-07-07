@@ -1,10 +1,20 @@
 import { defineConfig } from "tinacms";
 
+const branch = process.env.GITHUB_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || "main";
+
+// ⚔️ 戰術分流：判定當前是 Vercel 線上生產環境，還是本機離線沙盒環境
+const isProduction = process.env.NODE_ENV === "production" || !!process.env.VERCEL;
+
 export default defineConfig({
-  branch: "main", 
-  clientId: "905a08c7-f409-47d2-a265-4f3388c1ede1", 
-  // ⚔️ 戰術修正：為離線本地編譯補上替代預設值，避免在外網環境未通時因空值阻斷編譯
-  token: process.env.TINA_TOKEN || "local-placeholder",            
+  branch,
+  
+  // ⚔️ 終極防護：如果不是線上正式打包，就給予特定的本地開發帳密或保持空字串，
+  // 並且只在正式環境咬合真實的 Client ID，確保本地編譯器不會誤觸外網驗證機制。
+  clientId: isProduction ? (process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1") : "",
+  token: isProduction ? (process.env.TINA_TOKEN || "") : "",
+
+  // ⚔️ 核心追加：如果是本地開發，強迫將內容路由導向本地端的 GraphQL 索引，不連向 Tina Cloud
+  isLocalEnv: !isProduction,
 
   build: {
     outputFolder: "admin", 
@@ -24,7 +34,6 @@ export default defineConfig({
         path: "src/content/authors",
         format: "json",
         fields: [
-          // ⚔️ 戰術修正：將原先的 name: "id" 改為 "authorId"，避開 TinaCMS 內建的隱藏系統 id 欄位
           { type: "string", name: "authorId", label: "作者代號 (英文/不可重複)", required: true },
           { type: "string", name: "name", label: "作者完整暱稱", required: true },
           { type: "image", name: "avatar", label: "作者大頭貼" },

@@ -1,0 +1,27 @@
+fragment AuthorsParts on Authors {
+  __typename
+  authorId
+  name
+  avatar
+  bio
+}
+
+fragment BlogParts on Blog {
+  __typename
+  title
+  slug
+  date
+  category
+  isHeroBanner
+  isFeatured
+  isHotTopic
+  heroImage
+  heroImageCaption
+  summary
+  gallery {
+    __typename
+    image
+    caption
+  }
+  body
+}
