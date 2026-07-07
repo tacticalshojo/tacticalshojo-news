@@ -51,7 +51,8 @@ export default defineConfig({
             type: "reference",
             name: "authors",
             label: "✍️ 指定本文作者",
-            collections: ["authors"], // ⚔️ 精密連結，徹底對齊 `test-post.md` 裡的作者關聯
+            collections: ["authors"],
+            list: true, // ⚔️ 終極修正：宣告為關聯清單，完美相容現存 Markdown 檔案的陣列格式！
           },
           { type: "datetime", name: "date", label: "發布日期" },
           {
