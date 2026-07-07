@@ -4,11 +4,10 @@ var branch = process.env.GITHUB_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || "
 var isProduction = !!process.env.VERCEL;
 var config_default = defineConfig({
   branch,
-  // ⚔️ 終極防護：如果不是線上正式打包，就給予特定的本地開發帳密或保持空字串，
-  // 並且只在正式環境咬合真實的 Client ID，確保本地編譯器不會誤觸外網驗證機制。
-  clientId: isProduction ? process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1" : "",
-  token: isProduction ? process.env.TINA_TOKEN || "" : "",
-  // ⚔️ 核心追加：如果是本地開發，強迫將內容路由導向本地端的 GraphQL 索引，不連向 Tina Cloud
+  // ⚔️ 雲端金鑰動態鎖定：線上吃 Vercel 保險箱的變數，本地則無腦套用離線假憑證
+  clientId: isProduction ? process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1" : "905a08c7-f409-47d2-a265-4f3388c1ede1",
+  token: isProduction ? process.env.TINA_TOKEN || "local-placeholder" : "local-placeholder",
+  // ⚔️ 本地沙盒強制開關：只要不是生產環境，強制關閉外網認證機制
   isLocalEnv: !isProduction,
   build: {
     outputFolder: "admin",

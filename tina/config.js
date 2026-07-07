@@ -1,11 +1,20 @@
 import { defineConfig } from "tinacms";
 
+// ⚔️ 自動追蹤分支：優先抓取 GitHub 或 Vercel 提供的當前分支名稱，預設為 main
+const branch = process.env.GITHUB_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || "main";
+
+// ⚔️ 雙軌分流判定：當前是否為 Vercel 雲端生產環境（編譯或正式上線）
+const isProduction = process.env.NODE_ENV === "production" || !!process.env.VERCEL;
+
 export default defineConfig({
-  branch: "main",
+  branch,
   
-  // 永遠給予本地開發所需要的假憑證，徹底免除 Vercel 線上編譯器的權限騷擾
-  clientId: "905a08c7-f409-47d2-a265-4f3388c1ede1",
-  token: "local-placeholder",
+  // ⚔️ 雲端金鑰動態鎖定：線上吃 Vercel 保險箱的變數，本地則無腦套用離線假憑證
+  clientId: isProduction ? (process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1") : "905a08c7-f409-47d2-a265-4f3388c1ede1",
+  token: isProduction ? (process.env.TINA_TOKEN || "local-placeholder") : "local-placeholder",
+
+  // ⚔️ 本地沙盒強制開關：只要不是生產環境，強制關閉外網認證機制
+  isLocalEnv: !isProduction,
 
   build: {
     outputFolder: "admin", 
