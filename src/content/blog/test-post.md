@@ -6,7 +6,8 @@ category: "全民防衛"
 isHeroBanner: true
 isFeatured: true
 isHotTopic: true
-authors: src/content/authors/admin.json
+authors:
+  - src/content/authors/admin.json
 heroImage: "/images/uploads/2024-0216-vocus-cover.png"
 heroImageCaption: "首圖圖說-測試"
 summary: "這是一篇用來開通後台系統的測試通報。"
