@@ -52,7 +52,7 @@ export default defineConfig({
             name: "authors",
             label: "✍️ 指定本文作者",
             collections: ["authors"],
-            list: true, // ⚔️ 終極修正：宣告為關聯清單，完美相容現存 Markdown 檔案的陣列格式！
+            // ⚔️ 核心修正：拔除引發 GraphQL Fragment 衝突的 list: true，改回單一字串型態
           },
           { type: "datetime", name: "date", label: "發布日期" },
           {
