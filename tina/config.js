@@ -1,19 +1,12 @@
 import { defineConfig } from "tinacms";
 
-// ⚔️ 自動追蹤分支：優先抓取 GitHub 或 Vercel 提供的當前分支名稱，預設為 main
 const branch = process.env.GITHUB_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || "main";
-
-// ⚔️ 雙軌分流判定：當前是否為 Vercel 雲端生產環境（編譯或正式上線）
 const isProduction = process.env.NODE_ENV === "production" || !!process.env.VERCEL;
 
 export default defineConfig({
   branch,
-  
-  // ⚔️ 雲端金鑰動態鎖定：線上吃 Vercel 保險箱的變數，本地則無腦套用離線假憑證
   clientId: isProduction ? (process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1") : "905a08c7-f409-47d2-a265-4f3388c1ede1",
   token: isProduction ? (process.env.TINA_TOKEN || "local-placeholder") : "local-placeholder",
-
-  // ⚔️ 本地沙盒強制開關：只要不是生產環境，強制關閉外網認證機制
   isLocalEnv: !isProduction,
 
   build: {
@@ -47,7 +40,12 @@ export default defineConfig({
         format: "md",
         fields: [
           { type: "string", name: "title", label: "新聞標題", isTitle: true, required: true },
-          { type: "string", name: "slug", label: "網址路徑 (Slug)", required: true },
+          { 
+            type: "string", 
+            name: "description", // ⚔️ 修正點：將有語法衝突的 slug 欄位優化為符合 Astro/Tina 規範的 description 
+            label: "新聞副標題 / 網址說明", 
+            required: true 
+          },
           { type: "datetime", name: "date", label: "發布日期" },
           {
             type: "string",
@@ -71,7 +69,12 @@ export default defineConfig({
               { type: "string", name: "caption", label: "圖片描述/圖說" },
             ],
           },
-          { type: "rich-text", name: "body", label: "詳細新聞內文", isBody: true },
+          { 
+            type: "rich-text", 
+            name: "body", 
+            label: "詳細新聞內文", 
+            isBody: true
+          },
         ],
       },
     ],
