@@ -48,11 +48,16 @@ export default defineConfig({
             required: true 
           },
           {
-            type: "reference",
+            type: "string",
             name: "authors",
             label: "✍️ 指定本文作者",
-            collections: ["authors"],
-            // ⚔️ 核心修正：拔除引發 GraphQL Fragment 衝突的 list: true，改回單一字串型態
+            list: true, // ⚔️ 戰術對齊：確保輸出為 Array，完美符合 Astro 的 Content Collections Schema
+            options: [
+              {
+                value: "src/content/authors/admin.json",
+                label: "管理員 (Admin)"
+              }
+            ]
           },
           { type: "datetime", name: "date", label: "發布日期" },
           {
