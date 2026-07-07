@@ -5,8 +5,9 @@ const isProduction = process.env.NODE_ENV === "production" || !!process.env.VERC
 
 export default defineConfig({
   branch,
-  clientId: isProduction ? (process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1") : "905a08c7-f409-47d2-a265-4f3388c1ede1",
-  token: isProduction ? (process.env.TINA_TOKEN || "local-placeholder") : "local-placeholder",
+  // ⚔️ 戰術校準：交給線上 Vercel 讀取環境變數，本地則安全降級
+  clientId: process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1",
+  token: process.env.TINA_TOKEN || "local-placeholder",
   isLocalEnv: !isProduction,
 
   build: {
@@ -42,9 +43,15 @@ export default defineConfig({
           { type: "string", name: "title", label: "新聞標題", isTitle: true, required: true },
           { 
             type: "string", 
-            name: "description", // ⚔️ 修正點：將有語法衝突的 slug 欄位優化為符合 Astro/Tina 規範的 description 
+            name: "description", 
             label: "新聞副標題 / 網址說明", 
             required: true 
+          },
+          {
+            type: "reference",
+            name: "authors",
+            label: "✍️ 指定本文作者",
+            collections: ["authors"], // ⚔️ 精密連結，徹底對齊 `test-post.md` 裡的作者關聯
           },
           { type: "datetime", name: "date", label: "發布日期" },
           {
