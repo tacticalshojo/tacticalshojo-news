@@ -30,16 +30,6 @@ const currentYear = new Date().getFullYear();
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
 		<title>戰術少女研究室 | TACTICAL SHOJO NEWS</title>
-		<style>
-			/* 隱藏輪播區的預設滾動條 */
-			.scrollbar-none::-webkit-scrollbar {
-				display: none;
-			}
-			.scrollbar-none {
-				-ms-overflow-style: none;
-				scrollbar-width: none;
-			}
-		</style>
 	</head>
 	<body class="bg-slate-50 text-slate-900 font-sans antialiased">
 
@@ -81,38 +71,36 @@ const currentYear = new Date().getFullYear();
 		</div>
 
 		<main class="max-w-7xl mx-auto px-4 my-8">
-			<!-- 🎯 全自動戰術無縫輪播大圖區 -->
 			{heroPosts.length > 0 && (
-				<section class="mb-12 relative group" id="hero-carousel">
-					<!-- 1. 輪播主體視窗 -->
-					<div class="hero-slider flex overflow-x-auto scroll-smooth snap-x snap-mandatory rounded-lg shadow-2xl min-h-[400px] md:min-h-[450px] scrollbar-none select-none">
-						{heroPosts.map((post, index) => (
-							<div class="hero-slide flex-shrink-0 w-full relative flex items-end snap-start bg-slate-900" data-index={index}>
-								{post.data.heroImage && (
-									<img src={post.data.heroImage} alt={post.data.title} class="absolute inset-0 w-full h-full object-cover opacity-60 pointer-events-none" />
-								)}
-								<div class="relative p-6 md:p-12 text-white bg-gradient-to-t from-slate-950 via-slate-900/70 to-transparent w-full">
-									<span class="bg-pink-600 text-xs px-3 py-1 rounded font-bold tracking-wider mb-4 inline-block">{post.data.category}</span>
-									<h1 class="text-2xl md:text-5xl font-black mb-4 tracking-tight">
-										<a href={`/blog/${post.slug}`} class="hover:text-pink-400 transition">{post.data.title}</a>
-									</h1>
-									<p class="text-slate-300 text-xs md:text-sm max-w-3xl line-clamp-2">{post.data.summary}</p>
+				<section class="mb-12 relative group overflow-hidden rounded-lg shadow-2xl" id="hero-carousel">
+					<div class="hero-slider-container relative min-h-[400px] md:min-h-[450px] w-full overflow-hidden">
+						<div class="hero-slider flex w-full h-full absolute inset-0 transition-transform duration-500 ease-out select-none">
+							{heroPosts.map((post, index) => (
+								<div class="hero-slide flex-shrink-0 w-full h-full relative flex items-end bg-slate-900" data-index={index}>
+									{post.data.heroImage && (
+										<img src={post.data.heroImage} alt={post.data.title} class="absolute inset-0 w-full h-full object-cover opacity-60 pointer-events-none" />
+									)}
+									<div class="relative p-6 md:p-12 text-white bg-gradient-to-t from-slate-950 via-slate-900/70 to-transparent w-full z-10">
+										<span class="bg-pink-600 text-xs px-3 py-1 rounded font-bold tracking-wider mb-4 inline-block">{post.data.category}</span>
+										<h1 class="text-2xl md:text-5xl font-black mb-4 tracking-tight">
+											<a href={`/blog/${post.slug}`} class="hover:text-pink-400 transition">{post.data.title}</a>
+										</h1>
+										<p class="text-slate-300 text-xs md:text-sm max-w-3xl line-clamp-2">{post.data.summary}</p>
+									</div>
 								</div>
-							</div>
-						))}
+							))}
+						</div>
 					</div>
 
-					<!-- 2. 左右戰術切換箭頭（滑鼠滑入時顯現） -->
 					{heroPosts.length > 1 && (
 						<>
-							<button id="carousel-prev" class="absolute left-4 top-1/2 -translate-y-1/2 bg-slate-950/50 hover:bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 z-10 font-bold shadow-md">❮</button>
-							<button id="carousel-next" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-950/50 hover:bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 z-10 font-bold shadow-md">❯</button>
+							<button id="carousel-prev" class="absolute left-4 top-1/2 -translate-y-1/2 bg-slate-950/60 hover:bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 z-20 font-bold shadow-md">❮</button>
+							<button id="carousel-next" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-950/60 hover:bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 z-20 font-bold shadow-md">❯</button>
 						</>
 					)}
 
-					<!-- 3. 下方導覽進度圓點 -->
 					{heroPosts.length > 1 && (
-						<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
+						<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
 							{heroPosts.map((_, index) => (
 								<button class="carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all duration-300" data-index={index}></button>
 							))}
@@ -120,11 +108,12 @@ const currentYear = new Date().getFullYear();
 					)}
 				</section>
 
-				<!-- 4. 輪播自動控制核心腳本 -->
-				<script>
-					const section = document.getElementById('hero-carousel');
-					if (section) {
-						const slider = section.querySelector('.hero-slider') as HTMLElement;
+				<script is:inline>
+					function initHeroCarousel() {
+						const section = document.getElementById('hero-carousel');
+						if (!section) return;
+
+						const slider = section.querySelector('.hero-slider');
 						const slides = section.querySelectorAll('.hero-slide');
 						const prevBtn = document.getElementById('carousel-prev');
 						const nextBtn = document.getElementById('carousel-next');
@@ -132,140 +121,22 @@ const currentYear = new Date().getFullYear();
 						
 						let currentIndex = 0;
 						const totalSlides = slides.length;
-						let autoPlayTimer: any = null;
+						let autoPlayTimer = null;
 
 						if (slider && totalSlides > 1) {
-							// 更新圓點亮燈狀態
-							const updateDots = (targetIndex: number) => {
-								dots.forEach((dot, idx) => {
-									if (idx === targetIndex) {
-										dot.classList.remove('bg-white/40', 'w-2');
-										dot.classList.add('bg-pink-500', 'w-5');
-									} else {
-										dot.classList.remove('bg-pink-500', 'w-5');
-										dot.classList.add('bg-white/40', 'w-2');
-									}
-								});
-							};
-
-							// 滑動到指定投影片
-							const scrollToSlide = (index: number) => {
+							const goToSlide = (index) => {
 								if (index < 0) index = totalSlides - 1;
 								if (index >= totalSlides) index = 0;
 								currentIndex = index;
 								
-								const slideWidth = (slides[0] as HTMLElement).offsetWidth;
-								slider.scrollTo({
-									left: slideWidth * currentIndex,
-									behavior: 'smooth'
-								});
-								updateDots(currentIndex);
-							};
-
-							// 左右按鈕事件
-							prevBtn?.addEventListener('click', () => { resetAutoPlay(); scrollToSlide(currentIndex - 1); });
-							nextBtn?.addEventListener('click', () => { resetAutoPlay(); scrollToSlide(currentIndex + 1); });
-
-							// 圓點點擊事件
-							dots.forEach((dot, idx) => {
-								dot.addEventListener('click', () => {
-									resetAutoPlay();
-									scrollToSlide(idx);
-								});
-							});
-
-							// 監聽手動滑動事件同步圓點
-							let isScrolling: any;
-							slider.addEventListener('scroll', () => {
-								window.clearTimeout(isScrolling);
-								isScrolling = setTimeout(() => {
-									const slideWidth = (slides[0] as HTMLElement).offsetWidth;
-									const newIndex = Math.round(slider.scrollLeft / slideWidth);
-									if (newIndex !== currentIndex && newIndex >= 0 && newIndex < totalSlides) {
-										currentIndex = newIndex;
-										updateDots(currentIndex);
-									}
-								}, 100);
-							});
-
-							// 自動播放功能（每 5 秒自動切換下張）
-							const startAutoPlay = () => {
-								autoPlayTimer = setInterval(() => {
-									scrollToSlide(currentIndex + 1);
-								}, 5000);
-							};
-
-							const resetAutoPlay = () => {
-								clearInterval(autoPlayTimer);
-								startAutoPlay();
-							};
-
-							// 初始化啟動
-							updateDots(0);
-							startAutoPlay();
-						}
-					}
-				</script>
-			)}
-
-			<section>
-				<h2 class="text-xl font-black border-l-4 border-pink-600 pl-3 mb-6 tracking-wider text-slate-900">
-					📡 最新戰術通報
-				</h2>
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-					{latestPosts.map(post => {
-						const author = authorMap[post.data.authors?.[0]] || { name: '編輯部' };
-						return (
-							<article class="bg-white rounded border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition">
-								{post.data.heroImage && (
-									<div class="h-48 overflow-hidden bg-slate-100">
-										<img src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover hover:scale-105 transition duration-300" />
-									</div>
-								)}
-								<div class="p-5 flex-1 flex flex-col justify-between">
-									<div>
-										<span class="text-xs font-bold text-pink-600 tracking-wider uppercase mb-2 block">{post.data.category}</span>
-										<h3 class="font-bold text-lg text-slate-900 mb-2 line-clamp-2 hover:text-pink-600">
-											<a href={`/blog/${post.slug}`}>{post.data.title}</a>
-										</h3>
-										<p class="text-slate-500 text-xs line-clamp-3 mb-4">{post.data.summary}</p>
-									</div>
-									<div class="flex items-center justify-between text-[11px] text-slate-400 pt-3 border-t border-slate-100">
-										<span class="font-medium">✍️ {author.name}</span>
-										<time>
-											{post.data.date instanceof Date 
-												? post.data.date.toISOString().split('T')[0] 
-												: String(post.data.date).split(' ')[0]}
-										</time>
-									</div>
-								</div>
-							</article>
-						);
-					})}
-				</div>
-			</section>
-		</main>
-
-		<footer class="bg-[#003764] text-slate-300 border-t border-blue-900 text-xs mt-20 pt-10 pb-8">
-			<div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6 border-b border-blue-900/50 pb-6 mb-6">
-				<div class="text-center md:text-left flex flex-col md:flex-row items-center gap-3">
-					<img src="/logo-avatar.png" alt="戰術少女研究室 Footer Logo" class="w-7 h-7 rounded shadow object-cover brightness-95" />
-					<div>
-						<p class="text-sm font-black text-white tracking-widest uppercase mb-1">戰術少女研究室</p>
-						<p class="text-[11px] text-blue-300/60 font-mono">TACTICAL SHOJO NEWS // CIVIL DEFENSE INTELLIGENCE</p>
-					</div>
-				</div>
-				<div class="flex flex-wrap justify-center gap-x-6 gap-y-2 font-medium">
-					<a href="/about" class="hover:text-pink-400 transition">關於我們</a>
-					<a href="/contact" class="hover:text-pink-400 transition">聯繫我們</a>
-					<a href="/privacy" class="hover:text-pink-400 transition">隱私政策</a>
-					<a href="/terms" class="hover:text-pink-400 transition">服務條款</a>
-					<a href="/cookie-policy" class="hover:text-pink-400 transition">Cookie 政策</a>
-				</div>
-			</div>
-			<div class="text-center text-[11px] text-blue-300/50">
-				<p>© {currentYear} 戰術少女研究室 TACTICAL SHOJO NEWS. All Rights Reserved.</p>
-			</div>
-		</footer>
-	</body>
-</html>
+								// 物理平移滑軌
+								slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+								
+								// 更新圓點
+								dots.forEach((dot, idx) => {
+									if (idx === currentIndex) {
+										dot.classList.remove('bg-white/40', 'w-2');
+										dot.classList.add('bg-pink-500', 'w-5');
+									} else {
+										dot.classList.remove('bg-pink-500', 'w-5');
+										dot
