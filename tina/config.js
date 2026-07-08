@@ -50,6 +50,17 @@ export default defineConfig({
             options: ["軍事戰略", "全民防衛", "戰術自訓", "軍工產業", "軍風搜奇"],
           },
 
+          // 🎯 全新配備：文章關鍵字標籤輸入清單（支援後台打字按 Enter 自由增刪標籤）
+          {
+            type: "string",
+            name: "tags",
+            label: "🏷️ 文章關鍵字標籤 (Tags)",
+            list: true,
+            ui: {
+              component: "tags",
+            }
+          },
+
           // 🛰️ 收復項目 3：首頁權重與輪播勾選框
           { type: "boolean", name: "isHeroBanner", label: "登上頭條大圖輪播區 (Hero Banner)" },
           { type: "boolean", name: "isHotTopic", label: "標記為焦點熱門文章 (Hot Topic)" },
