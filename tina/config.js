@@ -5,7 +5,7 @@ const isProduction = process.env.NODE_ENV === "production" || !!process.env.VERC
 
 export default defineConfig({
   branch,
-  clientId: process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1",
+  clientId: process.env.TINA_PUBLIC_CLIENT_ID || "410a933e-c8db-45d4-8e1c-ae76904a70ef",
   token: process.env.TINA_TOKEN || "local-placeholder",
   isLocalEnv: !isProduction,
 
