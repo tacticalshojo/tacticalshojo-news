@@ -18,7 +18,7 @@ export const BlogPartsFragmentDoc = gql`
     fragment BlogParts on Blog {
   __typename
   title
-  description
+  subtitle
   authors
   date
   category

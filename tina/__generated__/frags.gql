@@ -9,7 +9,7 @@ fragment AuthorsParts on Authors {
 fragment BlogParts on Blog {
   __typename
   title
-  description
+  subtitle
   authors
   date
   category

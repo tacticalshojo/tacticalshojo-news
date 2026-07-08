@@ -139,7 +139,7 @@ type BlogGallery {
 
 type Blog implements Node & Document {
   title: String!
-  description: String
+  subtitle: String
   authors: [String]
   date: String
   category: String
@@ -182,7 +182,7 @@ input RichTextFilter {
 
 input BlogFilter {
   title: StringFilter
-  description: StringFilter
+  subtitle: StringFilter
   authors: StringFilter
   date: DatetimeFilter
   category: StringFilter
@@ -244,7 +244,7 @@ input BlogGalleryMutation {
 
 input BlogMutation {
   title: String
-  description: String
+  subtitle: String
   authors: [String]
   date: String
   category: String
