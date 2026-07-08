@@ -10,7 +10,7 @@ export default defineConfig({
   isLocalEnv: !isProduction,
 
   build: {
-    outputFolder: "admin", 
+    outputFolder: "admin",
     publicFolder: "public",
   },
   media: {
@@ -40,10 +40,10 @@ export default defineConfig({
         format: "md",
         fields: [
           { type: "string", name: "title", label: "新聞標題", isTitle: true, required: true },
-          { 
-            type: "string", 
-            name: "subtitle", // 🎯 徹底拋棄壞死的 description，直接改名為 subtitle 繞開錯誤節點！
-            label: "新聞副標題 / 網址說明", 
+          {
+            type: "string",
+            name: "subtitle",
+            label: "新聞副標題 / 網址說明",
             ui: {
               defaultValue: "戰術通報新聞"
             }
@@ -83,14 +83,14 @@ export default defineConfig({
               { type: "string", name: "caption", label: "圖片描述/圖說" },
             ],
           },
-          { 
-            type: "rich-text", 
-            name: "body", 
-            label: "詳細新聞內文", 
+          {
+            type: "rich-text",
+            name: "body",
+            label: "詳細新聞內文",
             isBody: true
           },
         ],
       },
     ],
   },
-});# webhook-test 
+});
