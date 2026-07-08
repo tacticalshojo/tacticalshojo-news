@@ -4,7 +4,8 @@ var branch = process.env.GITHUB_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || "
 var isProduction = !!process.env.VERCEL;
 var config_default = defineConfig({
   branch,
-  clientId: process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1",
+  // 🎯 已精準修正為你當前 Tina Cloud 畫面上的真實新 ID
+  clientId: process.env.TINA_PUBLIC_CLIENT_ID || "410a933e-c8db-45d4-8e1c-ae76904a70ef",
   token: process.env.TINA_TOKEN || "local-placeholder",
   isLocalEnv: !isProduction,
   build: {
@@ -42,7 +43,6 @@ var config_default = defineConfig({
             type: "string",
             name: "description",
             label: "\u65B0\u805E\u526F\u6A19\u984C / \u7DB2\u5740\u8AAA\u660E",
-            // 🎯 拿掉 required: true，改用 ui 預設值，徹底阻斷 Mutation 的型態判定錯誤
             ui: {
               defaultValue: "\u6230\u8853\u901A\u5831\u65B0\u805E"
             }

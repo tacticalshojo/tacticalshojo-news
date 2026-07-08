@@ -5,7 +5,8 @@ const isProduction = process.env.NODE_ENV === "production" || !!process.env.VERC
 
 export default defineConfig({
   branch,
-  clientId: process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1",
+  // 🎯 已精準修正為你當前 Tina Cloud 畫面上的真實新 ID
+  clientId: process.env.TINA_PUBLIC_CLIENT_ID || "410a933e-c8db-45d4-8e1c-ae76904a70ef",
   token: process.env.TINA_TOKEN || "local-placeholder",
   isLocalEnv: !isProduction,
 
@@ -44,7 +45,6 @@ export default defineConfig({
             type: "string", 
             name: "description", 
             label: "新聞副標題 / 網址說明", 
-            // 🎯 拿掉 required: true，改用 ui 預設值，徹底阻斷 Mutation 的型態判定錯誤
             ui: {
               defaultValue: "戰術通報新聞"
             }
