@@ -112,12 +112,12 @@ export default defineConfig({
         ],
       },
       
-      // ✍️ 獨立連動：作者名單管理集合（方便未來上傳大頭貼與管理個人檔案）
+      // ✍️ 獨立連動：作者名單管理集合（修正版：全面採取 JSON 資料集格式）
       {
         name: "authors",
         label: "✍️ 作者名單管理",
         path: "src/content/authors",
-        format: "md",
+        format: "json",
         fields: [
           { type: "string", name: "name", label: "作者顯示名稱", isTitle: true, required: true },
           { type: "image", name: "avatar", label: "作者大頭貼" },
