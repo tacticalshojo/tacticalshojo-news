@@ -5,7 +5,7 @@ const isProduction = process.env.NODE_ENV === "production" || !!process.env.VERC
 
 export default defineConfig({
   branch,
-  clientId: process.env.TINA_PUBLIC_CLIENT_ID || "410a933e-c8db-45d4-8e1c-ae76904a70ef",
+  clientId: process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1",
   token: process.env.TINA_TOKEN || "local-placeholder",
   isLocalEnv: !isProduction,
 
@@ -47,15 +47,11 @@ export default defineConfig({
             required: true 
           },
           {
-            type: "string",
+            type: "reference", // 🎯 改回正統 reference 類型
             name: "authors",
             label: "✍️ 指定本文作者",
-            list: true,
-            // 🎯 降維打擊：改用 options，並利用 Tina 內建的 reference 屬性
-            // 這樣在 Tina 的 GraphQL 中，這只是個平凡的「字串陣列」，絕不會去撈 selectionSet！
-            options: [
-              { label: "Xu Yong (admin)", value: "src/content/authors/admin.json" }
-            ]
+            list: true,        // 支援多選陣列
+            collections: ["authors"], // 綁定上面的 authors collection
           },
           { type: "datetime", name: "date", label: "發布日期" },
           {
