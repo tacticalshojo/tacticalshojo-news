@@ -31,6 +31,23 @@ export default defineConfig({
           { type: "image", name: "heroImage", label: "新聞首圖" },
           { type: "string", name: "heroImageCaption", label: "新聞首圖圖說" },
           
+          // ✍️ 全新配備：戰術作者群下拉式單選
+          {
+            type: "string",
+            name: "authors",
+            label: "負責作者",
+            list: true, // 改為陣列型態以相容 Astro 首頁的 post.data.authors?.[0] 語法
+            options: [
+              { value: "editor", label: "戰術小編" },
+              { value: "producer", label: "節目企劃" },
+              { value: "yelena", label: "Yelena" },
+              { value: "urica", label: "Urica" },
+              { value: "nina", label: "Nina" },
+              { value: "grace", label: "Grace" },
+              { value: "guest", label: "客座投稿" }
+            ],
+          },
+
           // 🛰️ 收復項目 1：發布日期自動生成（後台可微調）
           { 
             type: "datetime", 
@@ -92,6 +109,18 @@ export default defineConfig({
             label: "詳細新聞內文", 
             isBody: true
           },
+        ],
+      },
+      
+      // ✍️ 獨立連動：作者名單管理集合（方便未來上傳大頭貼與管理個人檔案）
+      {
+        name: "authors",
+        label: "✍️ 作者名單管理",
+        path: "src/content/authors",
+        format: "md",
+        fields: [
+          { type: "string", name: "name", label: "作者顯示名稱", isTitle: true, required: true },
+          { type: "image", name: "avatar", label: "作者大頭貼" },
         ],
       },
     ],
