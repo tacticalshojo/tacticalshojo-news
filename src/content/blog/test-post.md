@@ -1,20 +1,21 @@
 ---
-title: "控制台連線測試通報"
-description: "test-post"
-date: 2026-06-18T20:00:00.000Z
-category: "全民防衛"
-isHeroBanner: true
-isFeatured: true
-isHotTopic: true
+description: test-post
 authors:
   - src/content/authors/admin.json
-heroImage: "/images/uploads/2024-0216-vocus-cover.png"
-heroImageCaption: "首圖圖說-測試"
-summary: "這是一篇用來開通後台系統的測試通報。"
+title: 控制台連線測試通報
+date: 2026-06-18T20:00:00.000Z
+category: 全民防衛
+isHeroBanner: true
+isFeatured: false
+isHotTopic: false
+heroImage: /images/uploads/2024-0216-vocus-cover.png
+heroImageCaption: 首圖圖說-測試
+summary: 這是一篇用來開通後台系統的測試通報。
 gallery:
-  - image: "/images/uploads/2024-0216-vocus-cover.png"
-    caption: "文內附加隨文圖片集"
+  - image: /images/uploads/2024-0216-vocus-cover.png
+    caption: 文內附加隨文圖片集
 ---
+
 測試成功。控制台管道已就緒。
 
 本篇文章將會做相關的測試
@@ -48,15 +49,16 @@ gallery:
 > 引言測試
 
 表格
-| 項目 | CAPINT 戰車規格數據 |
-| :--- | :--- |
-| **底盤基礎** | 德國 豹2A8 (Leopard 2A8) |
-| **車組人員** | 3 人（全體集中於車體前部座艙） |
-| **主要武裝** | ASCALON 120公厘55倍徑無人砲塔（預留升級140公厘彈性） |
-| **次要武裝** | ARX30 遙控武器站（RCWS），配備30公厘機砲 |
-| **動力系統** | 1500 馬力引擎 |
-| **最高時速** | 公路最高時速 65 公里 |
-| **最大續航力** | 450 公里 |
+
+| 項目        | CAPINT 戰車規格數據                      |
+| :-------- | :--------------------------------- |
+| **底盤基礎**  | 德國 豹2A8 (Leopard 2A8)              |
+| **車組人員**  | 3 人（全體集中於車體前部座艙）                   |
+| **主要武裝**  | ASCALON 120公厘55倍徑無人砲塔（預留升級140公厘彈性） |
+| **次要武裝**  | ARX30 遙控武器站（RCWS），配備30公厘機砲         |
+| **動力系統**  | 1500 馬力引擎                          |
+| **最高時速**  | 公路最高時速 65 公里                       |
+| **最大續航力** | 450 公里                             |
 
 清單標示
 
@@ -70,13 +72,13 @@ gallery:
 2. 清單標示2
 3. 清單標示3
 
---
+\--
 
 上傳圖片
 
 ![Cover](/images/uploads/2024-0216-vocus-cover.png "測試標題")
 
---
+\--
 
 Code
 
