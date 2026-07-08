@@ -14,7 +14,7 @@ const authorMap = Object.fromEntries(allAuthors.map(a => [a.id, a.data]));
 // 根據日期排序文章（最新發布的在最前面）
 const sortedPosts = allPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
-// 根據 Decap CMS 後台勾選的布林值進行區塊分流
+// 根據後台勾選的布林值進行區塊分流
 const heroPosts = sortedPosts.filter(p => p.data.isHeroBanner);
 const hotTopicPosts = sortedPosts.filter(p => p.data.isHotTopic);
 const featuredPosts = sortedPosts.filter(p => p.data.isFeatured);
@@ -30,6 +30,16 @@ const currentYear = new Date().getFullYear();
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
 		<title>戰術少女研究室 | TACTICAL SHOJO NEWS</title>
+		<style>
+			/* 隱藏輪播區的預設滾動條 */
+			.scrollbar-none::-webkit-scrollbar {
+				display: none;
+			}
+			.scrollbar-none {
+				-ms-overflow-style: none;
+				scrollbar-width: none;
+			}
+		</style>
 	</head>
 	<body class="bg-slate-50 text-slate-900 font-sans antialiased">
 
@@ -71,19 +81,131 @@ const currentYear = new Date().getFullYear();
 		</div>
 
 		<main class="max-w-7xl mx-auto px-4 my-8">
+			<!-- 🎯 全自動戰術無縫輪播大圖區 -->
 			{heroPosts.length > 0 && (
-				<section class="mb-12">
-					<div class="relative bg-slate-900 rounded-lg overflow-hidden shadow-2xl min-h-[400px] flex items-end">
-						{heroPosts[0].data.heroImage && (
-							<img src={heroPosts[0].data.heroImage} alt={heroPosts[0].data.title} class="absolute inset-0 w-full h-full object-cover opacity-60" />
-						)}
-						<div class="relative p-6 md:p-12 text-white bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent w-full">
-							<span class="bg-pink-600 text-xs px-3 py-1 rounded font-bold tracking-wider mb-4 inline-block">{heroPosts[0].data.category}</span>
-							<h1 class="text-3xl md:text-5xl font-black mb-4 tracking-tight"><a href={`/blog/${heroPosts[0].slug}`} class="hover:text-pink-400">{heroPosts[0].data.title}</a></h1>
-							<p class="text-slate-300 text-sm md:text-base max-w-3xl line-clamp-2">{heroPosts[0].data.summary}</p>
-						</div>
+				<section class="mb-12 relative group" id="hero-carousel">
+					<!-- 1. 輪播主體視窗 -->
+					<div class="hero-slider flex overflow-x-auto scroll-smooth snap-x snap-mandatory rounded-lg shadow-2xl min-h-[400px] md:min-h-[450px] scrollbar-none select-none">
+						{heroPosts.map((post, index) => (
+							<div class="hero-slide flex-shrink-0 w-full relative flex items-end snap-start bg-slate-900" data-index={index}>
+								{post.data.heroImage && (
+									<img src={post.data.heroImage} alt={post.data.title} class="absolute inset-0 w-full h-full object-cover opacity-60 pointer-events-none" />
+								)}
+								<div class="relative p-6 md:p-12 text-white bg-gradient-to-t from-slate-950 via-slate-900/70 to-transparent w-full">
+									<span class="bg-pink-600 text-xs px-3 py-1 rounded font-bold tracking-wider mb-4 inline-block">{post.data.category}</span>
+									<h1 class="text-2xl md:text-5xl font-black mb-4 tracking-tight">
+										<a href={`/blog/${post.slug}`} class="hover:text-pink-400 transition">{post.data.title}</a>
+									</h1>
+									<p class="text-slate-300 text-xs md:text-sm max-w-3xl line-clamp-2">{post.data.summary}</p>
+								</div>
+							</div>
+						))}
 					</div>
+
+					<!-- 2. 左右戰術切換箭頭（滑鼠滑入時顯現） -->
+					{heroPosts.length > 1 && (
+						<>
+							<button id="carousel-prev" class="absolute left-4 top-1/2 -translate-y-1/2 bg-slate-950/50 hover:bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 z-10 font-bold shadow-md">❮</button>
+							<button id="carousel-next" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-950/50 hover:bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 z-10 font-bold shadow-md">❯</button>
+						</>
+					)}
+
+					<!-- 3. 下方導覽進度圓點 -->
+					{heroPosts.length > 1 && (
+						<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
+							{heroPosts.map((_, index) => (
+								<button class="carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all duration-300" data-index={index}></button>
+							))}
+						</div>
+					)}
 				</section>
+
+				<!-- 4. 輪播自動控制核心腳本 -->
+				<script>
+					const section = document.getElementById('hero-carousel');
+					if (section) {
+						const slider = section.querySelector('.hero-slider') as HTMLElement;
+						const slides = section.querySelectorAll('.hero-slide');
+						const prevBtn = document.getElementById('carousel-prev');
+						const nextBtn = document.getElementById('carousel-next');
+						const dots = section.querySelectorAll('.carousel-dot');
+						
+						let currentIndex = 0;
+						const totalSlides = slides.length;
+						let autoPlayTimer: any = null;
+
+						if (slider && totalSlides > 1) {
+							// 更新圓點亮燈狀態
+							const updateDots = (targetIndex: number) => {
+								dots.forEach((dot, idx) => {
+									if (idx === targetIndex) {
+										dot.classList.remove('bg-white/40', 'w-2');
+										dot.classList.add('bg-pink-500', 'w-5');
+									} else {
+										dot.classList.remove('bg-pink-500', 'w-5');
+										dot.classList.add('bg-white/40', 'w-2');
+									}
+								});
+							};
+
+							// 滑動到指定投影片
+							const scrollToSlide = (index: number) => {
+								if (index < 0) index = totalSlides - 1;
+								if (index >= totalSlides) index = 0;
+								currentIndex = index;
+								
+								const slideWidth = (slides[0] as HTMLElement).offsetWidth;
+								slider.scrollTo({
+									left: slideWidth * currentIndex,
+									behavior: 'smooth'
+								});
+								updateDots(currentIndex);
+							};
+
+							// 左右按鈕事件
+							prevBtn?.addEventListener('click', () => { resetAutoPlay(); scrollToSlide(currentIndex - 1); });
+							nextBtn?.addEventListener('click', () => { resetAutoPlay(); scrollToSlide(currentIndex + 1); });
+
+							// 圓點點擊事件
+							dots.forEach((dot, idx) => {
+								dot.addEventListener('click', () => {
+									resetAutoPlay();
+									scrollToSlide(idx);
+								});
+							});
+
+							// 監聽手動滑動事件同步圓點
+							let isScrolling: any;
+							slider.addEventListener('scroll', () => {
+								window.clearTimeout(isScrolling);
+								isScrolling = setTimeout(() => {
+									const slideWidth = (slides[0] as HTMLElement).offsetWidth;
+									const newIndex = Math.round(slider.scrollLeft / slideWidth);
+									if (newIndex !== currentIndex && newIndex >= 0 && newIndex < totalSlides) {
+										currentIndex = newIndex;
+										updateDots(currentIndex);
+									}
+								}, 100);
+							});
+
+							// 自動播放功能（每 5 秒自動切換下張）
+							const startAutoPlay = () => {
+								autoPlayTimer = setInterval(() => {
+									scrollToSlide(currentIndex + 1);
+								}, 5000);
+							};
+
+							const resetAutoPlay = () => {
+								clearInterval(autoPlayTimer);
+								startAutoPlay();
+							};
+
+							// 初始化啟動
+							updateDots(0);
+							startAutoPlay();
+						}
+					}
+				</script>
 			)}
 
 			<section>
