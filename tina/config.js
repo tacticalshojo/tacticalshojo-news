@@ -47,11 +47,16 @@ export default defineConfig({
             required: true 
           },
           {
-            type: "reference", // 🎯 改回正統 reference 類型
+            type: "string",
             name: "authors",
             label: "✍️ 指定本文作者",
-            list: true,        // 支援多選陣列
-            collections: ["authors"], // 綁定上面的 authors collection
+            list: true,
+            ui: {
+              component: "select",
+              options: [
+                { label: "戰術小編 (admin)", value: "src/content/authors/admin.json" }
+              ]
+            }
           },
           { type: "datetime", name: "date", label: "發布日期" },
           {

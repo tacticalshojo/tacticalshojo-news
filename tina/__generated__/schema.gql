@@ -139,7 +139,8 @@ type BlogGallery {
 
 type Blog implements Node & Document {
   title: String!
-  slug: String!
+  description: String!
+  authors: [String]
   date: String
   category: String
   isHeroBanner: Boolean
@@ -181,7 +182,8 @@ input RichTextFilter {
 
 input BlogFilter {
   title: StringFilter
-  slug: StringFilter
+  description: StringFilter
+  authors: StringFilter
   date: DatetimeFilter
   category: StringFilter
   isHeroBanner: BooleanFilter
@@ -242,7 +244,8 @@ input BlogGalleryMutation {
 
 input BlogMutation {
   title: String
-  slug: String
+  description: String
+  authors: [String]
   date: String
   category: String
   isHeroBanner: Boolean

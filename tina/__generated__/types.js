@@ -18,7 +18,8 @@ export const BlogPartsFragmentDoc = gql`
     fragment BlogParts on Blog {
   __typename
   title
-  slug
+  description
+  authors
   date
   category
   isHeroBanner
@@ -185,7 +186,7 @@ const generateRequester = (client) => {
 export const ExperimentalGetTinaClient = () => getSdk(
   generateRequester(
     createClient({
-      url: "http://localhost:4001/graphql",
+      url: "https://content.tinajs.io/2.4/content/905a08c7-f409-47d2-a265-4f3388c1ede1/github/main",
       queries
     })
   )

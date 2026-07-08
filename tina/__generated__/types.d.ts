@@ -237,7 +237,8 @@ export type BlogGallery = {
 export type Blog = Node & Document & {
   __typename?: 'Blog';
   title: Scalars['String']['output'];
-  slug: Scalars['String']['output'];
+  description: Scalars['String']['output'];
+  authors?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   date?: Maybe<Scalars['String']['output']>;
   category?: Maybe<Scalars['String']['output']>;
   isHeroBanner?: Maybe<Scalars['Boolean']['output']>;
@@ -279,7 +280,8 @@ export type RichTextFilter = {
 
 export type BlogFilter = {
   title?: InputMaybe<StringFilter>;
-  slug?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+  authors?: InputMaybe<StringFilter>;
   date?: InputMaybe<DatetimeFilter>;
   category?: InputMaybe<StringFilter>;
   isHeroBanner?: InputMaybe<BooleanFilter>;
@@ -400,7 +402,8 @@ export type BlogGalleryMutation = {
 
 export type BlogMutation = {
   title?: InputMaybe<Scalars['String']['input']>;
-  slug?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  authors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   date?: InputMaybe<Scalars['String']['input']>;
   category?: InputMaybe<Scalars['String']['input']>;
   isHeroBanner?: InputMaybe<Scalars['Boolean']['input']>;
@@ -415,7 +418,7 @@ export type BlogMutation = {
 
 export type AuthorsPartsFragment = { __typename: 'Authors', authorId: string, name: string, avatar?: string | null, bio?: string | null };
 
-export type BlogPartsFragment = { __typename: 'Blog', title: string, slug: string, date?: string | null, category?: string | null, isHeroBanner?: boolean | null, isFeatured?: boolean | null, isHotTopic?: boolean | null, heroImage?: string | null, heroImageCaption?: string | null, summary?: string | null, body?: any | null, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null };
+export type BlogPartsFragment = { __typename: 'Blog', title: string, description: string, authors?: Array<string | null> | null, date?: string | null, category?: string | null, isHeroBanner?: boolean | null, isFeatured?: boolean | null, isHotTopic?: boolean | null, heroImage?: string | null, heroImageCaption?: string | null, summary?: string | null, body?: any | null, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null };
 
 export type AuthorsQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -441,7 +444,7 @@ export type BlogQueryVariables = Exact<{
 }>;
 
 
-export type BlogQuery = { __typename?: 'Query', blog: { __typename: 'Blog', id: string, title: string, slug: string, date?: string | null, category?: string | null, isHeroBanner?: boolean | null, isFeatured?: boolean | null, isHotTopic?: boolean | null, heroImage?: string | null, heroImageCaption?: string | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } };
+export type BlogQuery = { __typename?: 'Query', blog: { __typename: 'Blog', id: string, title: string, description: string, authors?: Array<string | null> | null, date?: string | null, category?: string | null, isHeroBanner?: boolean | null, isFeatured?: boolean | null, isHotTopic?: boolean | null, heroImage?: string | null, heroImageCaption?: string | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } };
 
 export type BlogConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -453,7 +456,7 @@ export type BlogConnectionQueryVariables = Exact<{
 }>;
 
 
-export type BlogConnectionQuery = { __typename?: 'Query', blogConnection: { __typename?: 'BlogConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'BlogConnectionEdges', cursor: string, node?: { __typename: 'Blog', id: string, title: string, slug: string, date?: string | null, category?: string | null, isHeroBanner?: boolean | null, isFeatured?: boolean | null, isHotTopic?: boolean | null, heroImage?: string | null, heroImageCaption?: string | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } | null } | null> | null } };
+export type BlogConnectionQuery = { __typename?: 'Query', blogConnection: { __typename?: 'BlogConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'BlogConnectionEdges', cursor: string, node?: { __typename: 'Blog', id: string, title: string, description: string, authors?: Array<string | null> | null, date?: string | null, category?: string | null, isHeroBanner?: boolean | null, isFeatured?: boolean | null, isHotTopic?: boolean | null, heroImage?: string | null, heroImageCaption?: string | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } | null } | null> | null } };
 
 export const AuthorsPartsFragmentDoc = gql`
     fragment AuthorsParts on Authors {
@@ -468,7 +471,8 @@ export const BlogPartsFragmentDoc = gql`
     fragment BlogParts on Blog {
   __typename
   title
-  slug
+  description
+  authors
   date
   category
   isHeroBanner
@@ -661,7 +665,7 @@ export const ExperimentalGetTinaClient = () =>
   getSdk(
     generateRequester(
       createClient({
-        url: "http://localhost:4001/graphql",
+        url: "https://content.tinajs.io/2.4/content/905a08c7-f409-47d2-a265-4f3388c1ede1/github/main",
         queries,
       })
     )

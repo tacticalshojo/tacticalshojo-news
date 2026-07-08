@@ -4,10 +4,8 @@ var branch = process.env.GITHUB_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || "
 var isProduction = !!process.env.VERCEL;
 var config_default = defineConfig({
   branch,
-  // ⚔️ 雲端金鑰動態鎖定：線上吃 Vercel 保險箱的變數，本地則無腦套用離線假憑證
-  clientId: isProduction ? process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1" : "905a08c7-f409-47d2-a265-4f3388c1ede1",
-  token: isProduction ? process.env.TINA_TOKEN || "local-placeholder" : "local-placeholder",
-  // ⚔️ 本地沙盒強制開關：只要不是生產環境，強制關閉外網認證機制
+  clientId: process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1",
+  token: process.env.TINA_TOKEN || "local-placeholder",
   isLocalEnv: !isProduction,
   build: {
     outputFolder: "admin",
@@ -40,7 +38,24 @@ var config_default = defineConfig({
         format: "md",
         fields: [
           { type: "string", name: "title", label: "\u65B0\u805E\u6A19\u984C", isTitle: true, required: true },
-          { type: "string", name: "slug", label: "\u7DB2\u5740\u8DEF\u5F91 (Slug)", required: true },
+          {
+            type: "string",
+            name: "description",
+            label: "\u65B0\u805E\u526F\u6A19\u984C / \u7DB2\u5740\u8AAA\u660E",
+            required: true
+          },
+          {
+            type: "string",
+            name: "authors",
+            label: "\u270D\uFE0F \u6307\u5B9A\u672C\u6587\u4F5C\u8005",
+            list: true,
+            ui: {
+              component: "select",
+              options: [
+                { label: "\u6230\u8853\u5C0F\u7DE8 (admin)", value: "src/content/authors/admin.json" }
+              ]
+            }
+          },
           { type: "datetime", name: "date", label: "\u767C\u5E03\u65E5\u671F" },
           {
             type: "string",
@@ -64,7 +79,12 @@ var config_default = defineConfig({
               { type: "string", name: "caption", label: "\u5716\u7247\u63CF\u8FF0/\u5716\u8AAA" }
             ]
           },
-          { type: "rich-text", name: "body", label: "\u8A73\u7D30\u65B0\u805E\u5167\u6587", isBody: true }
+          {
+            type: "rich-text",
+            name: "body",
+            label: "\u8A73\u7D30\u65B0\u805E\u5167\u6587",
+            isBody: true
+          }
         ]
       }
     ]
