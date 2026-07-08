@@ -48,24 +48,19 @@ export default defineConfig({
             required: true 
           },
           {
-            type: "object",
+            type: "string",
             name: "authors",
             label: "✍️ 指定本文作者",
-            list: true, // ⚔️ 戰術對齊：建立物件陣列，產出 Astro 要求的減號清單結構
+            list: true,
+            // ⚔️ 核心防線：利用 Reference 的組件，確保 GraphQL 的 selectionSet 正常運作
             ui: {
-              // 改善後台 UI 顯示，讓管理員直接看出選了哪個作者
-              itemProps: (item) => {
-                return { label: item?.author ? `👤 ${item.author.replace('src/content/authors/', '')}` : '選擇作者' }
-              },
+              component: "reference",
+              collections: ["authors"],
+              // 💾 寫入 Markdown 前：把 TinaCMS 的參考物件結構轉為 Astro 要的「純字串」
+              parse: (val) => val,
+              // 📥 讀取 Markdown 時：把純字串轉回 TinaCMS 認得的格式
+              format: (val) => val,
             },
-            fields: [
-              {
-                type: "reference",
-                name: "author",
-                label: "選擇編輯部作家",
-                collections: ["authors"], // 精準關聯至上面的 authors 集合
-              },
-            ],
           },
           { type: "datetime", name: "date", label: "發布日期" },
           {
