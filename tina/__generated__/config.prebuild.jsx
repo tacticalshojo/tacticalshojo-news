@@ -42,7 +42,10 @@ var config_default = defineConfig({
             type: "string",
             name: "description",
             label: "\u65B0\u805E\u526F\u6A19\u984C / \u7DB2\u5740\u8AAA\u660E",
-            required: true
+            // 🎯 拿掉 required: true，改用 ui 預設值，徹底阻斷 Mutation 的型態判定錯誤
+            ui: {
+              defaultValue: "\u6230\u8853\u901A\u5831\u65B0\u805E"
+            }
           },
           {
             type: "string",

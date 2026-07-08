@@ -139,7 +139,7 @@ type BlogGallery {
 
 type Blog implements Node & Document {
   title: String!
-  description: String!
+  description: String
   authors: [String]
   date: String
   category: String

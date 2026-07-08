@@ -44,7 +44,10 @@ export default defineConfig({
             type: "string", 
             name: "description", 
             label: "新聞副標題 / 網址說明", 
-            required: true 
+            // 🎯 拿掉 required: true，改用 ui 預設值，徹底阻斷 Mutation 的型態判定錯誤
+            ui: {
+              defaultValue: "戰術通報新聞"
+            }
           },
           {
             type: "string",
