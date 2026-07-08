@@ -48,16 +48,24 @@ export default defineConfig({
             required: true 
           },
           {
-            type: "string",
+            type: "object",
             name: "authors",
             label: "✍️ 指定本文作者",
-            list: true, // ⚔️ 戰術對齊：確保輸出為 Array，完美符合 Astro 的 Content Collections Schema
-            options: [
+            list: true, // ⚔️ 戰術對齊：建立物件陣列，產出 Astro 要求的減號清單結構
+            ui: {
+              // 改善後台 UI 顯示，讓管理員直接看出選了哪個作者
+              itemProps: (item) => {
+                return { label: item?.author ? `👤 ${item.author.replace('src/content/authors/', '')}` : '選擇作者' }
+              },
+            },
+            fields: [
               {
-                value: "src/content/authors/admin.json",
-                label: "管理員 (Admin)"
-              }
-            ]
+                type: "reference",
+                name: "author",
+                label: "選擇編輯部作家",
+                collections: ["authors"], // 精準關聯至上面的 authors 集合
+              },
+            ],
           },
           { type: "datetime", name: "date", label: "發布日期" },
           {
