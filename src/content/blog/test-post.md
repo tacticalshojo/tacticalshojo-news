@@ -5,7 +5,7 @@ authors:
 title: 控制台連線測試通報
 date: 2026-06-18T20:00:00.000Z
 category: 全民防衛
-isHeroBanner: true
+isHeroBanner: false
 isFeatured: false
 isHotTopic: false
 heroImage: /images/uploads/2024-0216-vocus-cover.png
