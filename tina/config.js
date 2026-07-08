@@ -5,7 +5,6 @@ const isProduction = process.env.NODE_ENV === "production" || !!process.env.VERC
 
 export default defineConfig({
   branch,
-  // ⚔️ 戰術校準：交給線上 Vercel 讀取環境變數，本地則安全降級
   clientId: process.env.TINA_PUBLIC_CLIENT_ID || "905a08c7-f409-47d2-a265-4f3388c1ede1",
   token: process.env.TINA_TOKEN || "local-placeholder",
   isLocalEnv: !isProduction,
@@ -52,15 +51,11 @@ export default defineConfig({
             name: "authors",
             label: "✍️ 指定本文作者",
             list: true,
-            // ⚔️ 核心防線：利用 Reference 的組件，確保 GraphQL 的 selectionSet 正常運作
-            ui: {
-              component: "reference",
-              collections: ["authors"],
-              // 💾 寫入 Markdown 前：把 TinaCMS 的參考物件結構轉為 Astro 要的「純字串」
-              parse: (val) => val,
-              // 📥 讀取 Markdown 時：把純字串轉回 TinaCMS 認得的格式
-              format: (val) => val,
-            },
+            // 🎯 降維打擊：改用 options，並利用 Tina 內建的 reference 屬性
+            // 這樣在 Tina 的 GraphQL 中，這只是個平凡的「字串陣列」，絕不會去撈 selectionSet！
+            options: [
+              { label: "Xu Yong (admin)", value: "src/content/authors/admin.json" }
+            ]
           },
           { type: "datetime", name: "date", label: "發布日期" },
           {
