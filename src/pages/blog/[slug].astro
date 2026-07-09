@@ -58,27 +58,36 @@ const authorDatabase = {
   }
 };
 
-// 🎯 智慧防禦偵測：擴大字串補導網，不限大小寫，並加入中文與別名相容
+// 🎯 核心攔截邏輯：優先從 Tina 後台原本就有的 tags 陣列中尋找作者
+const postTags = entry.data.tags || [];
 const postTitle = entry.data.title || "";
 let currentAuthor = authorDatabase["戰術小編"]; // 預防性墊底預設值
 
+// 將標籤與標題統一轉為小寫，確保中英文相容
+const lowerTags = postTags.map(tag => tag.toLowerCase());
 const lowerTitle = postTitle.toLowerCase();
 
-if (lowerTitle.includes("nina")) {
+if (lowerTags.includes("nina") || lowerTitle.includes("nina")) {
   currentAuthor = authorDatabase["Nina"];
-} else if (lowerTitle.includes("yelena")) {
+} else if (lowerTags.includes("yelena") || lowerTitle.includes("yelena")) {
   currentAuthor = authorDatabase["Yelena"];
-} else if (lowerTitle.includes("urica")) {
+} else if (lowerTags.includes("urica") || lowerTitle.includes("urica")) {
   currentAuthor = authorDatabase["Urica"];
-} else if (lowerTitle.includes("grace")) {
+} else if (lowerTags.includes("grace") || lowerTitle.includes("grace")) {
   currentAuthor = authorDatabase["Grace"];
-} else if (lowerTitle.includes("節目企劃") || lowerTitle.includes("企劃")) {
+} else if (lowerTags.includes("節目企劃") || lowerTags.includes("企劃") || lowerTitle.includes("節目企劃") || lowerTitle.includes("企劃")) {
   currentAuthor = authorDatabase["節目企劃"];
-} else if (lowerTitle.includes("客座") || lowerTitle.includes("投稿") || lowerTitle.includes("專家")) {
+} else if (lowerTags.includes("客座") || lowerTags.includes("投稿") || lowerTags.includes("專家") || lowerTitle.includes("客座") || lowerTitle.includes("投稿") || lowerTitle.includes("專家")) {
   currentAuthor = authorDatabase["客座投稿"];
-} else if (lowerTitle.includes("小編") || lowerTitle.includes("戰術小編")) {
+} else if (lowerTags.includes("小編") || lowerTags.includes("戰術小編") || lowerTitle.includes("小編") || lowerTitle.includes("戰術小編")) {
   currentAuthor = authorDatabase["戰術小編"];
 }
+
+// 💡 貼心優化：把充當作者的 tag 從「前台要顯示的標籤清單」中濾掉，保持前端網頁純淨
+const displayTags = postTags.filter(tag => {
+  const t = tag.toLowerCase();
+  return !["nina", "yelena", "urica", "grace", "節目企劃", "企劃", "客座", "投稿", "專家", "戰術小編", "小編"].includes(t);
+});
 
 const formattedDate = new Date(entry.data.date).toLocaleString('zh-TW', {
   timeZone: 'Asia/Taipei',
@@ -123,9 +132,15 @@ const jsonLd = {
 		</div>
 
 		<main class="max-w-3xl mx-auto px-4 py-8">
-			<div class="mb-4">
+			<div class="mb-4 flex flex-wrap gap-2">
 				<span class="bg-pink-100 text-pink-700 text-xs font-black px-2.5 py-1 rounded">{entry.data.category}</span>
+				
+				<!-- 🏷️ 如果你未來打算在前台渲染文章標籤，可以使用下方這個過濾乾淨的 displayTags 陣列 -->
+				{displayTags.map(tag => (
+					<span class="bg-slate-200 text-slate-700 text-xs font-medium px-2 py-1 rounded">#{tag}</span>
+				))}
 			</div>
+			
 			<h1 class="text-2xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight mb-4">{entry.data.title}</h1>
 			
 			<div class="flex flex-wrap items-center gap-4 text-xs text-slate-400 border-b border-slate-200 pb-4 mb-6">

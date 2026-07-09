@@ -35,14 +35,14 @@ export default defineConfig({
         path: "src/content/blog",
         format: "md",
         fields: [
-          // 🎯 智慧改裝：加入清晰的交接指引，並移除獨立作者欄位防崩潰
+          // 🎯 智慧改裝：更新交接指引，與 Tags 攔截雙防線併行
           { 
             type: "string", 
             name: "title", 
             label: "新聞標題", 
             isTitle: true, 
             required: true,
-            description: "⚠️ 交接提示：請務必在標題開頭或結尾加上作者識別碼（例如：[Nina] 新聞標題 或 [Yelena] 新聞標題），系統前端會自動偵測並渲染對應的作者簡介卡。若未填寫，系統將預設為「戰術小編」。"
+            description: "💡【標題乾淨建議】現在推薦將標題保持純淨（例如：國土防衛演練指南）。若習慣舊方法，在標題包含作者名字（如 [Nina]）亦可觸發連動。未指定時預設為「戰術小編」。"
           },
           { type: "image", name: "heroImage", label: "新聞首圖" },
           { type: "string", name: "heroImageCaption", label: "新聞首圖圖說" },
@@ -66,7 +66,7 @@ export default defineConfig({
             options: ["軍事戰略", "全民防衛", "戰術自訓", "軍工產業", "軍風搜奇"],
           },
 
-          // 🎯 全新配備：文章關鍵字標籤輸入清單
+          // 🎯 全新配備：文章關鍵字標籤輸入清單（已追加作者提示說明）
           {
             type: "string",
             name: "tags",
@@ -74,7 +74,8 @@ export default defineConfig({
             list: true,
             ui: {
               component: "tags",
-            }
+            },
+            description: "💡【作者連動提示】若要指定文章作者，請在此新增一個對應的標籤（例如：輸入「Nina」並按 Enter。可選：戰術小編、節目企劃、Yelena、Urica、Nina、Grace、客座投稿）。系統會自動沒收前台的作者標籤，並完美連動下方的作者資訊卡！"
           },
 
           // 🛰️ 收復項目 3：首頁權重與輪播勾選框
