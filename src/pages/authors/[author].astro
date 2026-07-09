@@ -1,0 +1,87 @@
+---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  // 定義 7 位作者的網址 slug 與對應的偵測關鍵字
+  const authors = [
+    { slug: 'editor', name: '戰術小編', keyword: '小編' },
+    { slug: 'producer', name: '節目企劃', keyword: '企劃' },
+    { slug: 'yelena', name: 'Yelena', keyword: 'yelena' },
+    { slug: 'urica', name: 'Urica', keyword: 'urica' },
+    { slug: 'nina', name: 'Nina', keyword: 'nina' },
+    { slug: 'grace', name: 'Grace', keyword: 'grace' },
+    { slug: 'guest', name: '客座投稿', keyword: '客座' },
+  ];
+
+  const allPosts = await getCollection('blog');
+
+  return authors.map(auth => {
+    // 過濾出標題包含該作者關鍵字的文章
+    const filteredPosts = allPosts.filter(post => {
+      const title = (post.data.title || '').toLowerCase();
+      
+      // 如果是戰術小編，除了包含「小編」外，若標題完全沒提到任何人，也歸給小編（防呆）
+      if (auth.slug === 'editor') {
+        const hasOtherAuthor = ['nina','yelena','urica','grace','企劃','客座','投稿'].some(k => title.includes(k));
+        return title.includes(auth.keyword) || !hasOtherAuthor;
+      }
+      
+      return title.includes(auth.keyword);
+    });
+
+    // 依照日期排序（新到舊）
+    filteredPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+    return {
+      params: { author: auth.slug },
+      props: { authorName: auth.name, posts: filteredPosts },
+    };
+  });
+}
+
+const { authorName, posts } = Astro.props;
+---
+
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{authorName} 的通報專欄 | 戰術少女研究室</title>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased">
+    
+    <div class="bg-[#0f172a] text-white py-3.5 px-4 border-b-2 border-pink-500">
+      <div class="max-w-4xl mx-auto flex justify-between items-center">
+        <a href="/" class="font-black text-pink-500 tracking-widest text-sm">⚔️ 戰術少女研究室</a>
+        <a href="/" class="text-xs text-slate-400 hover:text-white">← 返回首頁</a>
+      </div>
+    </div>
+
+    <main class="max-w-3xl mx-auto px-4 py-12">
+      <div class="border-b border-slate-200 pb-4 mb-8">
+        <span class="text-xs font-bold text-pink-500 tracking-wider uppercase">Author Archive</span>
+        <h1 class="text-3xl font-black text-slate-900 mt-1">✍️ {authorName} 的特報專欄</h1>
+        <p class="text-sm text-slate-500 mt-2">目前線上記錄共有 {posts.length} 篇戰術通報</p>
+      </div>
+
+      {posts.length === 0 ? (
+        <div class="text-center py-12 text-slate-400 text-sm bg-white border rounded-xl">
+          📭 該專欄目前尚無歷史通報紀錄。
+        </div>
+      ) : (
+        <div class="space-y-6">
+          {posts.map(post => (
+            <a href={`/blog/${post.slug}`} class="block bg-white border border-slate-200 rounded-xl p-5 hover:border-pink-400 hover:shadow-md transition-all group">
+              <span class="text-xs font-bold text-pink-500 bg-pink-50 px-2 py-0.5 rounded">{post.data.category}</span>
+              <h2 class="text-xl font-black text-slate-900 mt-2 group-hover:text-pink-600 transition-colors">{post.data.title}</h2>
+              <p class="text-sm text-slate-600 mt-2 line-clamp-2">{post.data.summary}</p>
+              <div class="text-xs text-slate-400 mt-4 flex items-center gap-2">
+                <span>🕒 {new Date(post.data.date).toLocaleDateString('zh-TW')}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+    </main>
+  </body>
+</html>
