@@ -1,7 +1,15 @@
 import { defineConfig } from "tinacms";
 
 const branch = process.env.GITHUB_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || "main";
-const isProduction = process.env.NODE_ENV === "production" || !!process.env.VERCEL;
+
+// 🚀 戰術修正：改用最傳統穩健的布林判定，徹底繞過 Tina CMS 編譯器的 "&&" 轉譯 Bug
+let isProduction = false;
+if (process.env.NODE_ENV === "production") {
+  isProduction = true;
+}
+if (process.env.VERCEL) {
+  isProduction = true;
+}
 
 export default defineConfig({
   branch,
@@ -36,7 +44,7 @@ export default defineConfig({
             type: "string",
             name: "authors",
             label: "負責作者",
-            list: true, // 改為陣列型態以相容 Astro 首頁的 post.data.authors?.[0] 語法
+            list: true,
             options: [
               { value: "editor", label: "戰術小編" },
               { value: "producer", label: "節目企劃" },
@@ -67,7 +75,7 @@ export default defineConfig({
             options: ["軍事戰略", "全民防衛", "戰術自訓", "軍工產業", "軍風搜奇"],
           },
 
-          // 🎯 全新配備：文章關鍵字標籤輸入清單（支援後台打字按 Enter 自由增刪標籤）
+          // 🎯 全新配備：文章關鍵字標籤輸入清單
           {
             type: "string",
             name: "tags",
@@ -86,7 +94,7 @@ export default defineConfig({
           // 🛰️ 收復項目 4：文字摘要導言
           { type: "string", name: "summary", label: "新聞簡短摘要/導言", ui: { component: "textarea" } },
 
-          // 🛰️ 收復項目 5：隨文圖片集（可自由新增多張照片與圖說）
+          // 🛰️ 收復項目 5：隨文圖片集
           {
             type: "object",
             name: "gallery",
@@ -112,7 +120,7 @@ export default defineConfig({
         ],
       },
       
-      // ✍️ 獨立連動：作者名單管理集合（修正版：全面採取 JSON 資料集格式）
+      // ✍️ 獨立連動：作者名單管理集合（JSON 資料集格式）
       {
         name: "authors",
         label: "✍️ 作者名單管理",

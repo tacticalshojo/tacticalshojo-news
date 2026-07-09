@@ -1,0 +1,26 @@
+fragment BlogParts on Blog {
+  __typename
+  title
+  heroImage
+  heroImageCaption
+  authors
+  date
+  category
+  tags
+  isHeroBanner
+  isHotTopic
+  isFeatured
+  summary
+  gallery {
+    __typename
+    image
+    caption
+  }
+  body
+}
+
+fragment AuthorsParts on Authors {
+  __typename
+  name
+  avatar
+}
