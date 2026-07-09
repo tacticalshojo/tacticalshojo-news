@@ -3,7 +3,6 @@ fragment BlogParts on Blog {
   title
   heroImage
   heroImageCaption
-  writer
   date
   category
   tags

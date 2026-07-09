@@ -176,7 +176,6 @@ export type Blog = Node & Document & {
   title: Scalars['String']['output'];
   heroImage?: Maybe<Scalars['String']['output']>;
   heroImageCaption?: Maybe<Scalars['String']['output']>;
-  writer?: Maybe<Scalars['String']['output']>;
   date?: Maybe<Scalars['String']['output']>;
   category?: Maybe<Scalars['String']['output']>;
   tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
@@ -233,7 +232,6 @@ export type BlogFilter = {
   title?: InputMaybe<StringFilter>;
   heroImage?: InputMaybe<ImageFilter>;
   heroImageCaption?: InputMaybe<StringFilter>;
-  writer?: InputMaybe<StringFilter>;
   date?: InputMaybe<DatetimeFilter>;
   category?: InputMaybe<StringFilter>;
   tags?: InputMaybe<StringFilter>;
@@ -332,7 +330,6 @@ export type BlogMutation = {
   title?: InputMaybe<Scalars['String']['input']>;
   heroImage?: InputMaybe<Scalars['String']['input']>;
   heroImageCaption?: InputMaybe<Scalars['String']['input']>;
-  writer?: InputMaybe<Scalars['String']['input']>;
   date?: InputMaybe<Scalars['String']['input']>;
   category?: InputMaybe<Scalars['String']['input']>;
   tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -344,14 +341,14 @@ export type BlogMutation = {
   body?: InputMaybe<Scalars['JSON']['input']>;
 };
 
-export type BlogPartsFragment = { __typename: 'Blog', title: string, heroImage?: string | null, heroImageCaption?: string | null, writer?: string | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null };
+export type BlogPartsFragment = { __typename: 'Blog', title: string, heroImage?: string | null, heroImageCaption?: string | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null };
 
 export type BlogQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
 }>;
 
 
-export type BlogQuery = { __typename?: 'Query', blog: { __typename: 'Blog', id: string, title: string, heroImage?: string | null, heroImageCaption?: string | null, writer?: string | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } };
+export type BlogQuery = { __typename?: 'Query', blog: { __typename: 'Blog', id: string, title: string, heroImage?: string | null, heroImageCaption?: string | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } };
 
 export type BlogConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -363,7 +360,7 @@ export type BlogConnectionQueryVariables = Exact<{
 }>;
 
 
-export type BlogConnectionQuery = { __typename?: 'Query', blogConnection: { __typename?: 'BlogConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'BlogConnectionEdges', cursor: string, node?: { __typename: 'Blog', id: string, title: string, heroImage?: string | null, heroImageCaption?: string | null, writer?: string | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } | null } | null> | null } };
+export type BlogConnectionQuery = { __typename?: 'Query', blogConnection: { __typename?: 'BlogConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'BlogConnectionEdges', cursor: string, node?: { __typename: 'Blog', id: string, title: string, heroImage?: string | null, heroImageCaption?: string | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } | null } | null> | null } };
 
 export const BlogPartsFragmentDoc = gql`
     fragment BlogParts on Blog {
@@ -371,7 +368,6 @@ export const BlogPartsFragmentDoc = gql`
   title
   heroImage
   heroImageCaption
-  writer
   date
   category
   tags

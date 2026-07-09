@@ -96,7 +96,6 @@ type Blog implements Node & Document {
   title: String!
   heroImage: String
   heroImageCaption: String
-  writer: String
   date: String
   category: String
   tags: [String]
@@ -153,7 +152,6 @@ input BlogFilter {
   title: StringFilter
   heroImage: ImageFilter
   heroImageCaption: StringFilter
-  writer: StringFilter
   date: DatetimeFilter
   category: StringFilter
   tags: StringFilter
@@ -204,7 +202,6 @@ input BlogMutation {
   title: String
   heroImage: String
   heroImageCaption: String
-  writer: String
   date: String
   category: String
   tags: [String]

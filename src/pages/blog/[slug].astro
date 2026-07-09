@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-// ✍️ 方案 C 前端作者簡介靜態資料庫（免除跨 JSON 檔案讀取、防崩潰）
+// ✍️ 靜態作者資料庫（已內嵌大頭貼正確路徑與專屬 Bio）
 const authorDatabase = {
   "戰術小編": {
     name: "戰術小編",
@@ -51,9 +51,25 @@ const authorDatabase = {
   }
 };
 
-// 讀取 Tina 後台傳入的 writer 欄位，若為空或不存在則預防性導向「戰術小編」
-const currentWriterName = entry.data.writer || "戰術小編";
-const currentAuthor = authorDatabase[currentWriterName] || authorDatabase["戰術小編"];
+// 🎯 防禦機制與智慧偵測：從標題文字自動判定作者，漏打或找不到一律預設為「戰術小編」
+const postTitle = entry.data.title || "";
+let currentAuthor = authorDatabase["戰術小編"]; // 預防性墊底預設值
+
+const lowerTitle = postTitle.toLowerCase();
+
+if (lowerTitle.includes("nina")) {
+  currentAuthor = authorDatabase["Nina"];
+} else if (lowerTitle.includes("yelena")) {
+  currentAuthor = authorDatabase["Yelena"];
+} else if (lowerTitle.includes("urica")) {
+  currentAuthor = authorDatabase["Urica"];
+} else if (lowerTitle.includes("grace")) {
+  currentAuthor = authorDatabase["Grace"];
+} else if (lowerTitle.includes("節目企劃")) {
+  currentAuthor = authorDatabase["節目企劃"];
+} else if (lowerTitle.includes("客座") || lowerTitle.includes("投稿")) {
+  currentAuthor = authorDatabase["客座投稿"];
+}
 
 const formattedDate = new Date(entry.data.date).toLocaleString('zh-TW', {
   timeZone: 'Asia/Taipei',
@@ -65,7 +81,7 @@ const formattedDate = new Date(entry.data.date).toLocaleString('zh-TW', {
   hour12: false
 });
 
-// 🚀 GOOGLE 新聞官方結構化資料 (Schema JSON-LD) - 已適應方案 C
+// 🚀 GOOGLE 新聞官方結構化資料 (Schema JSON-LD) - 自動對齊偵測到的作者
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "NewsArticle",
@@ -76,7 +92,7 @@ const jsonLd = {
   "author": [{
     "@type": "Person",
     "name": currentAuthor.name,
-    "url": `https://tacticalshojo.com/` // 由於改為集中化結構，若無個別作者頁改導回首頁
+    "url": `https://tacticalshojo.com/`
   }]
 };
 ---

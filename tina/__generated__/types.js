@@ -11,7 +11,6 @@ export const BlogPartsFragmentDoc = gql`
   title
   heroImage
   heroImageCaption
-  writer
   date
   category
   tags

@@ -35,17 +35,17 @@ export default defineConfig({
         path: "src/content/blog",
         format: "md",
         fields: [
-          { type: "string", name: "title", label: "新聞標題", isTitle: true, required: true },
+          // 🎯 智慧改裝：加入清晰的交接指引，並移除獨立作者欄位防崩潰
+          { 
+            type: "string", 
+            name: "title", 
+            label: "新聞標題", 
+            isTitle: true, 
+            required: true,
+            description: "⚠️ 交接提示：請務必在標題開頭或結尾加上作者識別碼（例如：[Nina] 新聞標題 或 [Yelena] 新聞標題），系統前端會自動偵測並渲染對應的作者簡介卡。若未填寫，系統將預設為「戰術小編」。"
+          },
           { type: "image", name: "heroImage", label: "新聞首圖" },
           { type: "string", name: "heroImageCaption", label: "新聞首圖圖說" },
-          
-          // ✍️ 方案 C 全新配備：改用乾淨的 writer 欄位，徹底免疫雲端快取衝突
-          {
-            type: "string",
-            name: "writer",
-            label: "負責作者",
-            options: ["戰術小編", "節目企劃", "Yelena", "Urica", "Nina", "Grace", "客座投稿"],
-          },
 
           // 🛰️ 收復項目 1：發布日期自動生成（後台可微調）
           { 

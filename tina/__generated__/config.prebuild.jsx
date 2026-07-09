@@ -31,16 +31,17 @@ var config_default = defineConfig({
         path: "src/content/blog",
         format: "md",
         fields: [
-          { type: "string", name: "title", label: "\u65B0\u805E\u6A19\u984C", isTitle: true, required: true },
-          { type: "image", name: "heroImage", label: "\u65B0\u805E\u9996\u5716" },
-          { type: "string", name: "heroImageCaption", label: "\u65B0\u805E\u9996\u5716\u5716\u8AAA" },
-          // ✍️ 方案 C 全新配備：改用乾淨的 writer 欄位，徹底免疫雲端快取衝突
+          // 🎯 智慧改裝：加入清晰的交接指引，並移除獨立作者欄位防崩潰
           {
             type: "string",
-            name: "writer",
-            label: "\u8CA0\u8CAC\u4F5C\u8005",
-            options: ["\u6230\u8853\u5C0F\u7DE8", "\u7BC0\u76EE\u4F01\u5283", "Yelena", "Urica", "Nina", "Grace", "\u5BA2\u5EA7\u6295\u7A3F"]
+            name: "title",
+            label: "\u65B0\u805E\u6A19\u984C",
+            isTitle: true,
+            required: true,
+            description: "\u26A0\uFE0F \u4EA4\u63A5\u63D0\u793A\uFF1A\u8ACB\u52D9\u5FC5\u5728\u6A19\u984C\u958B\u982D\u6216\u7D50\u5C3E\u52A0\u4E0A\u4F5C\u8005\u8B58\u5225\u78BC\uFF08\u4F8B\u5982\uFF1A[Nina] \u65B0\u805E\u6A19\u984C \u6216 [Yelena] \u65B0\u805E\u6A19\u984C\uFF09\uFF0C\u7CFB\u7D71\u524D\u7AEF\u6703\u81EA\u52D5\u5075\u6E2C\u4E26\u6E32\u67D3\u5C0D\u61C9\u7684\u4F5C\u8005\u7C21\u4ECB\u5361\u3002\u82E5\u672A\u586B\u5BEB\uFF0C\u7CFB\u7D71\u5C07\u9810\u8A2D\u70BA\u300C\u6230\u8853\u5C0F\u7DE8\u300D\u3002"
           },
+          { type: "image", name: "heroImage", label: "\u65B0\u805E\u9996\u5716" },
+          { type: "string", name: "heroImageCaption", label: "\u65B0\u805E\u9996\u5716\u5716\u8AAA" },
           // 🛰️ 收復項目 1：發布日期自動生成（後台可微調）
           {
             type: "datetime",
