@@ -31,7 +31,8 @@ export default defineConfig({
     collections: [
       {
         name: "blog",
-        label: "📰 戰術新聞通報",
+        // ✍️ 戰術強制重載：變更 label 加入閃電，強迫 Tina Cloud 重新載入最新 Schema 快取
+        label: "📰⚡️ 戰術新聞通報",
         path: "src/content/blog",
         format: "md",
         fields: [
