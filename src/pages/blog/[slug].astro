@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
@@ -12,17 +12,48 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-// 拉取對應作者的詳細資料
-const authorDataEntries = await Promise.all(
-  entry.data.authors.map(async (id) => {
-    try {
-      const res = await getEntry('authors', id);
-      return { id, data: res?.data || { name: id, avatar: '', bio: '特約記者' } };
-    } catch {
-      return { id, data: { name: id, avatar: '', bio: '特約記者' } };
-    }
-  })
-);
+// ✍️ 方案 C 前端作者簡介靜態資料庫（免除跨 JSON 檔案讀取、防崩潰）
+const authorDatabase = {
+  "戰術小編": {
+    name: "戰術小編",
+    avatar: "/images/uploads/戰術少女組-大頭貼.png",
+    bio: "負責本站日常戰術情報通報與資訊整合，提供最即時的消息"
+  },
+  "節目企劃": {
+    name: "節目企劃",
+    avatar: "/images/uploads/戰術少女組-大頭貼.png",
+    bio: "節目企劃，常跑現場也是整個戰術少女組的專案負責人"
+  },
+  "Yelena": {
+    name: "Yelena",
+    avatar: "/images/uploads/Yelena.jpg",
+    bio: "政治產業從業者，負責政治相關議題的解釋與評論，欸欸我本人沒有頭像這麼兇啦"
+  },
+  "Urica": {
+    name: "Urica",
+    avatar: "/images/uploads/Urica.jpg",
+    bio: "希望在狂風暴雨的時候也能懶洋洋地過日子，負責民防相關議題的處理"
+  },
+  "Nina": {
+    name: "Nina",
+    avatar: "/images/uploads/Nina.png",
+    bio: "喜歡pewpew咻咻跟酷酷武器94我(◕ܫ◕)"
+  },
+  "Grace": {
+    name: "Grace",
+    avatar: "/images/uploads/Grace.jpg",
+    bio: "喜歡史明「要先做一個好的人，再成為台灣人」，關注語言與歷史"
+  },
+  "客座投稿": {
+    name: "客座投稿",
+    avatar: "/images/uploads/戰術少女組-大頭貼.png",
+    bio: "來自各方專家、產業人士、第一線勤務人員的珍貴經驗分享"
+  }
+};
+
+// 讀取 Tina 後台傳入的 writer 欄位，若為空或不存在則預防性導向「戰術小編」
+const currentWriterName = entry.data.writer || "戰術小編";
+const currentAuthor = authorDatabase[currentWriterName] || authorDatabase["戰術小編"];
 
 const formattedDate = new Date(entry.data.date).toLocaleString('zh-TW', {
   timeZone: 'Asia/Taipei',
@@ -34,7 +65,7 @@ const formattedDate = new Date(entry.data.date).toLocaleString('zh-TW', {
   hour12: false
 });
 
-// 🚀 GOOGLE 新聞官方結構化資料 (Schema JSON-LD)
+// 🚀 GOOGLE 新聞官方結構化資料 (Schema JSON-LD) - 已適應方案 C
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "NewsArticle",
@@ -42,11 +73,11 @@ const jsonLd = {
   "image": [ entry.data.heroImage || "https://tacticalshojo.com/default-share.jpg" ],
   "datePublished": entry.data.date.toISOString(),
   "dateModified": entry.data.date.toISOString(),
-  "author": authorDataEntries.map(a => ({
+  "author": [{
     "@type": "Person",
-    "name": a.data.name,
-    "url": `https://tacticalshojo.com/authors/${a.id}`
-  }))
+    "name": currentAuthor.name,
+    "url": `https://tacticalshojo.com/` // 由於改為集中化結構，若無個別作者頁改導回首頁
+  }]
 };
 ---
 
@@ -73,7 +104,7 @@ const jsonLd = {
 			<h1 class="text-2xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight mb-4">{entry.data.title}</h1>
 			
 			<div class="flex flex-wrap items-center gap-4 text-xs text-slate-400 border-b border-slate-200 pb-4 mb-6">
-				<span class="font-bold text-slate-700">✍️ 記者群：{authorDataEntries.map(a => a.data.name).join('、')}</span>
+				<span class="font-bold text-slate-700">✍️ 記者：{currentAuthor.name}</span>
 				<span>🕒 發布時間：{formattedDate} (台灣時區 GMT+8)</span>
 			</div>
 
@@ -118,17 +149,15 @@ const jsonLd = {
 
 			<section class="mt-12 pt-8 border-t border-slate-200 space-y-4">
 				<h3 class="text-sm font-black text-slate-900">✍️ 撰述編輯陣容</h3>
-				{authorDataEntries.map((author) => (
-					<div class="bg-white border border-slate-200 rounded-xl p-4 flex gap-4 items-center shadow-sm">
-						<img src={author.data.avatar || '/images/uploads/default-avatar.png'} class="w-14 h-14 rounded-full object-cover bg-slate-100 border" alt="Avatar" />
-						<div>
-							<h4 class="font-black text-sm text-slate-900">
-								<a href={`/authors/${author.id}`} class="text-pink-600 hover:underline">{author.data.name}</a>
-							</h4>
-							<p class="text-xs text-slate-500 mt-1">{author.data.bio}</p>
-						</div>
+				<div class="bg-white border border-slate-200 rounded-xl p-4 flex gap-4 items-center shadow-sm">
+					<img src={currentAuthor.avatar} class="w-14 h-14 rounded-full object-cover bg-slate-100 border" alt="Avatar" />
+					<div>
+						<h4 class="font-black text-sm text-slate-900">
+							<span class="text-pink-600">{currentAuthor.name}</span>
+						</h4>
+						<p class="text-xs text-slate-500 mt-1">{currentAuthor.bio}</p>
 					</div>
-				))}
+				</div>
 			</section>
 
 			<section class="mt-8 bg-white border border-slate-200 rounded-xl p-4 text-center text-xs text-slate-400">

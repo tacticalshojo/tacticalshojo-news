@@ -84,8 +84,6 @@ export type Query = {
   document: DocumentNode;
   blog: Blog;
   blogConnection: BlogConnection;
-  authors: Authors;
-  authorsConnection: AuthorsConnection;
 };
 
 
@@ -124,24 +122,8 @@ export type QueryBlogConnectionArgs = {
   filter?: InputMaybe<BlogFilter>;
 };
 
-
-export type QueryAuthorsArgs = {
-  relativePath?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryAuthorsConnectionArgs = {
-  before?: InputMaybe<Scalars['String']['input']>;
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Float']['input']>;
-  last?: InputMaybe<Scalars['Float']['input']>;
-  sort?: InputMaybe<Scalars['String']['input']>;
-  filter?: InputMaybe<AuthorsFilter>;
-};
-
 export type DocumentFilter = {
   blog?: InputMaybe<BlogFilter>;
-  authors?: InputMaybe<AuthorsFilter>;
 };
 
 export type DocumentConnectionEdges = {
@@ -181,7 +163,7 @@ export type CollectionDocumentsArgs = {
   folder?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type DocumentNode = Blog | Authors | Folder;
+export type DocumentNode = Blog | Folder;
 
 export type BlogGallery = {
   __typename?: 'BlogGallery';
@@ -194,7 +176,7 @@ export type Blog = Node & Document & {
   title: Scalars['String']['output'];
   heroImage?: Maybe<Scalars['String']['output']>;
   heroImageCaption?: Maybe<Scalars['String']['output']>;
-  authors?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  writer?: Maybe<Scalars['String']['output']>;
   date?: Maybe<Scalars['String']['output']>;
   category?: Maybe<Scalars['String']['output']>;
   tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
@@ -251,7 +233,7 @@ export type BlogFilter = {
   title?: InputMaybe<StringFilter>;
   heroImage?: InputMaybe<ImageFilter>;
   heroImageCaption?: InputMaybe<StringFilter>;
-  authors?: InputMaybe<StringFilter>;
+  writer?: InputMaybe<StringFilter>;
   date?: InputMaybe<DatetimeFilter>;
   category?: InputMaybe<StringFilter>;
   tags?: InputMaybe<StringFilter>;
@@ -276,33 +258,6 @@ export type BlogConnection = Connection & {
   edges?: Maybe<Array<Maybe<BlogConnectionEdges>>>;
 };
 
-export type Authors = Node & Document & {
-  __typename?: 'Authors';
-  name: Scalars['String']['output'];
-  avatar?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  _sys: SystemInfo;
-  _values: Scalars['JSON']['output'];
-};
-
-export type AuthorsFilter = {
-  name?: InputMaybe<StringFilter>;
-  avatar?: InputMaybe<ImageFilter>;
-};
-
-export type AuthorsConnectionEdges = {
-  __typename?: 'AuthorsConnectionEdges';
-  cursor: Scalars['String']['output'];
-  node?: Maybe<Authors>;
-};
-
-export type AuthorsConnection = Connection & {
-  __typename?: 'AuthorsConnection';
-  pageInfo: PageInfo;
-  totalCount: Scalars['Float']['output'];
-  edges?: Maybe<Array<Maybe<AuthorsConnectionEdges>>>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   addPendingDocument: DocumentNode;
@@ -312,8 +267,6 @@ export type Mutation = {
   createFolder: DocumentNode;
   updateBlog: Blog;
   createBlog: Blog;
-  updateAuthors: Authors;
-  createAuthors: Authors;
 };
 
 
@@ -361,27 +314,13 @@ export type MutationCreateBlogArgs = {
   params: BlogMutation;
 };
 
-
-export type MutationUpdateAuthorsArgs = {
-  relativePath: Scalars['String']['input'];
-  params: AuthorsMutation;
-};
-
-
-export type MutationCreateAuthorsArgs = {
-  relativePath: Scalars['String']['input'];
-  params: AuthorsMutation;
-};
-
 export type DocumentUpdateMutation = {
   blog?: InputMaybe<BlogMutation>;
-  authors?: InputMaybe<AuthorsMutation>;
   relativePath?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DocumentMutation = {
   blog?: InputMaybe<BlogMutation>;
-  authors?: InputMaybe<AuthorsMutation>;
 };
 
 export type BlogGalleryMutation = {
@@ -393,7 +332,7 @@ export type BlogMutation = {
   title?: InputMaybe<Scalars['String']['input']>;
   heroImage?: InputMaybe<Scalars['String']['input']>;
   heroImageCaption?: InputMaybe<Scalars['String']['input']>;
-  authors?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  writer?: InputMaybe<Scalars['String']['input']>;
   date?: InputMaybe<Scalars['String']['input']>;
   category?: InputMaybe<Scalars['String']['input']>;
   tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -405,21 +344,14 @@ export type BlogMutation = {
   body?: InputMaybe<Scalars['JSON']['input']>;
 };
 
-export type AuthorsMutation = {
-  name?: InputMaybe<Scalars['String']['input']>;
-  avatar?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type BlogPartsFragment = { __typename: 'Blog', title: string, heroImage?: string | null, heroImageCaption?: string | null, authors?: Array<string | null> | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null };
-
-export type AuthorsPartsFragment = { __typename: 'Authors', name: string, avatar?: string | null };
+export type BlogPartsFragment = { __typename: 'Blog', title: string, heroImage?: string | null, heroImageCaption?: string | null, writer?: string | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null };
 
 export type BlogQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
 }>;
 
 
-export type BlogQuery = { __typename?: 'Query', blog: { __typename: 'Blog', id: string, title: string, heroImage?: string | null, heroImageCaption?: string | null, authors?: Array<string | null> | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } };
+export type BlogQuery = { __typename?: 'Query', blog: { __typename: 'Blog', id: string, title: string, heroImage?: string | null, heroImageCaption?: string | null, writer?: string | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } };
 
 export type BlogConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -431,26 +363,7 @@ export type BlogConnectionQueryVariables = Exact<{
 }>;
 
 
-export type BlogConnectionQuery = { __typename?: 'Query', blogConnection: { __typename?: 'BlogConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'BlogConnectionEdges', cursor: string, node?: { __typename: 'Blog', id: string, title: string, heroImage?: string | null, heroImageCaption?: string | null, authors?: Array<string | null> | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } | null } | null> | null } };
-
-export type AuthorsQueryVariables = Exact<{
-  relativePath: Scalars['String']['input'];
-}>;
-
-
-export type AuthorsQuery = { __typename?: 'Query', authors: { __typename: 'Authors', id: string, name: string, avatar?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
-
-export type AuthorsConnectionQueryVariables = Exact<{
-  before?: InputMaybe<Scalars['String']['input']>;
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Float']['input']>;
-  last?: InputMaybe<Scalars['Float']['input']>;
-  sort?: InputMaybe<Scalars['String']['input']>;
-  filter?: InputMaybe<AuthorsFilter>;
-}>;
-
-
-export type AuthorsConnectionQuery = { __typename?: 'Query', authorsConnection: { __typename?: 'AuthorsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'AuthorsConnectionEdges', cursor: string, node?: { __typename: 'Authors', id: string, name: string, avatar?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+export type BlogConnectionQuery = { __typename?: 'Query', blogConnection: { __typename?: 'BlogConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'BlogConnectionEdges', cursor: string, node?: { __typename: 'Blog', id: string, title: string, heroImage?: string | null, heroImageCaption?: string | null, writer?: string | null, date?: string | null, category?: string | null, tags?: Array<string | null> | null, isHeroBanner?: boolean | null, isHotTopic?: boolean | null, isFeatured?: boolean | null, summary?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, gallery?: Array<{ __typename: 'BlogGallery', image?: string | null, caption?: string | null } | null> | null } | null } | null> | null } };
 
 export const BlogPartsFragmentDoc = gql`
     fragment BlogParts on Blog {
@@ -458,7 +371,7 @@ export const BlogPartsFragmentDoc = gql`
   title
   heroImage
   heroImageCaption
-  authors
+  writer
   date
   category
   tags
@@ -472,13 +385,6 @@ export const BlogPartsFragmentDoc = gql`
     caption
   }
   body
-}
-    `;
-export const AuthorsPartsFragmentDoc = gql`
-    fragment AuthorsParts on Authors {
-  __typename
-  name
-  avatar
 }
     `;
 export const BlogDocument = gql`
@@ -538,63 +444,6 @@ export const BlogConnectionDocument = gql`
   }
 }
     ${BlogPartsFragmentDoc}`;
-export const AuthorsDocument = gql`
-    query authors($relativePath: String!) {
-  authors(relativePath: $relativePath) {
-    ... on Document {
-      _sys {
-        filename
-        basename
-        hasReferences
-        breadcrumbs
-        path
-        relativePath
-        extension
-      }
-      id
-    }
-    ...AuthorsParts
-  }
-}
-    ${AuthorsPartsFragmentDoc}`;
-export const AuthorsConnectionDocument = gql`
-    query authorsConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: AuthorsFilter) {
-  authorsConnection(
-    before: $before
-    after: $after
-    first: $first
-    last: $last
-    sort: $sort
-    filter: $filter
-  ) {
-    pageInfo {
-      hasPreviousPage
-      hasNextPage
-      startCursor
-      endCursor
-    }
-    totalCount
-    edges {
-      cursor
-      node {
-        ... on Document {
-          _sys {
-            filename
-            basename
-            hasReferences
-            breadcrumbs
-            path
-            relativePath
-            extension
-          }
-          id
-        }
-        ...AuthorsParts
-      }
-    }
-  }
-}
-    ${AuthorsPartsFragmentDoc}`;
 export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R>
   export function getSdk<C>(requester: Requester<C>) {
     return {
@@ -603,12 +452,6 @@ export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) 
       },
     blogConnection(variables?: BlogConnectionQueryVariables, options?: C): Promise<{data: BlogConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: BlogConnectionQueryVariables, query: string}> {
         return requester<{data: BlogConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: BlogConnectionQueryVariables, query: string}, BlogConnectionQueryVariables>(BlogConnectionDocument, variables, options);
-      },
-    authors(variables: AuthorsQueryVariables, options?: C): Promise<{data: AuthorsQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: AuthorsQueryVariables, query: string}> {
-        return requester<{data: AuthorsQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: AuthorsQueryVariables, query: string}, AuthorsQueryVariables>(AuthorsDocument, variables, options);
-      },
-    authorsConnection(variables?: AuthorsConnectionQueryVariables, options?: C): Promise<{data: AuthorsConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: AuthorsConnectionQueryVariables, query: string}> {
-        return requester<{data: AuthorsConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: AuthorsConnectionQueryVariables, query: string}, AuthorsConnectionQueryVariables>(AuthorsConnectionDocument, variables, options);
       }
     };
   }

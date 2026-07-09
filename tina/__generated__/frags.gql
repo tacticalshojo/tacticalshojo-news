@@ -3,7 +3,7 @@ fragment BlogParts on Blog {
   title
   heroImage
   heroImageCaption
-  authors
+  writer
   date
   category
   tags
@@ -17,10 +17,4 @@ fragment BlogParts on Blog {
     caption
   }
   body
-}
-
-fragment AuthorsParts on Authors {
-  __typename
-  name
-  avatar
 }

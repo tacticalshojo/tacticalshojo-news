@@ -34,21 +34,12 @@ var config_default = defineConfig({
           { type: "string", name: "title", label: "\u65B0\u805E\u6A19\u984C", isTitle: true, required: true },
           { type: "image", name: "heroImage", label: "\u65B0\u805E\u9996\u5716" },
           { type: "string", name: "heroImageCaption", label: "\u65B0\u805E\u9996\u5716\u5716\u8AAA" },
-          // ✍️ 全新配備：戰術作者群下拉式單選
+          // ✍️ 方案 C 全新配備：改用乾淨的 writer 欄位，徹底免疫雲端快取衝突
           {
             type: "string",
-            name: "authors",
+            name: "writer",
             label: "\u8CA0\u8CAC\u4F5C\u8005",
-            list: true,
-            options: [
-              { value: "editor", label: "\u6230\u8853\u5C0F\u7DE8" },
-              { value: "producer", label: "\u7BC0\u76EE\u4F01\u5283" },
-              { value: "yelena", label: "Yelena" },
-              { value: "urica", label: "Urica" },
-              { value: "nina", label: "Nina" },
-              { value: "grace", label: "Grace" },
-              { value: "guest", label: "\u5BA2\u5EA7\u6295\u7A3F" }
-            ]
+            options: ["\u6230\u8853\u5C0F\u7DE8", "\u7BC0\u76EE\u4F01\u5283", "Yelena", "Urica", "Nina", "Grace", "\u5BA2\u5EA7\u6295\u7A3F"]
           },
           // 🛰️ 收復項目 1：發布日期自動生成（後台可微調）
           {
@@ -105,17 +96,6 @@ var config_default = defineConfig({
             label: "\u8A73\u7D30\u65B0\u805E\u5167\u6587",
             isBody: true
           }
-        ]
-      },
-      // ✍️ 獨立連動：作者名單管理集合（JSON 資料集格式）
-      {
-        name: "authors",
-        label: "\u270D\uFE0F \u4F5C\u8005\u540D\u55AE\u7BA1\u7406",
-        path: "src/content/authors",
-        format: "json",
-        fields: [
-          { type: "string", name: "name", label: "\u4F5C\u8005\u986F\u793A\u540D\u7A31", isTitle: true, required: true },
-          { type: "image", name: "avatar", label: "\u4F5C\u8005\u5927\u982D\u8CBC" }
         ]
       }
     ]

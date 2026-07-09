@@ -11,7 +11,7 @@ export const BlogPartsFragmentDoc = gql`
   title
   heroImage
   heroImageCaption
-  authors
+  writer
   date
   category
   tags
@@ -25,13 +25,6 @@ export const BlogPartsFragmentDoc = gql`
     caption
   }
   body
-}
-    `;
-export const AuthorsPartsFragmentDoc = gql`
-    fragment AuthorsParts on Authors {
-  __typename
-  name
-  avatar
 }
     `;
 export const BlogDocument = gql`
@@ -91,63 +84,6 @@ export const BlogConnectionDocument = gql`
   }
 }
     ${BlogPartsFragmentDoc}`;
-export const AuthorsDocument = gql`
-    query authors($relativePath: String!) {
-  authors(relativePath: $relativePath) {
-    ... on Document {
-      _sys {
-        filename
-        basename
-        hasReferences
-        breadcrumbs
-        path
-        relativePath
-        extension
-      }
-      id
-    }
-    ...AuthorsParts
-  }
-}
-    ${AuthorsPartsFragmentDoc}`;
-export const AuthorsConnectionDocument = gql`
-    query authorsConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: AuthorsFilter) {
-  authorsConnection(
-    before: $before
-    after: $after
-    first: $first
-    last: $last
-    sort: $sort
-    filter: $filter
-  ) {
-    pageInfo {
-      hasPreviousPage
-      hasNextPage
-      startCursor
-      endCursor
-    }
-    totalCount
-    edges {
-      cursor
-      node {
-        ... on Document {
-          _sys {
-            filename
-            basename
-            hasReferences
-            breadcrumbs
-            path
-            relativePath
-            extension
-          }
-          id
-        }
-        ...AuthorsParts
-      }
-    }
-  }
-}
-    ${AuthorsPartsFragmentDoc}`;
 export function getSdk(requester) {
   return {
     blog(variables, options) {
@@ -155,12 +91,6 @@ export function getSdk(requester) {
     },
     blogConnection(variables, options) {
       return requester(BlogConnectionDocument, variables, options);
-    },
-    authors(variables, options) {
-      return requester(AuthorsDocument, variables, options);
-    },
-    authorsConnection(variables, options) {
-      return requester(AuthorsConnectionDocument, variables, options);
     }
   };
 }
