@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-// ✍️ 靜態作者資料庫（已附加專屬 slug 用於生成作者專欄路徑）
+// ✍️ 靜態作者資料庫
 const authorDatabase = {
   "戰術小編": {
     name: "戰術小編",
@@ -58,12 +58,11 @@ const authorDatabase = {
   }
 };
 
-// 🎯 核心攔截邏輯：優先從 Tina 後台原本就有的 tags 陣列中尋找作者
+// 🎯 核心攔截邏輯：優先從 tags 陣列中尋找作者
 const postTags = entry.data.tags || [];
 const postTitle = entry.data.title || "";
-let currentAuthor = authorDatabase["戰術小編"]; // 預防性墊底預設值
+let currentAuthor = authorDatabase["戰術小編"];
 
-// 將標籤與標題統一轉為小寫，確保中英文相容
 const lowerTags = postTags.map(tag => tag.toLowerCase());
 const lowerTitle = postTitle.toLowerCase();
 
@@ -83,7 +82,6 @@ if (lowerTags.includes("nina") || lowerTitle.includes("nina")) {
   currentAuthor = authorDatabase["戰術小編"];
 }
 
-// 💡 貼心優化：把充當作者的 tag 從「前台要顯示的標籤清單」中濾掉，保持前端網頁純淨
 const displayTags = postTags.filter(tag => {
   const t = tag.toLowerCase();
   return !["nina", "yelena", "urica", "grace", "節目企劃", "企劃", "客座", "投稿", "專家", "戰術小編", "小編"].includes(t);
@@ -99,7 +97,6 @@ const formattedDate = new Date(entry.data.date).toLocaleString('zh-TW', {
   hour12: false
 });
 
-// 🚀 GOOGLE 新聞官方結構化資料 (Schema JSON-LD) - 自動生成正確的作者個人網址
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "NewsArticle",
@@ -113,6 +110,31 @@ const jsonLd = {
     "url": `https://tacticalshojo.com/authors/${currentAuthor.slug}`
   }]
 };
+
+// 🌟 新增邏輯：撈取並過濾出同作者的最新三篇文章
+const allBlogEntries = await getCollection('blog');
+
+const authorRecentPosts = allBlogEntries
+  .filter(post => {
+    // 排除目前這篇文章
+    if (post.slug === entry.slug) return false;
+    
+    // 判定文章作者是否與當前作者相同 (使用相同的攔截邏輯)
+    const tags = (post.data.tags || []).map(t => t.toLowerCase());
+    const title = (post.data.title || "").toLowerCase();
+    
+    if (currentAuthor.name === "Nina") return tags.includes("nina") || title.includes("nina");
+    if (currentAuthor.name === "Yelena") return tags.includes("yelena") || title.includes("yelena");
+    if (currentAuthor.name === "Urica") return tags.includes("urica") || title.includes("urica");
+    if (currentAuthor.name === "Grace") return tags.includes("grace") || title.includes("grace");
+    if (currentAuthor.name === "節目企劃") return tags.includes("節目企劃") || tags.includes("企劃") || title.includes("節目企劃") || title.includes("企劃");
+    if (currentAuthor.name === "客座投稿") return tags.includes("客座") || tags.includes("投稿") || tags.includes("專家") || title.includes("客座") || title.includes("投稿") || title.includes("專家");
+    if (currentAuthor.name === "戰術小編") return tags.includes("戰術小編") || tags.includes("小編") || title.includes("戰術小編") || title.includes("小編") || (!tags.some(t => ["nina", "yelena", "urica", "grace", "節目企劃", "企劃", "客座", "投稿", "專家"].includes(t)) && !["nina", "yelena", "urica", "grace", "節目企劃", "企劃", "客座", "投稿", "專家"].some(k => title.includes(k)));
+    
+    return false;
+  })
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()) // 依日期新到舊排序
+  .slice(0, 3); // 截取最新 3 篇
 ---
 
 <html lang="zh-Hant">
@@ -135,7 +157,6 @@ const jsonLd = {
 			<div class="mb-4 flex flex-wrap gap-2">
 				<span class="bg-pink-100 text-pink-700 text-xs font-black px-2.5 py-1 rounded">{entry.data.category}</span>
 				
-				<!-- 🏷️ 如果你未來打算在前台渲染文章標籤，可以使用下方這個過濾乾淨的 displayTags 陣列 -->
 				{displayTags.map(tag => (
 					<span class="bg-slate-200 text-slate-700 text-xs font-medium px-2 py-1 rounded">#{tag}</span>
 				))}
@@ -187,16 +208,43 @@ const jsonLd = {
 				【廣告版面 ARTICLE-BOTTOM-ADS】
 			</div>
 
-			<section class="mt-12 pt-8 border-t border-slate-200 space-y-4">
-				<h3 class="text-sm font-black text-slate-900">✍️ 撰述編輯陣容</h3>
-				<div class="bg-white border border-slate-200 rounded-xl p-4 flex gap-4 items-center shadow-sm">
-					<img src={currentAuthor.avatar} class="w-14 h-14 rounded-full object-cover bg-slate-100 border" alt="Avatar" />
-					<div>
-						<h4 class="font-black text-sm text-slate-900">
-							<a href={`/authors/${currentAuthor.slug}`} class="text-pink-600 hover:underline">{currentAuthor.name}</a>
-						</h4>
-						<p class="text-xs text-slate-500 mt-1">{currentAuthor.bio}</p>
+            <!-- 🌟 升級版：大尺寸響應式作者卡片與最新文章區塊 -->
+			<section class="mt-12 pt-8 border-t border-slate-200">
+				<div class="bg-white border border-slate-200 rounded-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 shadow-sm">
+                    
+                    <!-- 左側：大尺寸作者頭像 (桌機版固定 250px 寬，手機版置中) -->
+					<div class="flex-shrink-0 flex justify-center md:justify-start">
+					    <img src={currentAuthor.avatar} class="w-48 h-48 md:w-[250px] md:h-[250px] rounded-2xl object-cover bg-slate-100 border-2 border-slate-200 shadow-sm" alt={`${currentAuthor.name} Avatar`} />
 					</div>
+                    
+                    <!-- 右側：作者簡介與最新文章導流 -->
+					<div class="flex-grow flex flex-col justify-center">
+                        <div class="mb-4 text-center md:text-left">
+                            <h3 class="text-xs font-bold text-pink-600 tracking-wider mb-1 uppercase">About Author</h3>
+						    <h4 class="font-black text-2xl text-slate-900">
+							    <a href={`/authors/${currentAuthor.slug}`} class="hover:text-pink-600 transition-colors">{currentAuthor.name}</a>
+						    </h4>
+						    <p class="text-sm text-slate-600 mt-3 leading-relaxed">{currentAuthor.bio}</p>
+                        </div>
+
+                        <!-- 該作者最新三篇文章列表 -->
+                        {authorRecentPosts.length > 0 && (
+                            <div class="mt-4 pt-4 border-t border-slate-100">
+                                <h5 class="text-xs font-bold text-slate-500 mb-3 uppercase tracking-wider text-center md:text-left">最新文章</h5>
+                                <ul class="space-y-2">
+                                    {authorRecentPosts.map(post => (
+                                        <li class="flex items-start gap-2 group">
+                                            <span class="text-pink-400 mt-0.5">▸</span>
+                                            <a href={`/blog/${post.slug}`} class="text-sm text-slate-700 font-medium group-hover:text-pink-600 group-hover:underline line-clamp-1 transition-colors">
+                                                {post.data.title}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+					</div>
+
 				</div>
 			</section>
 
