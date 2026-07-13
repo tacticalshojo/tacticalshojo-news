@@ -7,6 +7,8 @@ const sortedPosts = allBlogEntries.sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
 
+const currentYear = new Date().getFullYear();
+
 // 衛星搜尋橋樑資料
 const searchBridge = sortedPosts.map(post => ({
   title: post.data.title || "",
@@ -25,67 +27,31 @@ const searchBridge = sortedPosts.map(post => ({
 			window.__TACTICAL_POSTS__ = searchBridge;
 		</script>
 	</head>
-	<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+	<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col">
 		
-		<!-- 🛰️ 戰術大頭標頭：採用 bg-[#003764]、76px 巨型字體與獨立搜尋跳轉 -->
+		<!-- 🛰️ 戰術大頭標頭 -->
 		<header class="bg-[#003764] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
-			
-			<!-- 上半部：Logo、76px 巨型字體標題與搜尋欄 -->
 			<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center min-h-[76px] gap-4 border-b border-blue-900/50 pr-4">
-				
-				<!-- 【左側】Logo：高度拉滿 h-[76px]，上下貼齊邊框 -->
 				<div class="flex items-center flex-shrink-0">
 					<a href="/" class="flex items-center h-[76px] overflow-hidden group">
-						<img 
-							src="/images/uploads/戰術少女組-大頭貼.png" 
-							alt="戰術少女研究室 Logo" 
-							class="w-[76px] h-[76px] object-cover group-hover:scale-105 transition-transform" 
-						/>
+						<img src="/images/uploads/戰術少女組-大頭貼.png" alt="Logo" class="w-[76px] h-[76px] object-cover group-hover:scale-105 transition-transform" />
 					</a>
 				</div>
-
-				<!-- 【標題同步】字體尺寸全開 text-[76px]，完美貼齊 76px Logo 高度 -->
 				<div class="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto md:ml-6 flex-1">
-					
-					<!-- 76px 巨型網站標題 -->
 					<a href="/" class="flex items-center h-[76px] text-[42px] md:text-[76px] font-black tracking-widest text-pink-500 whitespace-nowrap leading-none">
 						<span>戰術少女<span class="text-white">研究室</span></span>
 					</a>
-
-					<!-- 搜尋欄基地 -->
 					<div class="relative w-full md:w-72 flex-shrink-0 md:ml-auto">
-						<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs">
-							⚡
-						</div>
-						<input 
-							type="text" 
-							id="tactical-search" 
-							placeholder="輸入關鍵字後按 Enter 搜尋..." 
-							class="w-full bg-blue-950/60 text-xs text-slate-200 pl-8 pr-10 py-2.5 rounded border border-blue-900/60 focus:outline-none focus:border-pink-500 placeholder-slate-400 transition-all font-medium"
-						/>
-						<!-- 🔍 動作執行按鈕 -->
-						<button 
-							id="search-submit-btn"
-							class="absolute right-3 top-2.5 text-slate-400 hover:text-pink-500 transition-colors"
-							title="執行搜尋"
-						>
-							🔍
-						</button>
-						
-						<!-- 搜尋結果即時預覽懸浮視窗 -->
+						<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs">⚡</div>
+						<input type="text" id="tactical-search" placeholder="輸入關鍵字後按 Enter 搜尋..." class="w-full bg-blue-950/60 text-xs text-slate-200 pl-8 pr-10 py-2.5 rounded border border-blue-900/60 focus:outline-none focus:border-pink-500 placeholder-slate-400 transition-all font-medium" />
+						<button id="search-submit-btn" class="absolute right-3 top-2.5 text-slate-400 hover:text-pink-500 transition-colors" title="執行搜尋">🔍</button>
 						<div id="search-results" class="absolute right-0 top-full mt-2 w-full sm:w-80 bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden hidden z-50 text-slate-900">
-							<div class="bg-slate-50 px-3 py-2 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-								即時情報預覽 (按 Enter 查看全部)
-							</div>
-							<ul id="results-list" class="divide-y divide-slate-100 max-h-60 overflow-y-auto">
-							</ul>
+							<div class="bg-slate-50 px-3 py-2 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">即時情報預覽 (按 Enter 查看全部)</div>
+							<ul id="results-list" class="divide-y divide-slate-100 max-h-60 overflow-y-auto"></ul>
 						</div>
 					</div>
-
 				</div>
 			</div>
-
-			<!-- 下半部：導覽選單（向左對齊） -->
 			<div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-start text-sm font-bold py-3 px-4 gap-2">
 				<nav class="flex space-x-6 whitespace-nowrap">
 					<a href="/" class="text-pink-400 border-b-2 border-pink-500 pb-0.5">首頁通報</a>
@@ -99,41 +65,33 @@ const searchBridge = sortedPosts.map(post => ({
 		</header>
 
 		<!-- 主要內容區 -->
-		<main class="max-w-7xl mx-auto px-4 py-8">
+		<main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
 			<h2 class="text-xl font-black text-slate-900 mb-6 border-l-4 border-pink-500 pl-3">📋 最新戰術通報清單</h2>
-			
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				{sortedPosts.map(post => (
 					<article class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
 						{post.data.heroImage && (
 							<a href={`/blog/${post.slug}`} class="block overflow-hidden h-48 bg-slate-100">
-								<img 
-									src={post.data.heroImage} 
-									alt={post.data.title} 
-									class="w-full h-full object-cover hover:scale-102 transition-transform"
-								/>
+								<img src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover hover:scale-102 transition-transform" />
 							</a>
 						)}
 						<div class="p-5 flex flex-col flex-grow">
-							<span class="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded self-start mb-3">
-								{post.data.category}
-							</span>
-							<h3 class="text-base font-bold text-slate-900 leading-snug mb-2 line-clamp-2 hover:text-pink-600">
-								<a href={`/blog/${post.slug}`}>{post.data.title}</a>
-							</h3>
-							<p class="text-xs text-slate-500 line-clamp-3 mb-4 flex-grow">
-								{post.data.summary}
-							</p>
-							<div class="text-[11px] text-slate-400 font-mono mt-auto pt-3 border-t border-slate-100">
-								{new Date(post.data.date).toLocaleDateString('zh-TW')}
-							</div>
+							<span class="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded self-start mb-3">{post.data.category}</span>
+							<h3 class="text-base font-bold text-slate-900 leading-snug mb-2 line-clamp-2 hover:text-pink-600"><a href={`/blog/${post.slug}`}>{post.data.title}</a></h3>
+							<p class="text-xs text-slate-500 line-clamp-3 mb-4 flex-grow">{post.data.summary}</p>
+							<div class="text-[11px] text-slate-400 font-mono mt-auto pt-3 border-t border-slate-100">{new Date(post.data.date).toLocaleDateString('zh-TW')}</div>
 						</div>
 					</article>
 				))}
 			</div>
 		</main>
 
-		<!-- 🛰️ 搜尋驅動腳本：支援跳轉至獨立搜尋頁 -->
+		<!-- 🛰️ 補回原本的 Footer 區塊 -->
+		<footer class="bg-[#003764] text-slate-300 border-t border-blue-900 text-xs mt-20 pt-10 pb-8 text-center">
+			<p>© {currentYear} 戰術少女研究室 TACTICAL SHOJO NEWS. All Rights Reserved.</p>
+		</footer>
+
+		<!-- 搜尋驅動腳本 -->
 		<script is:inline>
 			document.addEventListener('DOMContentLoaded', () => {
 				const searchInput = document.getElementById('tactical-search');
@@ -145,64 +103,28 @@ const searchBridge = sortedPosts.map(post => ({
 
 				const redirectToSearchPage = () => {
 					const keyword = searchInput.value.trim();
-					if (keyword.length > 0) {
-						window.location.href = `/search?q=${encodeURIComponent(keyword)}`;
-					}
+					if (keyword.length > 0) window.location.href = `/search?q=${encodeURIComponent(keyword)}`;
 				};
 
-				searchInput.addEventListener('keydown', (e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						redirectToSearchPage();
-					}
-				});
-
-				submitBtn?.addEventListener('click', (e) => {
-					e.preventDefault();
-					redirectToSearchPage();
-				});
-
-				document.addEventListener('click', (e) => {
-					if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-						searchResults.classList.add('hidden');
-					}
-				});
+				searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); redirectToSearchPage(); } });
+				submitBtn?.addEventListener('click', (e) => { e.preventDefault(); redirectToSearchPage(); });
+				document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) searchResults.classList.add('hidden'); });
 
 				searchInput.addEventListener('input', (e) => {
 					const keyword = e.target.value.toLowerCase().trim();
-					
-					if (keyword.length < 1) {
-						searchResults.classList.add('hidden');
-						return;
-					}
-
+					if (keyword.length < 1) { searchResults.classList.add('hidden'); return; }
 					const posts = window.__TACTICAL_POSTS__ || [];
-					
-					const filtered = posts.filter(post => 
-						post.title.toLowerCase().includes(keyword) || 
-						post.summary.toLowerCase().includes(keyword)
-					).slice(0, 5);
-
+					const filtered = posts.filter(post => post.title.toLowerCase().includes(keyword) || post.summary.toLowerCase().includes(keyword)).slice(0, 5);
 					resultsList.innerHTML = '';
-
 					if (filtered.length === 0) {
-						resultsList.innerHTML = `
-							<li class="px-4 py-3 text-xs text-slate-400 text-center font-medium">
-								❌ 未尋獲相關情報 (按 Enter 查看全部)
-							</li>`;
+						resultsList.innerHTML = `<li class="px-4 py-3 text-xs text-slate-400 text-center font-medium">❌ 未尋獲相關情報 (按 Enter 查看全部)</li>`;
 					} else {
 						filtered.forEach(post => {
 							const li = document.createElement('li');
-							li.innerHTML = `
-								<a href="/blog/${post.slug}" class="block px-4 py-2.5 hover:bg-slate-50 transition-colors group">
-									<div class="text-xs font-bold text-slate-900 group-hover:text-pink-600 transition-colors line-clamp-1">${post.title}</div>
-									<div class="text-[10px] text-slate-400 mt-0.5 line-clamp-1">${post.summary}</div>
-								</a>
-							`;
+							li.innerHTML = `<a href="/blog/${post.slug}" class="block px-4 py-2.5 hover:bg-slate-50 transition-colors group"><div class="text-xs font-bold text-slate-900 group-hover:text-pink-600 transition-colors line-clamp-1">${post.title}</div></a>`;
 							resultsList.appendChild(li);
 						});
 					}
-
 					searchResults.classList.remove('hidden');
 				});
 			});
