@@ -194,7 +194,7 @@ const searchBridge = allBlogEntries.map(post => ({
 								搜尋情報結果
 							</div>
 							<ul id="results-list" class="divide-y divide-slate-100 max-h-60 overflow-y-auto">
-								</ul>
+							</ul>
 						</div>
 					</div>
 
@@ -307,14 +307,12 @@ const searchBridge = allBlogEntries.map(post => ({
 
 				if (!searchInput || !searchResults || !resultsList) return;
 
-				// 點擊輸入框外側自動關閉結果視窗
 				document.addEventListener('click', (e) => {
 					if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
 						searchResults.classList.add('hidden');
 					}
 				});
 
-				// 監聽鍵盤即時輸入
 				searchInput.addEventListener('input', (e) => {
 					const keyword = e.target.value.toLowerCase().trim();
 					
@@ -323,14 +321,12 @@ const searchBridge = allBlogEntries.map(post => ({
 						return;
 					}
 
-					// 讀取 Astro 丟過來的全域文章資料
 					const posts = window.__TACTICAL_POSTS__ || [];
 					
-					// 比對標題與摘要
 					const filtered = posts.filter(post => 
 						post.title.toLowerCase().includes(keyword) || 
 						post.summary.toLowerCase().includes(keyword)
-					).slice(0, 5); // 限制最多顯示 5 筆精準結果
+					).slice(0, 5);
 
 					resultsList.innerHTML = '';
 
