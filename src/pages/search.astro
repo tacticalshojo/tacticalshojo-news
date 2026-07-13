@@ -31,7 +31,7 @@ const searchBridge = sortedPosts.map(post => ({
 			window.__TACTICAL_POSTS__ = searchBridge;
 		</script>
 	</head>
-	<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+	<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col">
 
 		<header class="bg-[#003764] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
 			<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center min-h-[76px] gap-4 border-b border-blue-900/50 pr-4">
@@ -41,7 +41,7 @@ const searchBridge = sortedPosts.map(post => ({
 					</a>
 				</div>
 				<div class="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto md:ml-6 flex-1">
-					<a href="/" class="flex items-center h-[76px] text-[42px] md:text-[76px] font-black tracking-widest text-pink-500 whitespace-nowrap leading-none">
+					<a href="/" class="flex items-center h-[76px] text-[32px] md:text-[56px] font-black tracking-widest text-pink-500 whitespace-nowrap leading-none">
 						<span>戰術少女<span class="text-white">研究室</span></span>
 					</a>
 					<div class="relative w-full md:w-72 flex-shrink-0 md:ml-auto">
@@ -58,13 +58,20 @@ const searchBridge = sortedPosts.map(post => ({
 			</div>
 		</header>
 
-		<main class="max-w-7xl mx-auto px-4 my-12">
+		<main class="max-w-7xl mx-auto px-4 my-12 flex-grow w-full">
 			<h2 class="text-2xl font-black border-l-4 border-pink-600 pl-3 mb-2 tracking-wider">🔍 情報檢殺結果</h2>
 			<p id="search-query-title" class="text-slate-500 text-xs mb-8 font-mono">正在初始化戰術資料庫...</p>
 			<div id="results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 		</main>
 
 		<footer class="bg-[#003764] text-slate-300 border-t border-blue-900 text-xs mt-40 pt-10 pb-8 text-center">
+			<div class="max-w-7xl mx-auto px-4 mb-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-slate-400 font-medium">
+				<a href="/about" class="hover:text-pink-400 transition-colors">關於我們</a>
+				<a href="/contact" class="hover:text-pink-400 transition-colors">聯繫我們</a>
+				<a href="/privacy" class="hover:text-pink-400 transition-colors">隱私政策</a>
+				<a href="/terms" class="hover:text-pink-400 transition-colors">服務條款</a>
+				<a href="/cookie-policy" class="hover:text-pink-400 transition-colors">Cookie 政策</a>
+			</div>
 			<p>© {currentYear} 戰術少女研究室 TACTICAL SHOJO NEWS. All Rights Reserved.</p>
 		</footer>
 

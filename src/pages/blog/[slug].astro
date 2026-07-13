@@ -151,7 +151,6 @@ const searchBridge = allBlogEntries.map(post => ({
 	</head>
 	<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col">
 		
-		<!-- 🛰️ 內頁 Header -->
 		<header class="bg-[#003764] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
 			<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center min-h-[76px] gap-4 border-b border-blue-900/50 pr-4">
 				<div class="flex items-center flex-shrink-0">
@@ -160,7 +159,7 @@ const searchBridge = allBlogEntries.map(post => ({
 					</a>
 				</div>
 				<div class="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto md:ml-6 flex-1">
-					<a href="/" class="flex items-center h-[76px] text-[42px] md:text-[76px] font-black tracking-widest text-pink-500 whitespace-nowrap leading-none">
+					<a href="/" class="flex items-center h-[76px] text-[32px] md:text-[56px] font-black tracking-widest text-pink-500 whitespace-nowrap leading-none">
 						<span>戰術少女<span class="text-white">研究室</span></span>
 					</a>
 					<div class="relative w-full md:w-72 flex-shrink-0 md:ml-auto">
@@ -186,7 +185,6 @@ const searchBridge = allBlogEntries.map(post => ({
 			</div>
 		</header>
 
-		<!-- 主要內容 -->
 		<main class="max-w-3xl mx-auto px-4 py-8 flex-grow w-full">
 			<div class="mb-4 flex flex-wrap gap-2">
 				<span class="bg-pink-100 text-pink-700 text-xs font-black px-2.5 py-1 rounded">{entry.data.category}</span>
@@ -234,12 +232,17 @@ const searchBridge = allBlogEntries.map(post => ({
 			)}
 		</main>
 
-		<!-- 🛰️ 補回原本的 Footer 區塊 -->
 		<footer class="bg-[#003764] text-slate-300 border-t border-blue-900 text-xs mt-20 pt-10 pb-8 text-center">
+			<div class="max-w-7xl mx-auto px-4 mb-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-slate-400 font-medium">
+				<a href="/about" class="hover:text-pink-400 transition-colors">關於我們</a>
+				<a href="/contact" class="hover:text-pink-400 transition-colors">聯繫我們</a>
+				<a href="/privacy" class="hover:text-pink-400 transition-colors">隱私政策</a>
+				<a href="/terms" class="hover:text-pink-400 transition-colors">服務條款</a>
+				<a href="/cookie-policy" class="hover:text-pink-400 transition-colors">Cookie 政策</a>
+			</div>
 			<p>© {currentYear} 戰術少女研究室 TACTICAL SHOJO NEWS. All Rights Reserved.</p>
 		</footer>
 
-		<!-- 搜尋邏輯腳本 -->
 		<script is:inline>
 			document.addEventListener('DOMContentLoaded', () => {
 				const searchInput = document.getElementById('tactical-search');
