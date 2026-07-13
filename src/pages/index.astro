@@ -45,13 +45,13 @@ const searchBridge = sortedPosts.map(post => ({
 	</head>
 	<body class="bg-slate-50 text-slate-900 font-sans antialiased">
 
-		<!-- 🛰️ 戰術改裝：Logo 完全貼齊、標題與導覽列完美右移之進階 Header -->
+		<!-- 🛰️ 戰術改裝：Logo 頂天立地，標題與選單向左貼齊，搜尋支援 Enter 執行 -->
 		<header class="bg-[#003764] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
 			
 			<!-- 上半部：Logo、標題與搜尋欄 -->
 			<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center min-h-[76px] gap-4 border-b border-blue-900/50 pr-4">
 				
-				<!-- 【左側】Logo 直擊：高度徹底拉滿 h-[76px]，上下完全貼齊邊框 -->
+				<!-- 【左側】Logo：高度徹底拉滿 h-[76px]，上下完全貼齊邊框 -->
 				<div class="flex items-center flex-shrink-0">
 					<a href="/" class="flex items-center h-[76px] overflow-hidden group">
 						<img 
@@ -62,25 +62,33 @@ const searchBridge = sortedPosts.map(post => ({
 					</a>
 				</div>
 
-				<!-- 【重點改裝】使用 md:ml-auto，把「網站標題與導覽列」整塊推往右側對齊 -->
-				<div class="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto md:ml-auto">
+				<!-- 【配置回歸】移除 ml-auto，讓標題貼回左側，但保持 md:ml-6 戰術間距 -->
+				<div class="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto md:ml-6 flex-1">
 					
 					<!-- 網站標題 -->
 					<a href="/" class="text-2xl font-black tracking-widest text-pink-500 whitespace-nowrap">
 						<span>戰術少女<span class="text-white">研究室</span></span>
 					</a>
 
-					<!-- 搜尋欄基地 -->
-					<div class="relative w-full md:w-72 flex-shrink-0">
+					<!-- 搜尋欄基地：靠右站穩，並強化點擊與執行功能 -->
+					<div class="relative w-full md:w-72 flex-shrink-0 md:ml-auto">
 						<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs">
 							⚡
 						</div>
 						<input 
 							type="text" 
 							id="tactical-search"
-							placeholder="搜尋軍事戰略、戰術自訓..." 
-							class="w-full bg-blue-950/60 text-xs text-slate-200 pl-8 pr-4 py-2.5 rounded border border-blue-900/60 focus:outline-none focus:border-pink-500 placeholder-slate-400 transition-all font-medium" 
+							placeholder="搜尋軍事戰略、戰術自訓... (可按Enter)" 
+							class="w-full bg-blue-950/60 text-xs text-slate-200 pl-8 pr-10 py-2.5 rounded border border-blue-900/60 focus:outline-none focus:border-pink-500 placeholder-slate-400 transition-all font-medium" 
 						/>
+						<!-- 🔍 動作執行按鈕：點擊可直接連動執行搜尋 -->
+						<button 
+							id="search-submit-btn"
+							class="absolute right-3 top-2.5 text-slate-400 hover:text-pink-500 transition-colors"
+							title="執行搜尋"
+						>
+							🔍
+						</button>
 						
 						<!-- 搜尋結果彈出懸浮視窗 -->
 						<div id="search-results" class="absolute right-0 top-full mt-2 w-full sm:w-80 bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden hidden z-50 text-slate-900">
@@ -96,9 +104,9 @@ const searchBridge = sortedPosts.map(post => ({
 				</div>
 			</div>
 
-			<!-- 下半部：導覽選單（同步向右對齊） -->
-			<div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-end text-sm font-bold py-3 px-4 gap-2">
-				<nav class="flex space-x-6 whitespace-nowrap lg:mr-6">
+			<!-- 下半部：導覽選單（向左對齊，緊跟在 Logo 與標題垂直線下方） -->
+			<div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-start text-sm font-bold py-3 px-4 gap-2">
+				<nav class="flex space-x-6 whitespace-nowrap">
 					<a href="/" class="text-pink-500">首頁通報</a>
 					<a href="/category/軍事戰略" class="hover:text-pink-400 transition-colors">軍事戰略</a>
 					<a href="/category/全民防衛" class="hover:text-pink-400 transition-colors">全民防衛</a>
@@ -107,7 +115,7 @@ const searchBridge = sortedPosts.map(post => ({
 					<a href="/category/軍風搜奇" class="hover:text-pink-400 transition-colors">軍風搜奇</a>
 				</nav>
 				{hotTopicPosts.length > 0 && (
-					<div class="flex items-center gap-2 text-xs bg-pink-600 px-3 py-1 rounded-full text-white animate-pulse mt-2 lg:mt-0 flex-shrink-0">
+					<div class="flex items-center gap-2 text-xs bg-pink-600 px-3 py-1 rounded-full text-white animate-pulse mt-2 lg:mt-0 flex-shrink-0 lg:ml-auto">
 						<span>🔥 焦點特報：</span>
 						<a href={`/blog/${hotTopicPosts[0].slug}`} class="underline font-medium">{hotTopicPosts[0].data.title}</a>
 					</div>
@@ -293,21 +301,55 @@ const searchBridge = sortedPosts.map(post => ({
 			</div>
 		</footer>
 
-		<!-- 🛰️ 純前端即時搜尋欄驅動腳本 -->
+		<!-- 🛰️ 全新強化的純前端搜尋驅動腳本（支援 Enter 與 🔍 按鈕跳轉） -->
 		<script is:inline>
 			document.addEventListener('DOMContentLoaded', () => {
 				const searchInput = document.getElementById('tactical-search');
 				const searchResults = document.getElementById('search-results');
 				const resultsList = document.getElementById('results-list');
+				const submitBtn = document.getElementById('search-submit-btn');
 
 				if (!searchInput || !searchResults || !resultsList) return;
 
+				// 戰術執行：導向最精準的第一筆搜尋結果
+				const executeFirstSearch = () => {
+					const keyword = searchInput.value.toLowerCase().trim();
+					if (keyword.length < 1) return;
+
+					const posts = window.__TACTICAL_POSTS__ || [];
+					const matched = posts.find(post => 
+						post.title.toLowerCase().includes(keyword) || 
+						post.summary.toLowerCase().includes(keyword)
+					);
+
+					// 如果有匹配的文章，直接進場（跳轉）
+					if (matched) {
+						window.location.href = `/blog/${matched.slug}`;
+					}
+				};
+
+				// 監聽 Enter 鍵
+				searchInput.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter') {
+						e.preventDefault(); // 阻擋預防表單預設行為
+						executeFirstSearch();
+					}
+				});
+
+				// 監聽 🔍 按鈕點擊
+				submitBtn?.addEventListener('click', (e) => {
+					e.preventDefault();
+					executeFirstSearch();
+				});
+
+				// 點擊外側關閉
 				document.addEventListener('click', (e) => {
 					if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
 						searchResults.classList.add('hidden');
 					}
 				});
 
+				// 即時鍵盤輸入過濾
 				searchInput.addEventListener('input', (e) => {
 					const keyword = e.target.value.toLowerCase().trim();
 					
@@ -317,7 +359,6 @@ const searchBridge = sortedPosts.map(post => ({
 					}
 
 					const posts = window.__TACTICAL_POSTS__ || [];
-					
 					const filtered = posts.filter(post => 
 						post.title.toLowerCase().includes(keyword) || 
 						post.summary.toLowerCase().includes(keyword)
