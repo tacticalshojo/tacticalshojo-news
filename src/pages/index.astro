@@ -7,10 +7,18 @@ const sortedPosts = allBlogEntries.sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
 
-// 篩選出有設定為精選（featured）或直接拿最新 3 篇作為輪播特報
-const featuredPosts = sortedPosts.filter(post => post.data.featured === true).slice(0, 3);
-// 如果沒有文章設為 featured，就自動抓最新的 3 篇文章來輪播
-const carouselPosts = featuredPosts.length > 0 ? featuredPosts : sortedPosts.slice(0, 3);
+// 1. 上方大輪播專用文章（自動挑選有標記為 featured 的最新 3 篇，若無則抓最新 3 篇）
+const carouselPosts = sortedPosts.filter(post => post.data.featured === true).slice(0, 3).length > 0
+  ? sortedPosts.filter(post => post.data.featured === true).slice(0, 3)
+  : sortedPosts.slice(0, 3);
+
+// 2. 焦點熱門文章 (Hot Topic)：依據點閱率、熱度（或自訂 hot 標記）篩選，此處撈取前 4 篇
+const hotPosts = sortedPosts.filter(post => post.data.hot === true).slice(0, 4).length > 0
+  ? sortedPosts.filter(post => post.data.hot === true).slice(0, 4)
+  : sortedPosts.slice(1, 5); // 備援：若無標記則避開最新第一篇，抓次新的 4 篇
+
+// 3. 推薦精選文章 (Featured)：側邊欄或重點推薦，撈取 3 篇
+const featuredListPosts = sortedPosts.filter(post => post.data.featured === true).slice(0, 3);
 
 const currentYear = new Date().getFullYear();
 
@@ -73,21 +81,19 @@ const searchBridge = sortedPosts.map(post => ({
 		<!-- 主要內容區 -->
 		<main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
 			
-			<!-- 🚨 完美回歸：精選情報重大特報輪播 (Carousel) -->
+			<!-- 🚨 精選情報重大特報輪播 (Carousel) -->
 			{carouselPosts.length > 0 && (
 				<section class="relative mb-12 rounded-2xl overflow-hidden shadow-xl border border-slate-200 bg-slate-950 h-[300px] md:h-[460px] group">
 					<div id="carousel-wrapper" class="relative w-full h-full whitespace-nowrap transition-transform duration-700 ease-out">
-						{carouselPosts.map((post, index) => (
+						{carouselPosts.map((post) => (
 							<div class="inline-block w-full h-full relative whitespace-normal">
 								{post.data.heroImage ? (
 									<img src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover opacity-85" />
 								) : (
 									<div class="w-full h-full bg-gradient-to-br from-blue-950 to-slate-900" />
 								)}
-								<!-- 漸層暗化遮罩，突顯軍風文字標題 -->
 								<div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
 								
-								<!-- 精選情報內文標記 -->
 								<div class="absolute bottom-0 left-0 w-full p-6 md:p-10 text-white flex flex-col justify-end">
 									<span class="bg-pink-600 text-[10px] md:text-xs font-black px-2.5 py-1 rounded self-start mb-3 uppercase tracking-wider shadow-sm animate-pulse">
 										🔥 重大精選特報
@@ -103,11 +109,9 @@ const searchBridge = sortedPosts.map(post => ({
 						))}
 					</div>
 
-					<!-- 輪播左右切換箭頭 -->
 					<button id="prev-btn" class="absolute left-4 top-1/2 -translate-y-1/2 bg-slate-900/60 hover:bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all z-10" title="上一則">‹</button>
 					<button id="next-btn" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-900/60 hover:bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all z-10" title="下一則">›</button>
 
-					<!-- 輪播位置指示燈圈 -->
 					<div class="absolute bottom-4 right-6 flex space-x-2 z-10">
 						{carouselPosts.map((_, i) => (
 							<button data-index={i} class={`carousel-dot w-2 h-2 rounded-full transition-all duration-300 ${i === 0 ? 'bg-pink-500 w-5' : 'bg-white/50'}`} title={`情報分頁 ${i + 1}`} />
@@ -116,8 +120,60 @@ const searchBridge = sortedPosts.map(post => ({
 				</section>
 			)}
 
+			<!-- ⚡ 雙欄配置：焦點熱門文章 (Hot Topic) 與 推薦精選文章 (Featured List) -->
+			<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+				
+				<!-- 左側：焦點熱門文章 (Hot Topic) -->
+				<div class="lg:col-span-2">
+					<h2 class="text-xl font-black text-slate-900 mb-6 border-l-4 border-amber-500 pl-3 flex items-center gap-2">
+						<span class="text-amber-500">⚡</span> 焦點熱門文章 (Hot Topic)
+					</h2>
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+						{hotPosts.map(post => (
+							<div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all p-4 flex gap-4">
+								{post.data.heroImage && (
+									<a href={`/blog/${post.slug}`} class="block w-20 h-20 flex-shrink-0 overflow-hidden rounded-lg bg-slate-100">
+										<img src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover hover:scale-105 transition-transform" />
+									</a>
+								)}
+								<div class="flex flex-col justify-between">
+									<h3 class="text-xs font-bold text-slate-900 leading-snug line-clamp-2 hover:text-amber-600">
+										<a href={`/blog/${post.slug}`}>{post.data.title}</a>
+									</h3>
+									<span class="text-[10px] text-slate-400 font-mono mt-2 block">
+										{new Date(post.data.date).toLocaleDateString('zh-TW')}
+									</span>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+
+				<!-- 右側：推薦精選文章 (Featured) -->
+				<div>
+					<h2 class="text-xl font-black text-slate-900 mb-6 border-l-4 border-pink-500 pl-3 flex items-center gap-2">
+						<span class="text-pink-500">✨</span> 推薦精選文章 (Featured)
+					</h2>
+					<div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm divide-y divide-slate-100">
+						{featuredListPosts.length > 0 ? featuredListPosts.map((post, idx) => (
+							<div class={`py-3 ${idx === 0 ? 'pt-0' : ''} ${idx === featuredListPosts.length - 1 ? 'pb-0' : ''}`}>
+								<div class="flex items-center gap-3">
+									<span class="text-lg font-black text-slate-300 font-mono w-5 text-center">0{idx + 1}</span>
+									<h3 class="text-xs font-bold text-slate-800 hover:text-pink-600 line-clamp-2 leading-amber">
+										<a href={`/blog/${post.slug}`}>{post.data.title}</a>
+									</h3>
+								</div>
+							</div>
+						)) : (
+							<p class="text-xs text-slate-400 text-center py-4">暫無推薦精選項目</p>
+						)}
+					</div>
+				</div>
+
+			</div>
+
 			<!-- 下方常規通報清單 -->
-			<h2 class="text-xl font-black text-slate-900 mb-6 border-l-4 border-pink-500 pl-3">📋 最新戰術通報清單</h2>
+			<h2 class="text-xl font-black text-slate-900 mb-6 border-l-4 border-blue-600 pl-3">📋 最新戰術通報清單</h2>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				{sortedPosts.map(post => (
 					<article class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
@@ -169,7 +225,6 @@ const searchBridge = sortedPosts.map(post => ({
 						currentIndex = (index + totalSlides) % totalSlides;
 						wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
 						
-						// 更新燈圈動態視覺
 						dots.forEach((dot, i) => {
 							if (i === currentIndex) {
 								dot.classList.add('bg-pink-500', 'w-5');
@@ -190,7 +245,6 @@ const searchBridge = sortedPosts.map(post => ({
 						if (intervalId) clearInterval(intervalId);
 					};
 
-					// 箭頭點擊與燈圈綁定
 					prevBtn?.addEventListener('click', () => { updateCarousel(currentIndex - 1); startAutoPlay(); });
 					nextBtn?.addEventListener('click', () => { updateCarousel(currentIndex + 1); startAutoPlay(); });
 					dots.forEach(dot => {
@@ -201,11 +255,9 @@ const searchBridge = sortedPosts.map(post => ({
 						});
 					});
 
-					// 滑鼠滑入滑出控制
 					wrapper.parentElement?.addEventListener('mouseenter', stopAutoPlay);
 					wrapper.parentElement?.addEventListener('mouseleave', startAutoPlay);
 
-					// 啟動自動巡航
 					startAutoPlay();
 				}
 
