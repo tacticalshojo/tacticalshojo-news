@@ -1,0 +1,145 @@
+---
+import '../styles/global.css';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const allAuthors = await getCollection('authors');
+const authorMap = Object.fromEntries(allAuthors.map(a => [a.id, a.data]));
+
+// 將所有文章按日期排序
+const sortedPosts = allPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+const currentYear = new Date().getFullYear();
+
+// 用於前端搜尋的橋樑資料
+const searchBridge = sortedPosts.map(post => ({
+  title: post.data.title || "",
+  summary: post.data.summary || "",
+  category: post.data.category || "未分類",
+  heroImage: post.data.heroImage || "",
+  date: post.data.date instanceof Date ? post.data.date.toISOString().split('T')[0] : String(post.data.date).split(' ')[0],
+  authorName: authorMap[post.data.authors?.[0]]?.name || '編輯部',
+  slug: post.slug
+}));
+---
+
+<!doctype html>
+<html lang="zh-Hant">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/png" href="/favicon.png" />
+		<title>情報搜尋結果 | 戰術少女研究室</title>
+		<script define:vars={{ searchBridge }}>
+			window.__TACTICAL_POSTS__ = searchBridge;
+		</script>
+	</head>
+	<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+
+		<header class="bg-[#003764] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
+			<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center min-h-[76px] gap-4 border-b border-blue-900/50 pr-4">
+				<div class="flex items-center flex-shrink-0">
+					<a href="/" class="flex items-center h-[76px] overflow-hidden group">
+						<img src="/images/uploads/戰術少女組-大頭貼.png" alt="Logo" class="w-[76px] h-[76px] object-cover group-hover:scale-105 transition-transform" />
+					</a>
+				</div>
+				<div class="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto md:ml-6 flex-1">
+					<a href="/" class="flex items-center h-[76px] text-3xl md:text-4xl font-black tracking-widest text-pink-500 whitespace-nowrap">
+						<span>戰術少女<span class="text-white">研究室</span></span>
+					</a>
+					<div class="relative w-full md:w-72 flex-shrink-0 md:ml-auto">
+						<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs">⚡</div>
+						<input type="text" id="tactical-search" placeholder="再次搜尋..." class="w-full bg-blue-950/60 text-xs text-slate-200 pl-8 pr-10 py-2.5 rounded border border-blue-900/60 focus:outline-none focus:border-pink-500 font-medium" />
+						<button id="search-submit-btn" class="absolute right-3 top-2.5 text-slate-400 hover:text-pink-500">🔍</button>
+					</div>
+				</div>
+			</div>
+			<div class="max-w-7xl mx-auto flex text-sm font-bold py-3 px-4">
+				<nav class="flex space-x-6">
+					<a href="/" class="hover:text-pink-400">← 返回首頁通報</a>
+				</nav>
+			</div>
+		</header>
+
+		<main class="max-w-7xl mx-auto px-4 my-12">
+			<h2 class="text-2xl font-black border-l-4 border-pink-600 pl-3 mb-2 tracking-wider">
+				🔍 情報檢索結果
+			</h2>
+			<p id="search-query-title" class="text-slate-500 text-xs mb-8 font-mono">正在初始化戰術資料庫...</p>
+
+			<div id="results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				</div>
+		</main>
+
+		<footer class="bg-[#003764] text-slate-300 border-t border-blue-900 text-xs mt-40 pt-10 pb-8 text-center">
+			<p>© {currentYear} 戰術少女研究室 TACTICAL SHOJO NEWS. All Rights Reserved.</p>
+		</footer>
+
+		<script is:inline>
+			document.addEventListener('DOMContentLoaded', () => {
+				const grid = document.getElementById('results-grid');
+				const queryTitle = document.getElementById('search-query-title');
+				const searchInput = document.getElementById('tactical-search');
+				const submitBtn = document.getElementById('search-submit-btn');
+
+				// 解析網址參數 (?q=xxx)
+				const getQuery = () => new URLSearchParams(window.location.search).get('q') || '';
+				
+				const renderResults = (query) => {
+					if (!grid || !queryTitle) return;
+					searchInput.value = query;
+					queryTitle.textContent = `關鍵字："${query}"`;
+
+					const posts = window.__TACTICAL_POSTS__ || [];
+					const filtered = posts.filter(post => 
+						post.title.toLowerCase().includes(query.toLowerCase()) || 
+						post.summary.toLowerCase().includes(query.toLowerCase())
+					);
+
+					if (filtered.length === 0) {
+						grid.innerHTML = `<div class="col-span-full bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-400 text-sm font-medium shadow-sm">❌ 報告！未尋獲與 "${query}" 相關的戰術通報紀錄。</div>`;
+						return;
+					}
+
+					grid.innerHTML = filtered.map(post => `
+						<article class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition duration-300">
+							${post.heroImage ? `
+								<div class="h-48 overflow-hidden bg-slate-100">
+									<img src="${post.heroImage}" alt="${post.title}" class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+								</div>
+							` : ''}
+							<div class="p-5 flex-1 flex flex-col justify-between">
+								<div>
+									<span class="text-xs font-bold text-pink-600 tracking-wider uppercase mb-2 block">${post.category}</span>
+									<h3 class="font-bold text-lg text-slate-900 mb-2 line-clamp-2 hover:text-pink-600">
+										<a href="/blog/${post.slug}">${post.title}</a>
+									</h3>
+									<p class="text-slate-500 text-xs line-clamp-3 mb-4">${post.summary}</p>
+								</div>
+								<div class="flex items-center justify-between text-[11px] text-slate-400 pt-3 border-t border-slate-100">
+									<span class="font-medium">✍️ ${post.authorName}</span>
+									<time>${post.date}</time>
+								</div>
+							</div>
+						</article>
+					`).join('');
+				};
+
+				// 頁面初始化渲染
+				const currentQ = getQuery();
+				renderResults(currentQ);
+
+				// 允許在此頁面再次進行 Enter 搜尋
+				const performNewSearch = () => {
+					const val = searchInput.value.trim();
+					if(val) {
+						window.history.pushState({}, '', `/search?q=${encodeURIComponent(val)}`);
+						renderResults(val);
+					}
+				};
+
+				searchInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') performNewSearch(); });
+				submitBtn?.addEventListener('click', performNewSearch);
+			});
+		</script>
+	</body>
+</html>

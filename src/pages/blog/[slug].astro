@@ -155,43 +155,55 @@ const searchBridge = allBlogEntries.map(post => ({
 	</head>
 	<body class="bg-slate-50 text-slate-900 font-sans antialiased">
 		
-		<header class="bg-[#0f172a] text-white border-b-2 border-pink-500 sticky top-0 z-50 px-4 shadow-lg">
-			<div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between min-h-[76px] py-2 gap-4">
+		<!-- 🛰️ 內頁 Header 戰術同步：採用與首頁相同的 bg-[#003764]、巨型標題與獨立搜尋跳轉 -->
+		<header class="bg-[#003764] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
+			
+			<!-- 上半部：Logo、巨型標題與搜尋欄 -->
+			<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center min-h-[76px] gap-4 border-b border-blue-900/50 pr-4">
 				
-				<div class="flex items-center gap-3 flex-shrink-0">
-					<a href="/" class="flex items-center gap-3 group">
+				<!-- 【左側】Logo：高度拉滿 h-[76px]，上下貼齊邊框 -->
+				<div class="flex items-center flex-shrink-0">
+					<a href="/" class="flex items-center h-[76px] overflow-hidden group">
 						<img 
 							src="/images/uploads/戰術少女組-大頭貼.png" 
 							alt="戰術少女研究室 Logo" 
-							class="w-14 h-14 md:w-[56px] md:h-[56px] rounded-xl object-cover border border-slate-700 shadow-md group-hover:scale-105 transition-transform"
+							class="w-[76px] h-[76px] object-cover group-hover:scale-105 transition-transform" 
 						/>
-						<div class="flex flex-col">
-							<span class="font-black text-pink-500 tracking-widest text-lg md:text-xl font-mono leading-none">⚔️ 戰術少女研究室</span>
-							<span class="text-[10px] text-slate-400 tracking-tight mt-1 hidden sm:inline">Tactical Shojo Research Lab</span>
-						</div>
 					</a>
 				</div>
 
-				<div class="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto justify-end">
+				<!-- 【標題同步】與 Logo 齊高 (h-[76px])，放大字體至 text-3xl 到 text-4xl，向左貼齊 -->
+				<div class="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto md:ml-6 flex-1">
 					
-					<nav class="flex items-center gap-4 text-xs font-bold text-slate-300">
-						<a href="/" class="hover:text-pink-500 transition-colors py-1">首頁通報</a>
-						<a href="/authors/editor" class="hover:text-pink-500 transition-colors py-1">編輯陣容</a>
-					</nav>
+					<!-- 巨型網站標題 -->
+					<a href="/" class="flex items-center h-[76px] text-3xl md:text-4xl font-black tracking-widest text-pink-500 whitespace-nowrap">
+						<span>戰術少女<span class="text-white">研究室</span></span>
+					</a>
 
-					<div class="relative w-full sm:w-56 flex-shrink-0">
+					<!-- 搜尋欄基地 -->
+					<div class="relative w-full md:w-72 flex-shrink-0 md:ml-auto">
 						<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs">
 							⚡
 						</div>
 						<input 
 							type="text" 
 							id="tactical-search" 
-							placeholder="搜尋戰術、民防、情報..." 
-							class="w-full bg-slate-900 text-white text-xs rounded-lg pl-8 pr-4 py-2 border border-slate-700 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 placeholder-slate-500 transition-all font-medium"
+							placeholder="輸入關鍵字後按 Enter 搜尋..." 
+							class="w-full bg-blue-950/60 text-xs text-slate-200 pl-8 pr-10 py-2.5 rounded border border-blue-900/60 focus:outline-none focus:border-pink-500 placeholder-slate-400 transition-all font-medium"
 						/>
-						<div id="search-results" class="absolute right-0 top-full mt-2 w-full sm:w-72 bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden hidden z-50 text-slate-900">
+						<!-- 🔍 動作執行按鈕 -->
+						<button 
+							id="search-submit-btn"
+							class="absolute right-3 top-2.5 text-slate-400 hover:text-pink-500 transition-colors"
+							title="執行搜尋"
+						>
+							🔍
+						</button>
+						
+						<!-- 搜尋結果即時預覽懸浮視窗 -->
+						<div id="search-results" class="absolute right-0 top-full mt-2 w-full sm:w-80 bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden hidden z-50 text-slate-900">
 							<div class="bg-slate-50 px-3 py-2 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-								搜尋情報結果
+								即時情報預覽 (按 Enter 查看全部)
 							</div>
 							<ul id="results-list" class="divide-y divide-slate-100 max-h-60 overflow-y-auto">
 							</ul>
@@ -199,7 +211,18 @@ const searchBridge = allBlogEntries.map(post => ({
 					</div>
 
 				</div>
+			</div>
 
+			<!-- 下半部：導覽選單（向左對齊） -->
+			<div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-start text-sm font-bold py-3 px-4 gap-2">
+				<nav class="flex space-x-6 whitespace-nowrap">
+					<a href="/" class="hover:text-pink-400 transition-colors">首頁通報</a>
+					<a href="/category/軍事戰略" class="hover:text-pink-400 transition-colors">軍事戰略</a>
+					<a href="/category/全民防衛" class="hover:text-pink-400 transition-colors">全民防衛</a>
+					<a href="/category/戰術自訓" class="hover:text-pink-400 transition-colors">戰術自訓</a>
+					<a href="/category/軍工產業" class="hover:text-pink-400 transition-colors">軍工產業</a>
+					<a href="/category/軍風搜奇" class="hover:text-pink-400 transition-colors">軍風搜奇</a>
+				</nav>
 			</div>
 		</header>
 
@@ -299,20 +322,46 @@ const searchBridge = allBlogEntries.map(post => ({
 			</section>
 		</main>
 
+		<!-- 🛰️ 搜尋驅動腳本：支援跳轉至獨立搜尋頁 -->
 		<script is:inline>
 			document.addEventListener('DOMContentLoaded', () => {
 				const searchInput = document.getElementById('tactical-search');
 				const searchResults = document.getElementById('search-results');
 				const resultsList = document.getElementById('results-list');
+				const submitBtn = document.getElementById('search-submit-btn');
 
 				if (!searchInput || !searchResults || !resultsList) return;
 
+				// 🚀 核心改裝：將搜尋行為全數導向至結果頁面
+				const redirectToSearchPage = () => {
+					const keyword = searchInput.value.trim();
+					if (keyword.length > 0) {
+						window.location.href = `/search?q=${encodeURIComponent(keyword)}`;
+					}
+				};
+
+				// 監聽 Enter 鍵
+				searchInput.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter') {
+						e.preventDefault();
+						redirectToSearchPage();
+					}
+				});
+
+				// 監聽 🔍 按鈕點擊
+				submitBtn?.addEventListener('click', (e) => {
+					e.preventDefault();
+					redirectToSearchPage();
+				});
+
+				// 點擊外側關閉
 				document.addEventListener('click', (e) => {
 					if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
 						searchResults.classList.add('hidden');
 					}
 				});
 
+				// 即時鍵盤輸入過濾（下拉預覽）
 				searchInput.addEventListener('input', (e) => {
 					const keyword = e.target.value.toLowerCase().trim();
 					
@@ -333,7 +382,7 @@ const searchBridge = allBlogEntries.map(post => ({
 					if (filtered.length === 0) {
 						resultsList.innerHTML = `
 							<li class="px-4 py-3 text-xs text-slate-400 text-center font-medium">
-								❌ 未尋獲相關戰術通報
+								❌ 未尋獲相關情報 (按 Enter 查看全部)
 							</li>`;
 					} else {
 						filtered.forEach(post => {

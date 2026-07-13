@@ -38,20 +38,16 @@ const searchBridge = sortedPosts.map(post => ({
 		<link rel="icon" type="image/png" href="/favicon.png" />
 		<title>戰術少女研究室 | TACTICAL SHOJO NEWS</title>
 
-		<!-- ⚡ 將 Astro 資料拋給前端搜尋引擎的全域變數 -->
 		<script define:vars={{ searchBridge }}>
 			window.__TACTICAL_POSTS__ = searchBridge;
 		</script>
 	</head>
 	<body class="bg-slate-50 text-slate-900 font-sans antialiased">
 
-		<!-- 🛰️ 戰術改裝：Logo 頂天立地，標題與選單向左貼齊，搜尋支援 Enter 執行 -->
 		<header class="bg-[#003764] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
 			
-			<!-- 上半部：Logo、標題與搜尋欄 -->
 			<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center min-h-[76px] gap-4 border-b border-blue-900/50 pr-4">
 				
-				<!-- 【左側】Logo：高度徹底拉滿 h-[76px]，上下完全貼齊邊框 -->
 				<div class="flex items-center flex-shrink-0">
 					<a href="/" class="flex items-center h-[76px] overflow-hidden group">
 						<img 
@@ -62,15 +58,12 @@ const searchBridge = sortedPosts.map(post => ({
 					</a>
 				</div>
 
-				<!-- 【配置回歸】移除 ml-auto，讓標題貼回左側，但保持 md:ml-6 戰術間距 -->
 				<div class="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto md:ml-6 flex-1">
 					
-					<!-- 網站標題 -->
-					<a href="/" class="text-2xl font-black tracking-widest text-pink-500 whitespace-nowrap">
+					<a href="/" class="flex items-center h-[76px] text-3xl md:text-4xl font-black tracking-widest text-pink-500 whitespace-nowrap">
 						<span>戰術少女<span class="text-white">研究室</span></span>
 					</a>
 
-					<!-- 搜尋欄基地：靠右站穩，並強化點擊與執行功能 -->
 					<div class="relative w-full md:w-72 flex-shrink-0 md:ml-auto">
 						<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs">
 							⚡
@@ -78,10 +71,9 @@ const searchBridge = sortedPosts.map(post => ({
 						<input 
 							type="text" 
 							id="tactical-search"
-							placeholder="搜尋軍事戰略、戰術自訓... (可按Enter)" 
+							placeholder="輸入關鍵字後按 Enter 搜尋..." 
 							class="w-full bg-blue-950/60 text-xs text-slate-200 pl-8 pr-10 py-2.5 rounded border border-blue-900/60 focus:outline-none focus:border-pink-500 placeholder-slate-400 transition-all font-medium" 
 						/>
-						<!-- 🔍 動作執行按鈕：點擊可直接連動執行搜尋 -->
 						<button 
 							id="search-submit-btn"
 							class="absolute right-3 top-2.5 text-slate-400 hover:text-pink-500 transition-colors"
@@ -90,21 +82,18 @@ const searchBridge = sortedPosts.map(post => ({
 							🔍
 						</button>
 						
-						<!-- 搜尋結果彈出懸浮視窗 -->
 						<div id="search-results" class="absolute right-0 top-full mt-2 w-full sm:w-80 bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden hidden z-50 text-slate-900">
 							<div class="bg-slate-50 px-3 py-2 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-								搜尋情報結果
+								即時情報預覽 (按 Enter 查看全部)
 							</div>
 							<ul id="results-list" class="divide-y divide-slate-100 max-h-60 overflow-y-auto">
-								<!-- 結果由 JS 即時渲染 -->
-							</ul>
+								</ul>
 						</div>
 					</div>
 
 				</div>
 			</div>
 
-			<!-- 下半部：導覽選單（向左對齊，緊跟在 Logo 與標題垂直線下方） -->
 			<div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-start text-sm font-bold py-3 px-4 gap-2">
 				<nav class="flex space-x-6 whitespace-nowrap">
 					<a href="/" class="text-pink-500">首頁通報</a>
@@ -130,10 +119,8 @@ const searchBridge = sortedPosts.map(post => ({
 		</div>
 
 		<main class="max-w-7xl mx-auto px-4 my-8">
-			<!-- 🎯 全自動戰術無縫輪播大圖區 -->
 			{heroPosts.length > 0 && (
 				<section class="mb-12 relative group overflow-hidden rounded-lg shadow-2xl" id="hero-carousel">
-					<!-- 1. 輪播主體視窗 -->
 					<div class="hero-slider-container relative min-h-[400px] md:min-h-[450px] w-full overflow-hidden">
 						<div class="hero-slider flex w-full h-full absolute inset-0 transition-transform duration-500 ease-out select-none">
 							{heroPosts.map((post, index) => (
@@ -153,7 +140,6 @@ const searchBridge = sortedPosts.map(post => ({
 						</div>
 					</div>
 
-					<!-- 2. 左右戰術切換箭頭（滑鼠滑入時顯現） -->
 					{heroPosts.length > 1 && (
 						<>
 							<button id="carousel-prev" class="absolute left-4 top-1/2 -translate-y-1/2 bg-slate-950/60 hover:bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 z-20 font-bold shadow-md">❮</button>
@@ -161,7 +147,6 @@ const searchBridge = sortedPosts.map(post => ({
 						</>
 					)}
 
-					<!-- 3. 下方導覽進度圓點 -->
 					{heroPosts.length > 1 && (
 						<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
 							{heroPosts.map((_, index) => (
@@ -171,7 +156,6 @@ const searchBridge = sortedPosts.map(post => ({
 					)}
 				</section>
 
-				<!-- 4. 輪播控制指令 -->
 				<script is:inline>
 					function initHeroCarousel() {
 						const section = document.getElementById('hero-carousel');
@@ -301,7 +285,6 @@ const searchBridge = sortedPosts.map(post => ({
 			</div>
 		</footer>
 
-		<!-- 🛰️ 全新強化的純前端搜尋驅動腳本（支援 Enter 與 🔍 按鈕跳轉） -->
 		<script is:inline>
 			document.addEventListener('DOMContentLoaded', () => {
 				const searchInput = document.getElementById('tactical-search');
@@ -311,35 +294,26 @@ const searchBridge = sortedPosts.map(post => ({
 
 				if (!searchInput || !searchResults || !resultsList) return;
 
-				// 戰術執行：導向最精準的第一筆搜尋結果
-				const executeFirstSearch = () => {
-					const keyword = searchInput.value.toLowerCase().trim();
-					if (keyword.length < 1) return;
-
-					const posts = window.__TACTICAL_POSTS__ || [];
-					const matched = posts.find(post => 
-						post.title.toLowerCase().includes(keyword) || 
-						post.summary.toLowerCase().includes(keyword)
-					);
-
-					// 如果有匹配的文章，直接進場（跳轉）
-					if (matched) {
-						window.location.href = `/blog/${matched.slug}`;
+				// 🚀 核心改造：直接帶著參數跳轉到搜尋結果頁面
+				const redirectToSearchPage = () => {
+					const keyword = searchInput.value.trim();
+					if (keyword.length > 0) {
+						window.location.href = `/search?q=${encodeURIComponent(keyword)}`;
 					}
 				};
 
 				// 監聽 Enter 鍵
 				searchInput.addEventListener('keydown', (e) => {
 					if (e.key === 'Enter') {
-						e.preventDefault(); // 阻擋預防表單預設行為
-						executeFirstSearch();
+						e.preventDefault();
+						redirectToSearchPage();
 					}
 				});
 
 				// 監聽 🔍 按鈕點擊
 				submitBtn?.addEventListener('click', (e) => {
 					e.preventDefault();
-					executeFirstSearch();
+					redirectToSearchPage();
 				});
 
 				// 點擊外側關閉
@@ -349,7 +323,7 @@ const searchBridge = sortedPosts.map(post => ({
 					}
 				});
 
-				// 即時鍵盤輸入過濾
+				// 即時鍵盤輸入過濾（保留下拉預覽，優化體驗）
 				searchInput.addEventListener('input', (e) => {
 					const keyword = e.target.value.toLowerCase().trim();
 					
@@ -369,7 +343,7 @@ const searchBridge = sortedPosts.map(post => ({
 					if (filtered.length === 0) {
 						resultsList.innerHTML = `
 							<li class="px-4 py-3 text-xs text-slate-400 text-center font-medium">
-								❌ 未尋獲相關戰術通報
+								❌ 未尋獲相關情報 (按 Enter 嘗試)
 							</li>`;
 					} else {
 						filtered.forEach(post => {
