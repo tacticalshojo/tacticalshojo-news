@@ -77,16 +77,16 @@ const searchBridge = sortedPosts.map(post => ({
 		</header>
 
 		{hotPosts.length > 0 && (
-			<div class="bg-amber-500 text-slate-950 font-bold text-xs py-2 border-b border-amber-600 shadow-inner overflow-hidden">
+			<div class="bg-pink-600 text-white font-bold text-xs py-2 border-b border-pink-700 shadow-inner overflow-hidden">
 				<div class="max-w-7xl mx-auto px-4 flex items-center">
-					<span class="bg-slate-950 text-amber-400 text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 uppercase tracking-wider whitespace-nowrap mr-4 animate-pulse">
+					<span class="bg-blue-950 text-white text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 uppercase tracking-wider whitespace-nowrap mr-4 animate-pulse">
 						⚡ HOT TOPIC
 					</span>
 					<div class="relative flex-1 h-4 overflow-hidden">
 						<div id="ticker-wrapper" class="absolute w-full transition-transform duration-500 ease-in-out flex flex-col">
 							{hotPosts.map((post) => (
 								<div class="h-4 flex items-center truncate">
-									<a href={`/blog/${post.slug}`} class="hover:underline hover:text-blue-900 transition-colors block truncate">
+									<a href={`/blog/${post.slug}`} class="hover:underline hover:text-pink-200 transition-colors block truncate">
 										【熱門通報】{post.data.title}
 									</a>
 								</div>
@@ -158,7 +158,7 @@ const searchBridge = sortedPosts.map(post => ({
 
 			<section class="border-t border-slate-200 pt-10">
 				<h2 class="text-xl font-black text-slate-900 mb-6 border-l-4 border-pink-500 pl-3 flex items-center gap-2">
-					<span class="text-pink-500">✨</span> 推薦精選文章 (Featured)
+					<span class="text-pink-500">✨</span> 精選專題
 				</h2>
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 					{featuredListPosts.length > 0 ? featuredListPosts.map((post, idx) => (
@@ -173,7 +173,7 @@ const searchBridge = sortedPosts.map(post => ({
 							</div>
 						</div>
 					)) : (
-						<p class="text-xs text-slate-400 text-center py-4 col-span-3">暫無推薦精選項目</p>
+						<p class="text-xs text-slate-400 text-center py-4 col-span-3">暫無精選項目</p>
 					)}
 				</div>
 			</section>
