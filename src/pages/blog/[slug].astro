@@ -13,49 +13,56 @@ const { Content } = await entry.render();
 
 const currentYear = new Date().getFullYear();
 
-// ✍️ 靜態作者資料庫
+// ✍️ 靜態作者資料庫（已新增 donateUrl）
 const authorDatabase = {
   "戰術小編": {
     name: "戰術小編",
     avatar: "/images/uploads/戰術少女組-大頭貼.png",
     bio: "負責本站日常戰術情報通報與資訊整合，提供最即時的消息",
-    slug: "editor"
+    slug: "editor",
+    donateUrl: "https://p.ecpay.com.tw/547FB98"
   },
   "節目企劃": {
     name: "節目企劃",
     avatar: "/images/uploads/戰術少女組-大頭貼.png",
     bio: "節目企劃，常跑現場也是整個戰術少女組的專案負責人",
-    slug: "producer"
+    slug: "producer",
+    donateUrl: "https://p.ecpay.com.tw/547FB98"
   },
   "Yelena": {
     name: "Yelena",
     avatar: "/images/uploads/Yelena.jpg",
     bio: "政治產業從業者，負責政治相關議題的解釋與評論，欸欸我本人沒有頭像這麼兇啦",
-    slug: "yelena"
+    slug: "yelena",
+    donateUrl: "https://p.ecpay.com.tw/547FB98"
   },
   "Urica": {
     name: "Urica",
     avatar: "/images/uploads/Urica.jpg",
     bio: "希望在狂風暴雨的時候也能懶洋洋地過日子，負責民防相關議題的處理",
-    slug: "urica"
+    slug: "urica",
+    donateUrl: "https://p.ecpay.com.tw/547FB98"
   },
   "Nina": {
     name: "Nina",
     avatar: "/images/uploads/Nina.png",
     bio: "喜歡pewpew咻咻跟酷酷武器94我(◕ܫ◕)",
-    slug: "nina"
+    slug: "nina",
+    donateUrl: "https://p.ecpay.com.tw/547FB98"
   },
   "Grace": {
     name: "Grace",
     avatar: "/images/uploads/Grace.jpg",
     bio: "喜歡史明「要先做一個好的人，再成為台灣人」，關注語言與歷史",
-    slug: "grace"
+    slug: "grace",
+    donateUrl: "https://p.ecpay.com.tw/547FB98"
   },
   "客座投稿": {
     name: "客座投稿",
     avatar: "/images/uploads/戰術少女組-大頭貼.png",
     bio: "來自各方專家、產業人士、第一線勤務人員的珍貴經驗分享",
-    slug: "guest"
+    slug: "guest",
+    donateUrl: "https://p.ecpay.com.tw/547FB98"
   }
 };
 
@@ -216,16 +223,24 @@ const searchBridge = allBlogEntries.map(post => ({
 				<Content />
 			</article>
 
-			{/* ✍️ 作者簡介卡片（永遠展現） */}
+			{/* ✍️ 作者簡介卡片（已加上綠界贊助按鈕） */}
 			<section class="mt-12 pt-8 border-t border-slate-200">
 				<div class="bg-white border border-slate-200 rounded-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 shadow-sm">
 					<div class="flex-shrink-0 flex justify-center md:justify-start">
 						<img src={currentAuthor.avatar} class="w-48 h-48 md:w-[200px] md:h-[200px] rounded-2xl object-cover bg-slate-100 border-2 border-slate-200 shadow-sm" alt="Avatar" />
 					</div>
 					<div class="flex-grow flex flex-col justify-center">
-						<h4 class="font-black text-2xl text-slate-900">
-							<a href={`/authors/${currentAuthor.slug}`} class="hover:text-pink-600 transition-colors">{currentAuthor.name}</a>
-						</h4>
+						<div class="flex flex-wrap items-center justify-between gap-4">
+							<h4 class="font-black text-2xl text-slate-900">
+								<a href={`/authors/${currentAuthor.slug}`} class="hover:text-pink-600 transition-colors">{currentAuthor.name}</a>
+							</h4>
+							{currentAuthor.donateUrl && (
+								<a href={currentAuthor.donateUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm hover:shadow transition-all group">
+									<span>☕ 讚術支持作者</span>
+									<span class="group-hover:translate-x-0.5 transition-transform">→</span>
+								</a>
+							)}
+						</div>
 						<p class="text-sm text-slate-600 mt-3 leading-relaxed">{currentAuthor.bio}</p>
 						
 						{/* 📋 顯示近期文章列表的區塊 */}
