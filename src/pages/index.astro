@@ -42,7 +42,6 @@ const searchBridge = sortedPosts.map(post => ({
 	</head>
 	<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col">
 		
-		<!-- 🛰️ 戰術大頭標頭 -->
 		<header class="bg-[#003764] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
 			<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center min-h-[76px] gap-4 border-b border-blue-900/50 pr-4">
 				<div class="flex items-center flex-shrink-0">
@@ -51,8 +50,7 @@ const searchBridge = sortedPosts.map(post => ({
 					</a>
 				</div>
 				<div class="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto md:ml-6 flex-1">
-					<!-- ✅ 標題高度精準保持在 56px -->
-					<a href="/" class="flex items-center h-[76px] text-[32px] md:text-[56px] font-black tracking-widest text-pink-500 whitespace-nowrap leading-none">
+					<a href="/" class="flex items-center h-[76px] text-[26px] sm:text-[32px] md:text-[40px] font-black tracking-wide text-pink-500 whitespace-nowrap leading-none">
 						<span>戰術少女<span class="text-white">研究室</span></span>
 					</a>
 					<div class="relative w-full md:w-72 flex-shrink-0 md:ml-auto">
@@ -78,7 +76,6 @@ const searchBridge = sortedPosts.map(post => ({
 			</div>
 		</header>
 
-		<!-- ⚡ 新增：Header 下方的焦點熱門文章文字跑馬燈 (Hot Topic) -->
 		{hotPosts.length > 0 && (
 			<div class="bg-amber-500 text-slate-950 font-bold text-xs py-2 border-b border-amber-600 shadow-inner overflow-hidden">
 				<div class="max-w-7xl mx-auto px-4 flex items-center">
@@ -100,10 +97,8 @@ const searchBridge = sortedPosts.map(post => ({
 			</div>
 		)}
 
-		<!-- 主要內容區 -->
 		<main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
 			
-			<!-- 🚨 精選情報重大特報輪播 (Carousel) -->
 			{carouselPosts.length > 0 && (
 				<section class="relative mb-12 rounded-2xl overflow-hidden shadow-xl border border-slate-200 bg-slate-950 h-[300px] md:h-[460px] group">
 					<div id="carousel-wrapper" class="relative w-full h-full whitespace-nowrap transition-transform duration-700 ease-out">
@@ -142,7 +137,6 @@ const searchBridge = sortedPosts.map(post => ({
 				</section>
 			)}
 
-			<!-- 📋 最新戰術通報（名稱已修改） -->
 			<h2 class="text-xl font-black text-slate-900 mb-6 border-l-4 border-blue-600 pl-3">📋 最新戰術通報</h2>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
 				{sortedPosts.map(post => (
@@ -162,7 +156,6 @@ const searchBridge = sortedPosts.map(post => ({
 				))}
 			</div>
 
-			<!-- ✨ 推薦精選文章 (Featured) —— 已成功調整至下方 -->
 			<section class="border-t border-slate-200 pt-10">
 				<h2 class="text-xl font-black text-slate-900 mb-6 border-l-4 border-pink-500 pl-3 flex items-center gap-2">
 					<span class="text-pink-500">✨</span> 推薦精選文章 (Featured)
@@ -187,7 +180,6 @@ const searchBridge = sortedPosts.map(post => ({
 
 		</main>
 
-		<!-- 🛰️ 完整 Footer 區塊 -->
 		<footer class="bg-[#003764] text-slate-300 border-t border-blue-900 text-xs mt-20 pt-10 pb-8 text-center">
 			<div class="max-w-7xl mx-auto px-4 mb-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-slate-400 font-medium">
 				<a href="/about" class="hover:text-pink-400 transition-colors">關於我們</a>
@@ -199,12 +191,9 @@ const searchBridge = sortedPosts.map(post => ({
 			<p>© {currentYear} 戰術少女研究室 TACTICAL SHOJO NEWS. All Rights Reserved.</p>
 		</footer>
 
-		<!-- 搜尋、輪播與跑馬燈自動化驅動腳本 -->
 		<script is:inline>
 			document.addEventListener('DOMContentLoaded', () => {
-				// -------------------------
 				// 1. Hot Topic 文字跑馬燈滾動邏輯
-				// -------------------------
 				const tickerWrapper = document.getElementById('ticker-wrapper');
 				if (tickerWrapper) {
 					const items = tickerWrapper.children;
@@ -212,15 +201,12 @@ const searchBridge = sortedPosts.map(post => ({
 						let tickerIndex = 0;
 						setInterval(() => {
 							tickerIndex = (tickerIndex + 1) % items.length;
-							// 每一項高度為 1rem (16px)
 							tickerWrapper.style.transform = `translateY(-${tickerIndex * 16}px)`;
-						}, 4000); // 每 4 秒切換一則熱門消息
+						}, 4000);
 					}
 				}
 
-				// -------------------------
-				// 2. 大圖輪播功能核心邏輯 (Carousel)
-				// -------------------------
+				// 2. 大圖輪播功能核心邏輯
 				const wrapper = document.getElementById('carousel-wrapper');
 				const dots = document.querySelectorAll('.carousel-dot');
 				const prevBtn = document.getElementById('prev-btn');
@@ -271,9 +257,7 @@ const searchBridge = sortedPosts.map(post => ({
 					startAutoPlay();
 				}
 
-				// -------------------------
 				// 3. 搜尋驅動邏輯
-				// -------------------------
 				const searchInput = document.getElementById('tactical-search');
 				const searchResults = document.getElementById('search-results');
 				const resultsList = document.getElementById('results-list');
