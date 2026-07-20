@@ -1,14 +1,15 @@
 ---
-import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
+// 撈取文章與作者資料
 const allPosts = await getCollection('blog');
 const allAuthors = await getCollection('authors');
 const authorMap = Object.fromEntries(allAuthors.map(a => [a.id, a.data]));
 
 const sortedPosts = allPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
-const currentYear = new Date().getFullYear();
 
+// 整理供搜尋頁面使用的完整橋樑資料
 const searchBridge = sortedPosts.map(post => ({
   title: post.data.title || "",
   summary: post.data.summary || "",
@@ -20,107 +21,118 @@ const searchBridge = sortedPosts.map(post => ({
 }));
 ---
 
-<!doctype html>
-<html lang="zh-Hant">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type="image/png" href="/favicon.png" />
-		<title>情報搜尋結果 | 戰術少女研究室</title>
-		<script define:vars={{ searchBridge }}>
-			window.__TACTICAL_POSTS__ = searchBridge;
-		</script>
-	</head>
-	<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col">
+<BaseLayout 
+  title="情報檢索結果 | 戰術少女研究室" 
+  description="搜尋戰術少女研究室全站關於民防、軍事戰略與戰術自訓的通報紀錄。"
+>
+  <!-- 將搜尋專用的完整資料傳給全域 window 物件 -->
+  <script define:vars={{ searchBridge }}>
+    window.__SEARCH_PAGE_POSTS__ = searchBridge;
+  </script>
 
-		<header class="bg-[#003764] text-white sticky top-0 z-50 shadow-lg border-b-2 border-pink-600">
-			<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center min-h-[76px] gap-4 border-b border-blue-900/50 pr-4">
-				<div class="flex items-center flex-shrink-0">
-					<a href="/" class="flex items-center h-[76px] overflow-hidden group">
-						<img src="/images/uploads/戰術少女組-大頭貼.png" alt="Logo" class="w-[76px] h-[76px] object-cover group-hover:scale-105 transition-transform" />
-					</a>
-				</div>
-				<div class="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto md:ml-6 flex-1">
-					<a href="/" class="flex items-center h-[76px] text-[32px] md:text-[56px] font-black tracking-widest text-pink-500 whitespace-nowrap leading-none">
-						<span>戰術少女<span class="text-white">研究室</span></span>
-					</a>
-					<div class="relative w-full md:w-72 flex-shrink-0 md:ml-auto">
-						<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs">⚡</div>
-						<input type="text" id="tactical-search" placeholder="再次搜尋..." class="w-full bg-blue-950/60 text-xs text-slate-200 pl-8 pr-10 py-2.5 rounded border border-blue-900/60 focus:outline-none focus:border-pink-500 font-medium" />
-						<button id="search-submit-btn" class="absolute right-3 top-2.5 text-slate-400 hover:text-pink-500">🔍</button>
-					</div>
-				</div>
-			</div>
-			<div class="max-w-7xl mx-auto flex text-sm font-bold py-3 px-4">
-				<nav class="flex space-x-6">
-					<a href="/" class="hover:text-pink-400">← 返回首頁通報</a>
-				</nav>
-			</div>
-		</header>
+  <div class="max-w-7xl mx-auto my-6">
+    <!-- 頁面標題與搜尋狀態 -->
+    <div class="mb-8 border-b border-slate-200 pb-4">
+      <h2 class="text-2xl font-black border-l-4 border-pink-600 pl-3 mb-2 tracking-wider text-slate-900">
+        🔍 情報檢索結果
+      </h2>
+      <p id="search-query-title" class="text-slate-500 text-xs font-mono">
+        正在初始化戰術資料庫...
+      </p>
+    </div>
 
-		<main class="max-w-7xl mx-auto px-4 my-12 flex-grow w-full">
-			<h2 class="text-2xl font-black border-l-4 border-pink-600 pl-3 mb-2 tracking-wider">🔍 情報檢殺結果</h2>
-			<p id="search-query-title" class="text-slate-500 text-xs mb-8 font-mono">正在初始化戰術資料庫...</p>
-			<div id="results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-		</main>
+    <!-- 搜尋結果卡片展示區 -->
+    <div id="results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 由前端 JavaScript 動態渲染結果 -->
+    </div>
+  </div>
 
-		<footer class="bg-[#003764] text-slate-300 border-t border-blue-900 text-xs mt-40 pt-10 pb-8 text-center">
-			<div class="max-w-7xl mx-auto px-4 mb-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-slate-400 font-medium">
-				<a href="/about" class="hover:text-pink-400 transition-colors">關於我們</a>
-				<a href="/contact" class="hover:text-pink-400 transition-colors">聯繫我們</a>
-				<a href="/privacy" class="hover:text-pink-400 transition-colors">隱私政策</a>
-				<a href="/terms" class="hover:text-pink-400 transition-colors">服務條款</a>
-				<a href="/cookie-policy" class="hover:text-pink-400 transition-colors">Cookie 政策</a>
-			</div>
-			<p>© {currentYear} 戰術少女研究室 TACTICAL SHOJO NEWS. All Rights Reserved.</p>
-		</footer>
+  <!-- 搜尋頁面專屬驅動邏輯 -->
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.getElementById('results-grid');
+      const queryTitle = document.getElementById('search-query-title');
+      const headerSearchInput = document.getElementById('tactical-search');
 
-		<script is:inline>
-			document.addEventListener('DOMContentLoaded', () => {
-				const grid = document.getElementById('results-grid');
-				const queryTitle = document.getElementById('search-query-title');
-				const searchInput = document.getElementById('tactical-search');
-				const submitBtn = document.getElementById('search-submit-btn');
+      // 從 URL 抓取關鍵字 ?q=xxx
+      const getQuery = () => new URLSearchParams(window.location.search).get('q') || '';
+      
+      // 核心渲染邏輯
+      const renderResults = (query) => {
+        if (!grid || !queryTitle) return;
 
-				const getQuery = () => new URLSearchParams(window.location.search).get('q') || '';
-				
-				const renderResults = (query) => {
-					if (!grid || !queryTitle) return;
-					searchInput.value = query;
-					queryTitle.textContent = `關鍵字："${query}"`;
+        // 同步修改 Header 的搜尋框文字
+        if (headerSearchInput) {
+          headerSearchInput.value = query;
+        }
 
-					const posts = window.__TACTICAL_POSTS__ || [];
-					const filtered = posts.filter(post => post.title.toLowerCase().includes(query.toLowerCase()) || post.summary.toLowerCase().includes(query.toLowerCase()));
+        if (!query.trim()) {
+          queryTitle.textContent = '未輸入檢索關鍵字，請於上方搜尋框輸入。';
+          grid.innerHTML = `
+            <div class="col-span-full bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-400 text-sm font-medium shadow-sm">
+              💡 請於上方搜尋框輸入關鍵字進行情報檢索。
+            </div>
+          `;
+          return;
+        }
 
-					if (filtered.length === 0) {
-						grid.innerHTML = `<div class="col-span-full bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-400 text-sm font-medium shadow-sm">❌ 未尋獲相關戰術通報紀錄。</div>`;
-						return;
-					}
+        queryTitle.innerHTML = `當前檢索關鍵字：<span class="text-pink-600 font-bold font-sans">"${query}"</span>`;
 
-					grid.innerHTML = filtered.map(post => `
-						<article class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition duration-300">
-							${post.heroImage ? `<div class="h-48 overflow-hidden bg-slate-100"><img src="${post.heroImage}" class="w-full h-full object-cover" /></div>` : ''}
-							<div class="p-5 flex-1 flex flex-col justify-between">
-								<div>
-									<span class="text-xs font-bold text-pink-600 mb-2 block">${post.category}</span>
-									<h3 class="font-bold text-lg text-slate-900 mb-2 line-clamp-2 hover:text-pink-600"><a href="/blog/${post.slug}">${post.title}</a></h3>
-									<p class="text-slate-500 text-xs line-clamp-3 mb-4">${post.summary}</p>
-								</div>
-							</div>
-						</article>
-					`).join('');
-				};
+        // 優先讀取搜尋頁專用的完整資料，若無則讀取 Layout 提供的基礎資料
+        const posts = window.__SEARCH_PAGE_POSTS__ || window.__TACTICAL_POSTS__ || [];
+        const filtered = posts.filter(post => 
+          (post.title && post.title.toLowerCase().includes(query.toLowerCase())) || 
+          (post.summary && post.summary.toLowerCase().includes(query.toLowerCase())) ||
+          (post.category && post.category.toLowerCase().includes(query.toLowerCase()))
+        );
 
-				const currentQ = getQuery();
-				renderResults(currentQ);
+        if (filtered.length === 0) {
+          grid.innerHTML = `
+            <div class="col-span-full bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-400 text-sm font-medium shadow-sm">
+              ❌ 未尋獲與 "${query}" 相關的戰術通報紀錄。
+            </div>
+          `;
+          return;
+        }
 
-				const performNewSearch = () => {
-					const val = searchInput.value.trim();
-					if(val) { window.history.pushState({}, '', `/search?q=${encodeURIComponent(val)}`); renderResults(val); }
-				};
-				searchInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') performNewSearch(); });
-				submitBtn?.addEventListener('click', performNewSearch);
-			});
-		</script>
-	</body>
-</html>
+        // 動態生成文章卡片
+        grid.innerHTML = filtered.map(post => `
+          <article class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition duration-300">
+            ${post.heroImage ? `
+              <div class="h-48 overflow-hidden bg-slate-100">
+                <a href="/blog/${post.slug}">
+                  <img src="${post.heroImage}" alt="${post.title}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                </a>
+              </div>
+            ` : ''}
+            <div class="p-5 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-pink-600">${post.category || '未分類'}</span>
+                  ${post.date ? `<span class="text-[10px] text-slate-400 font-mono">${post.date}</span>` : ''}
+                </div>
+                <h3 class="font-bold text-lg text-slate-900 mb-2 line-clamp-2 hover:text-pink-600">
+                  <a href="/blog/${post.slug}">${post.title}</a>
+                </h3>
+                <p class="text-slate-500 text-xs line-clamp-3 mb-4 leading-relaxed">${post.summary || ''}</p>
+              </div>
+              <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+                <span>筆者：${post.authorName || '編輯部'}</span>
+                <a href="/blog/${post.slug}" class="text-pink-600 font-bold hover:underline">閱讀通報 →</a>
+              </div>
+            </div>
+          </article>
+        `).join('');
+      };
+
+      // 頁面載入時先執行一次渲染
+      const currentQ = getQuery();
+      renderResults(currentQ);
+
+      // 監聽網址上一頁/下一頁變更事件
+      window.addEventListener('popstate', () => {
+        renderResults(getQuery());
+      });
+    });
+  </script>
+</BaseLayout>
