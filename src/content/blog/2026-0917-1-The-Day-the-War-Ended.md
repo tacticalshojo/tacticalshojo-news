@@ -1,5 +1,5 @@
 ---
-title: 快去看《終戰那一天》( The Day the War Ended)
+title: 快去看《終戰那一天》(The Day the War Ended)
 heroImage: /images/uploads/2026-09/2026-0917/2026-0917-01.jpg
 category: 軍風搜奇
 tags:
