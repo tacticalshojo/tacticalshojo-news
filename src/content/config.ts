@@ -8,8 +8,16 @@ const blog = defineCollection({
     // 🎯 放寬日期驗證：如果欄位沒傳或格式不對，不會卡死編譯，自動安全降維
     date: z.any().optional().default(() => new Date()), 
     authors: z.array(z.string()).default(['admin']), // 對應作者的 slug/ID
-    // 🎯 改為選填並提供預設值，解決 category: Required 的致命阻攔
-    category: z.enum(['軍事戰略', '全民防衛', '戰術自訓', '軍工產業', '軍風搜奇']).optional().default('軍事戰略'),
+    // 🎯 已同步補上「器材裝備」與「歷史記憶」，並改為選填提供預設值
+    category: z.enum([
+      '軍事戰略', 
+      '全民防衛', 
+      '戰術自訓', 
+      '軍工產業', 
+      '器材裝備', 
+      '歷史記憶', 
+      '軍風搜奇'
+    ]).optional().default('軍事戰略'),
     
     // 🎯 全新配備：文章關鍵字標籤欄位（字串陣列，預設為空陣列，預防舊文章編譯報錯）
     tags: z.array(z.string()).optional().default([]),
