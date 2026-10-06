@@ -2,7 +2,7 @@
 title: '1996台海危機空包彈與少康專案 '
 heroImage: /images/uploads/2026-09/2026-0923/01.jpg
 heroImageCaption: 沈伯洋與孫佩霞合照引起1996台海飛彈危機與少康專案的討論
-category: 軍風搜奇
+category: 歷史記憶
 tags:
   - Grace
   - 1996台海飛彈危機
@@ -131,62 +131,62 @@ summary: 沈伯洋與蔥抓餅阿姨「劉連昆台諜案」牽線人孫佩霞�
 
 ◆自由時報／鄒景雯／「蔥抓餅老闆」外一章 台諜劉連昆遇害之謎
 
-https\://news.ltn.com.tw/news/politics/breakingnews/5575923
+[https://news.ltn.com.tw/news/politics/breakingnews/5575923](https://news.ltn.com.tw/news/politics/breakingnews/5575923)
 
 ◆自由時報／「蔥抓餅老闆」是于北辰阿姨 昔日諜戰牽線人身世曝光
 
-https\://news.ltn.com.tw/news/politics/breakingnews/5575371
+[https://news.ltn.com.tw/news/politics/breakingnews/5575371](https://news.ltn.com.tw/news/politics/breakingnews/5575371)
 
 ◆自由時報／許紹軒、楊國文／少康專案 「啞巴彈」情資來源
 
-https\://news.ltn.com.tw/news/politics/paper/168391
+[https://news.ltn.com.tw/news/politics/paper/168391](https://news.ltn.com.tw/news/politics/paper/168391)
 
 ◆中國時報／呂昭隆／坐監、流亡 3諜報花晚景淒涼
 
-https\://www\.chinatimes.com/newspapers/20180402000510-263201
+[https://www.chinatimes.com/newspapers/20180402000510-263201](https://www.chinatimes.com/newspapers/20180402000510-263201)
 
 ◆自由時報／楊國文／二度出書洩密 前軍情局副處長龐大為判三年半
 
-https\://news.ltn.com.tw/news/politics/paper/591390
+[https://news.ltn.com.tw/news/politics/paper/591390](https://news.ltn.com.tw/news/politics/paper/591390)
 
 ◆中國時報／陳志賢／藝人阿龐情報員父親 獲假釋
 
-https\://www\.chinatimes.com/realtimenews/20150801003939-260402
+[https://www.chinatimes.com/realtimenews/20150801003939-260402](https://www.chinatimes.com/realtimenews/20150801003939-260402)
 
 ◆上報／陳德愉／蔥油餅阿姨竟是諜報花　牽動20年前台海危機（上）
 
-https\://www\.upmedia.mg/tw/lifestyle/lifestyle/48692
+[https://www.upmedia.mg/tw/lifestyle/lifestyle/48692](https://www.upmedia.mg/tw/lifestyle/lifestyle/48692)
 
 ◆上報／陳德愉／一個坐牢一個賣餅　少康案她們未解的心結（下）
 
-https\://www\.upmedia.mg/tw/lifestyle/lifestyle/48693
+[https://www.upmedia.mg/tw/lifestyle/lifestyle/48693](https://www.upmedia.mg/tw/lifestyle/lifestyle/48693)
 
 ◆上報／陳沛妤／20年前諜報戰情仇未了　「劉連昆案」關鍵引線人─孫佩霞
 
 ◆上報／朱明／劉連昆案情報員姚嘉珍明在中國刑滿出獄　家屬赴北京接人
 
-https\://www\.upmedia.mg/tw/investigation/survey/43419
+[https://www.upmedia.mg/tw/investigation/survey/43419](https://www.upmedia.mg/tw/investigation/survey/43419)
 
 ◆上報／朱明／劉連昆案被關20年　台諜楊銘中7月刑滿將返台
 
-https\://www\.upmedia.mg/tw/investigation/survey/56289
+[https://www.upmedia.mg/tw/investigation/survey/56289](https://www.upmedia.mg/tw/investigation/survey/56289)
 
 ◆自由亞洲電台／台灣國局以防害軍機治罪條例限制情報員張志鵬出境前往大陸自首
 
-https\://www\.rfa.org/cantonese/news/59571-20010627.html
+[https://www.rfa.org/cantonese/news/59571-20010627.html](https://www.rfa.org/cantonese/news/59571-20010627.html)
 
 ◆中央社／葉素萍／蘇志誠：劉連昆被抓與李登輝「空包彈說」完全無關
 
-https\://www\.cna.com.tw/news/aipl/202207240211.aspx
+[https://www.cna.com.tw/news/aipl/202207240211.aspx](https://www.cna.com.tw/news/aipl/202207240211.aspx)
 
 ◆國史館／張國城／李登輝在第一次總統直選中的危機處理—兼論「十八套劇本」
 
-https\://presidentiallth.drnh.gov.tw/index.php?act=Archive/article/PATA00066
+[https://presidentiallth.drnh.gov.tw/index.php?act=Archive/article/PATA00066](https://presidentiallth.drnh.gov.tw/index.php?act=Archive/article/PATA00066)
 
 ◆美國之音粵語版／莉雅／劉連昆間諜案始末
 
-https\://www\.voacantonese.com/a/1914259.html
+[https://www.voacantonese.com/a/1914259.html](https://www.voacantonese.com/a/1914259.html)
 
 ◆大紀元／美國之音記者莉雅、成岳、楊晨、黃耀毅、杜林、蕭雨、李肅／揭秘：六四事件與台海間諜「少康專案」（此來源為大紀元、主要為龐大為說法，較為詳細但與許多台灣報導細節有差異）
 
-https\://www\.epochtimes.com/b5/14/4/14/n4131454.htm
+[https://www.epochtimes.com/b5/14/4/14/n4131454.htm](https://www.epochtimes.com/b5/14/4/14/n4131454.htm)
