@@ -96,7 +96,7 @@ const displayTags = postTags.filter(tag => {
   return !["nina", "yelena", "urica", "grace", "節目企劃", "企劃", "客座", "投稿", "專家", "戰術小編", "小編"].includes(t);
 });
 
-// 🛠️ 修正點 1：安全轉換 Date 物件
+// 🛠️ 安全轉換 Date 物件
 const parsedDate = entry.data.date ? new Date(entry.data.date) : new Date();
 const safeIsoDate = !isNaN(parsedDate.getTime()) ? parsedDate.toISOString() : new Date().toISOString();
 
@@ -110,7 +110,7 @@ const formattedDate = parsedDate.toLocaleString('zh-TW', {
   hour12: false
 });
 
-// 🛠️ 修正點 2：使用 safeIsoDate 避免 entry.data.date.toISOString() 報錯
+// 🛠️ 使用 safeIsoDate 避免 entry.data.date.toISOString() 報錯
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "NewsArticle",
@@ -141,7 +141,6 @@ const authorRecentPosts = allBlogEntries
     if (currentAuthor.name === "戰術小編") return tags.includes("戰術小編") || tags.includes("小編") || title.includes("戰術小編") || title.includes("小編") || (!tags.some(t => ["nina", "yelena", "urica", "grace", "節目企劃", "企劃", "客座", "投稿", "專家"].includes(t)) && !["nina", "yelena", "urica", "grace", "節目企劃", "企劃", "客座", "投稿", "專家"].some(k => title.includes(k)));
     return false;
   })
-  // 🛠️ 修正點 3：排序時增加 Date 安全轉型
   .sort((a, b) => {
     const timeA = new Date(a.data.date).getTime() || 0;
     const timeB = new Date(b.data.date).getTime() || 0;
@@ -191,12 +190,14 @@ const searchBridge = allBlogEntries.map(post => ({
 				</div>
 			</div>
 			<div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-start text-sm font-bold py-3 px-4 gap-2">
-				<nav class="flex space-x-6 whitespace-nowrap">
+				<nav class="flex space-x-6 whitespace-nowrap overflow-x-auto w-full">
 					<a href="/" class="hover:text-pink-400 transition-colors">首頁通報</a>
 					<a href="/category/軍事戰略" class="hover:text-pink-400 transition-colors">軍事戰略</a>
 					<a href="/category/全民防衛" class="hover:text-pink-400 transition-colors">全民防衛</a>
 					<a href="/category/戰術自訓" class="hover:text-pink-400 transition-colors">戰術自訓</a>
 					<a href="/category/軍工產業" class="hover:text-pink-400 transition-colors">軍工產業</a>
+					<a href="/category/器材裝備" class="hover:text-pink-400 transition-colors">器材裝備</a>
+					<a href="/category/歷史記憶" class="hover:text-pink-400 transition-colors">歷史記憶</a>
 					<a href="/category/軍風搜奇" class="hover:text-pink-400 transition-colors">軍風搜奇</a>
 				</nav>
 			</div>
@@ -213,7 +214,7 @@ const searchBridge = allBlogEntries.map(post => ({
 			<h1 class="text-2xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight mb-4">{entry.data.title}</h1>
 			
 			<div class="flex flex-wrap items-center gap-4 text-xs text-slate-400 border-b border-slate-200 pb-4 mb-6">
-				<span class="font-bold text-slate-700">✍️ 記者：<a href={`/authors/${currentAuthor.slug}`} class="text-pink-600 hover:underline">{currentAuthor.name}</a></span>
+				<span class="font-bold text-slate-700">✍️️ 記者：<a href={`/authors/${currentAuthor.slug}`} class="text-pink-600 hover:underline">{currentAuthor.name}</a></span>
 				<span>🕒 發布時間：{formattedDate} (台灣時區 GMT+8)</span>
 			</div>
 
