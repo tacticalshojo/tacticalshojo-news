@@ -48,7 +48,7 @@ export default defineConfig({
           { type: "image", name: "heroImage", label: "新聞首圖" },
           { type: "string", name: "heroImageCaption", label: "新聞首圖圖說" },
 
-          // 🛰️ 收復項目 1：發布日期自動生成（後台可微調）
+          // 🛰️️ 收復項目 1：發布日期自動生成（後台可微調）
           { 
             type: "datetime", 
             name: "date", 
@@ -59,12 +59,20 @@ export default defineConfig({
             }
           },
 
-          // 🛰️ 收復項目 2：大分類滑鼠下拉選單
+          // 🛰️ 收復項目 2：大分類滑鼠下拉選單（已新增 器材裝備、歷史記憶）
           {
             type: "string",
             name: "category",
             label: "新聞大分類",
-            options: ["軍事戰略", "全民防衛", "戰術自訓", "軍工產業", "軍風搜奇"],
+            options: [
+              "軍事戰略", 
+              "全民防衛", 
+              "戰術自訓", 
+              "軍工產業", 
+              "器材裝備", 
+              "歷史記憶", 
+              "軍風搜奇"
+            ],
           },
 
           // 🎯 全新配備：文章關鍵字標籤輸入清單（已追加作者提示說明）
