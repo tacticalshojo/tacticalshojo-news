@@ -96,7 +96,11 @@ const displayTags = postTags.filter(tag => {
   return !["nina", "yelena", "urica", "grace", "節目企劃", "企劃", "客座", "投稿", "專家", "戰術小編", "小編"].includes(t);
 });
 
-const formattedDate = new Date(entry.data.date).toLocaleString('zh-TW', {
+// 🛠️ 修正點 1：安全轉換 Date 物件
+const parsedDate = entry.data.date ? new Date(entry.data.date) : new Date();
+const safeIsoDate = !isNaN(parsedDate.getTime()) ? parsedDate.toISOString() : new Date().toISOString();
+
+const formattedDate = parsedDate.toLocaleString('zh-TW', {
   timeZone: 'Asia/Taipei',
   year: 'numeric',
   month: 'long',
@@ -106,13 +110,14 @@ const formattedDate = new Date(entry.data.date).toLocaleString('zh-TW', {
   hour12: false
 });
 
+// 🛠️ 修正點 2：使用 safeIsoDate 避免 entry.data.date.toISOString() 報錯
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "NewsArticle",
   "headline": entry.data.title,
   "image": [ entry.data.heroImage || "https://tacticalshojo.com/default-share.jpg" ],
-  "datePublished": entry.data.date.toISOString(),
-  "dateModified": entry.data.date.toISOString(),
+  "datePublished": safeIsoDate,
+  "dateModified": safeIsoDate,
   "author": [{
     "@type": "Person",
     "name": currentAuthor.name,
@@ -136,7 +141,12 @@ const authorRecentPosts = allBlogEntries
     if (currentAuthor.name === "戰術小編") return tags.includes("戰術小編") || tags.includes("小編") || title.includes("戰術小編") || title.includes("小編") || (!tags.some(t => ["nina", "yelena", "urica", "grace", "節目企劃", "企劃", "客座", "投稿", "專家"].includes(t)) && !["nina", "yelena", "urica", "grace", "節目企劃", "企劃", "客座", "投稿", "專家"].some(k => title.includes(k)));
     return false;
   })
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  // 🛠️ 修正點 3：排序時增加 Date 安全轉型
+  .sort((a, b) => {
+    const timeA = new Date(a.data.date).getTime() || 0;
+    const timeB = new Date(b.data.date).getTime() || 0;
+    return timeB - timeA;
+  })
   .slice(0, 3);
 
 const searchBridge = allBlogEntries.map(post => ({
